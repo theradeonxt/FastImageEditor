@@ -176,18 +176,20 @@ namespace VectorImageEdit.Forms.AppWindow
             if (dialog.ShowDialog() != DialogResult.OK) return;
 
             VectorSerializer serializer = new VectorSerializer();
-            IList layers = serializer.Deserialize(dialog.FileName);
-            if (layers == null)
+            try
             {
-                MessageBox.Show(@"Unable to open the vector data file.");
-                return;
+                IList layers = serializer.Deserialize(dialog.FileName);
+                _layerManager.RemoveAll();
+                foreach (Layer layer in layers)
+                {
+                    _layerManager.Add(layer);
+                }
             }
-
-            _layerManager.RemoveAll();
-            foreach (Layer layer in layers)
+            catch (InvalidDataException ex)
             {
-                _layerManager.Add(layer);
+                MessageBox.Show(@"Unable to open the vector data file. (" + ex.Message + ")");
             }
+            catch (Exception) { }
         }
 
         /*

@@ -77,6 +77,7 @@
     <Compile Include="Forms\AppWindow\AppToolbars.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\IActionListener.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
     <Compile Include="Modules\BasicShapes\StyleBuilder.cs" />
@@ -200,6 +201,8 @@
     <None Include="Resources\triangle.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Models\" />
     <Folder Include="Modules\Utility\" />
   </ItemGroup>
   <ItemGroup>

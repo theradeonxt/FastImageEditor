@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -17,6 +18,7 @@ namespace VectorImageEdit.Modules.ExportFormats
         /// <param name="fileName"> Input file </param>
         public void Serialize(string fileName)
         {
+            if (Source == null) throw new InvalidOperationException("Source data was not specified");
             BinaryFormatter formatter = new BinaryFormatter();
             using (FileStream stream = new FileStream(fileName, FileMode.Create))
             {
@@ -32,11 +34,12 @@ namespace VectorImageEdit.Modules.ExportFormats
             {
                 layers = (IList)formatter.Deserialize(stream);
             }
+            if (layers == null) throw new InvalidDataException("Deserialization into " + layers.GetType() + " failed.");
             return layers;
         }
 
         public IList Source { get; set; }
 
-        public static string SupportedFileExt { get; set; }
+        public static string SupportedFileExt { get; private set; }
     }
 }
