@@ -54,7 +54,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MRG.Controls.UI">
-      <HintPath>..\..\..\MRG.Controls.UI.dll</HintPath>
+      <HintPath>Properties\MRG.Controls.UI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
