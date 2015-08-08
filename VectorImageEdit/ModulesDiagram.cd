@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Circle">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Circle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Line">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Line.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.MyRectangle">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\MyRectangle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Oval">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Oval.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.ShapeStyle">
+    <Position X="14.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAQAAAAAAAAAAIAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\ShapeStyle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Square">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Square.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.GraphicsManager">
+    <Position X="3.5" Y="5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AgEAkAABABAAAAQAAQAQABAAAAAAAAAAAEJAAQEAAAA=</HashCode>
+      <FileName>Modules\GraphicsManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.ImageLoader">
+    <Position X="6.25" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEABAAAAAAAAAAAABAAAAAAIAAAAIAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Modules\ImageLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.Layer">
+    <Position X="9.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AACIAAAAgIAAgAQEAAAAAAAAAAAAAAQAAAAECAEAAgA=</HashCode>
+      <FileName>Modules\Layers\Layer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.979" />
+  </Class>
+  <Class Name="VectorImageEdit.Modules.Picture">
+    <Position X="12.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEAIAAAAACAAAAAEAAAAAAAAEAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\Layers\Picture.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="VectorImageEdit.Modules.Layout">
+    <Position X="12.25" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAASAAAAAAADAAAAAAAAAAAAAAAAAAIQAAACAAAA=</HashCode>
+      <FileName>Modules\Layout.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.SortedContainer">
+    <Position X="9" Y="5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>ECIAAAAAAAAAABAACAAABAQAABAIAAAAICAAAAAAAAA=</HashCode>
+      <FileName>Modules\SortedContainer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="VectorImageEdit.Modules.LayerManager">
+    <Position X="0.5" Y="5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAcAAAACAAAAAAEAEAAAhAAAAAAAAEgAIAAIgAAAAAA=</HashCode>
+      <FileName>Modules\Layers\LayerManager.cs</FileName>
+      <NewMemberFileName>Modules\Layers\LayerModifiers.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Triangle">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Triangle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Star">
+    <Position X="2.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Star.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Hexagon">
+    <Position X="4" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Hexagon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Modules.BasicShapes.Diamond">
+    <Position X="5.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modules\BasicShapes\Diamond.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

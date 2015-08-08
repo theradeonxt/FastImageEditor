@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="VectorImageEdit.Forms.AppWindow">
+    <Position X="0.75" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>BANEIEw4ASAZKKiBAQCqgUIKKEgEITiEokEMDELiCCM=</HashCode>
+      <FileName>Forms\AppExternalEvents.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="System.Windows.Forms.Form" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="System.Windows.Forms.Form.ControlCollection" Collapsed="true">
+        <TypeIdentifier />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="VectorImageEdit.Forms.ProgressWindow">
+    <Position X="9" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAQACAAAAAAAACAACACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Forms\ProgressWindow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorImageEdit.Forms.PropertiesWindow">
+    <Position X="6.25" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Forms\PropertiesWindow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
