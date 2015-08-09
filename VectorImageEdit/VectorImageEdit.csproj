@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ExternalEventsController.cs" />
     <Compile Include="Forms\AppWindow\AppBorderlessForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +79,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\IActionListener.cs" />
+    <Compile Include="Models\ExternalEventsModel.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
     <Compile Include="Modules\BasicShapes\StyleBuilder.cs" />
@@ -201,8 +203,6 @@
     <None Include="Resources\triangle.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Models\" />
     <Folder Include="Modules\Utility\" />
   </ItemGroup>
   <ItemGroup>

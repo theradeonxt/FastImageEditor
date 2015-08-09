@@ -212,5 +212,37 @@ namespace VectorImageEdit.Forms.AppWindow
             };
             serializer.Serialize(dialog.FileName);
         }
+
+        //***********************************************************
+        #region View listeners
+
+        public void AddSaveVectorListener(IActionListener listener)
+        {
+            saveVectorMenu.Click += listener.ActionPerformed;
+        }
+
+        public void AddOpenVectorListener(IActionListener listener)
+        {
+            openVectorMenu.Click += listener.ActionPerformed;
+        }
+
+        public void AddExportImageListener(IActionListener listener)
+        {
+            exportFileMenu.Click += listener.ActionPerformed;
+        }
+
+        public void AddDragNDropListener(IDragActionListener listener)
+        {
+            panWorkRegion.DragDrop += listener.ActionPerformed;
+        }
+
+        #endregion
+        //***********************************************************
+
+        //***********************************************************
+        #region View Getters/Setters
+
+        #endregion
+        //***********************************************************
     }
 }
