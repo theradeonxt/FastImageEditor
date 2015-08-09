@@ -42,7 +42,7 @@ namespace VectorImageEdit.Forms.AppWindow
             var cinfo = new Microsoft.VisualBasic.Devices.ComputerInfo();
             _totalRam = cinfo.AvailablePhysicalMemory;
             memoryProgressBar.Value = (int)(100UL - _totalRam * 100UL / cinfo.TotalPhysicalMemory);
-            memoryUsedLabel.Text = @"Memory Used (" + memoryProgressBar.Value.ToString() + @"%)";
+            memoryUsedLabel.Text = string.Format("Memory Used ({0}%)", memoryProgressBar.Value.ToString());
         }
 
         ////////////////////////////
