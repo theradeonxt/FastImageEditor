@@ -123,7 +123,11 @@ namespace VectorImageEdit.Forms.AppWindow
         private void exportFileMenu_Click(object sender, EventArgs e)
         {
             // show the user a dialog to select the file format and name
-            SaveFileDialog dialog = new SaveFileDialog { Title = @"Export Preview", Filter = "" };
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Title = @"Export Preview",
+                Filter = ""
+            };
 
             string sep = string.Empty;
             var extCodec = new Dictionary<string, ImageFormat>();
@@ -134,7 +138,7 @@ namespace VectorImageEdit.Forms.AppWindow
                 int len = imgCodec.FilenameExtension.Replace("*.", "").Length;
                 string ext = imgCodec.FilenameExtension.Substring(1, (len == 3) ? 4 : 5).Replace(";", "");
                 string name = imgCodec.CodecName.Substring(8).Replace("Codec", "Files").Trim();
-                dialog.Filter = String.Format("{0}{1}{2} ({3})|{3}", dialog.Filter, sep, name, imgCodec.FilenameExtension);
+                dialog.Filter = string.Format("{0}{1}{2} ({3})|{3}", dialog.Filter, sep, name, imgCodec.FilenameExtension);
                 sep = "|";
 
                 // map the file types to an image format
@@ -171,7 +175,7 @@ namespace VectorImageEdit.Forms.AppWindow
             OpenFileDialog dialog = new OpenFileDialog
             {
                 Title = @"Open vector data",
-                Filter = @"Vector data|*" + VectorSerializer.SupportedFileExt
+                Filter = string.Format("Vector data|*{0}", VectorSerializer.SupportedFileExt)
             };
             if (dialog.ShowDialog() != DialogResult.OK) return;
 
@@ -187,9 +191,12 @@ namespace VectorImageEdit.Forms.AppWindow
             }
             catch (InvalidDataException ex)
             {
-                MessageBox.Show(@"Unable to open the vector data file. (" + ex.Message + ")");
+                MessageBox.Show(string.Format("Unable to open the vector data file. ({0})", ex.Message));
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                // ignored for now
+            }
         }
 
         /*
@@ -200,7 +207,7 @@ namespace VectorImageEdit.Forms.AppWindow
             SaveFileDialog dialog = new SaveFileDialog
             {
                 Title = @"Save vector data",
-                Filter = @"Vector data|*" + VectorSerializer.SupportedFileExt
+                Filter = string.Format("Vector data|*{0}", VectorSerializer.SupportedFileExt)
             };
             if (dialog.ShowDialog() != DialogResult.OK) return;
 
