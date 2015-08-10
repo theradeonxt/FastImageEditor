@@ -215,7 +215,7 @@ namespace VectorImageEdit.Forms.AppWindow
 
             VectorSerializer serializer = new VectorSerializer
             {
-                Source = _layerManager.GetLayersList()
+                Source = _layerManager.GetLayers()
             };
             serializer.Serialize(dialog.FileName);
         }
@@ -233,7 +233,7 @@ namespace VectorImageEdit.Forms.AppWindow
             openVectorMenu.Click += listener.ActionPerformed;
         }
 
-        public void AddExportImageListener(IActionListener listener)
+        public void AddExportFileListener(IActionListener listener)
         {
             exportFileMenu.Click += listener.ActionPerformed;
         }

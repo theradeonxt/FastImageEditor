@@ -22,6 +22,8 @@ namespace VectorImageEdit.Modules.Layers
     public partial class LayerManager : GraphicsManager
     {
         private readonly SortedContainer _activeLayers;
+        // TODO: this should be part of the view since it's an UI element
+        // TODO: have a callback registered here for items added/removed
         private readonly ListBox _uiObjectList;
 
         public readonly MouseInteraction MouseHandler;
@@ -32,6 +34,7 @@ namespace VectorImageEdit.Modules.Layers
             _activeLayers = new SortedContainer();
             MouseHandler = new MouseInteraction(_activeLayers, ObjectUpdateCallback);
 
+            // TODO: move to its own controller
             formControl.MouseDown += MouseHandler.MouseDown;
             formControl.MouseMove += MouseHandler.MouseMovement;
             formControl.MouseUp += MouseHandler.MouseUp;
@@ -41,6 +44,7 @@ namespace VectorImageEdit.Modules.Layers
             _uiObjectList.SelectedIndexChanged += uiObjectList_SelectedIndexChanged;
         }
 
+        // TODO: have a callback registered here for items selected/deselected
         void uiObjectList_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = _uiObjectList.SelectedIndex;
@@ -48,7 +52,8 @@ namespace VectorImageEdit.Modules.Layers
             MouseHandler.SelectedLayer = _activeLayers[index];
         }
 
-        #region Object(s) creation/deletion
+        //********************************************************
+        #region Objects creation/deletion
 
         public void Add(Layer newLayer, InsertionPolicy policy = InsertionPolicy.BringToFront)
         {
@@ -60,6 +65,7 @@ namespace VectorImageEdit.Modules.Layers
 
         public void Add(List<Layer> newLayers, InsertionPolicy policy = InsertionPolicy.BringToFront)
         {
+            // Does not use Add of one Layer to save a few expensive calls to UpdateFrame
             foreach (Layer layer in newLayers)
             {
                 if (policy == InsertionPolicy.BringToFront) BringToFront(layer);
@@ -90,13 +96,14 @@ namespace VectorImageEdit.Modules.Layers
         }
 
         #endregion
+        //********************************************************
 
         public SortedContainer GetSortedLayers()
         {
             return _activeLayers;
         }
 
-        public List<Layer> GetLayersList()
+        public List<Layer> GetLayers()
         {
             return _activeLayers.ToList();
         }
@@ -106,6 +113,7 @@ namespace VectorImageEdit.Modules.Layers
             return _activeLayers.Where(layer => !(layer is Picture)).ToList();
         }
 
+        // TODO: this ClearMode is very ambiguous
         private void ObjectUpdateCallback(Rectangle objectRegion, ClearMode mode)
         {
             if (mode == ClearMode.FullUpdate)

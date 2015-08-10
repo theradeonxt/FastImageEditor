@@ -19,7 +19,7 @@ namespace VectorImageEdit.Controllers
 
             _appView.AddSaveVectorListener(new SaveVectorListener(this));
             _appView.AddOpenVectorListener(new OpenVectorListener(this));
-            _appView.AddExportImageListener(new ExportFileListener(this));
+            _appView.AddExportFileListener(new ExportFileListener(this));
             _appView.AddOpenFileListener(new OpenFileListener(this));
         }
 
@@ -69,7 +69,7 @@ namespace VectorImageEdit.Controllers
                 }
                 catch (Exception)
                 {
-                    // ignored for now
+                    // TODO: ignored for now; is not recoverable - should be logged somewhere
                 }
             }
         }
@@ -92,7 +92,7 @@ namespace VectorImageEdit.Controllers
                 };
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
-                // TODO: Move validation to export and return a boolean flag
+                // TODO: Move validation to export and return a boolean flag because this is part of logic
                 if (Controller._model.ValidateExportFile(dialog.FileName))
                 {
                     Controller._model.ExportToFile(dialog.FileName);

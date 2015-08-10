@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using VectorImageEdit.Forms.AppWindow;
 using VectorImageEdit.Modules;
 using VectorImageEdit.Modules.ExportFormats;
 using VectorImageEdit.Modules.Layers;
@@ -15,13 +14,6 @@ namespace VectorImageEdit.Models
 {
     class ExternalEventsModel
     {
-        private AppWindow _appView;
-
-        public ExternalEventsModel(AppWindow appView)
-        {
-            _appView = appView;
-        }
-
         //********************************************************
         #region Vector Serialize/Deserialize
 
@@ -29,7 +21,7 @@ namespace VectorImageEdit.Models
         {
             VectorSerializer serializer = new VectorSerializer
             {
-                Source = GlobalModel.Instance.LayerManager.GetLayersList()
+                Source = GlobalModel.Instance.LayerManager.GetLayers()
             };
             serializer.Serialize(fileName);
         }
@@ -101,7 +93,7 @@ namespace VectorImageEdit.Models
         public void ExportToFile(string fileName)
         {
             // get the workspace data as an image
-            using (Bitmap preview = GlobalModel.Instance.LayerManager.GetImagePreview())
+            using (var preview = GlobalModel.Instance.LayerManager.GetImagePreview())
             {
                 try
                 {
@@ -135,11 +127,9 @@ namespace VectorImageEdit.Models
             List<Layer> layers = new List<Layer>();
             foreach (Bitmap image in imageList)
             {
-                using (BitmapHelper helper = new BitmapHelper(image))
+                using (var helper = new BitmapHelper(image))
                 {
                     BackgroundStatitics.CommitImageMemory(helper.SizeBytes);
-                    //float memUsage = BackgroundStatitics.ImageMemory * 100.0f / _totalRam;
-                    //memoryProgressBar.Value = (int)memUsage;
                 }
 
                 Rectangle region = GlobalModel.Instance.Layout.NewLayerMetrics(image.Size);
@@ -151,6 +141,5 @@ namespace VectorImageEdit.Models
 
         #endregion
         //********************************************************
-
     }
 }
