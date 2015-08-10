@@ -790,7 +790,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.statusProgressBar.MarqueeAnimationSpeed = 50;
             this.statusProgressBar.Name = "statusProgressBar";
             this.statusProgressBar.Size = new System.Drawing.Size(100, 16);
-            this.statusProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             // 
             // memoryUsedLabel
             // 

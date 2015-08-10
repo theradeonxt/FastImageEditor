@@ -89,8 +89,8 @@ namespace VectorImageEdit.Forms.AppWindow
                         using (BitmapHelper helper = new BitmapHelper(image))
                         {
                             BackgroundStatitics.CommitImageMemory(helper.SizeBytes);
-                            float memUsage = BackgroundStatitics.ImageMemory * 100.0f / _totalRam;
-                            memoryProgressBar.Value = (int)memUsage;
+                            //float memUsage = BackgroundStatitics.ImageMemory * 100.0f / _totalRam;
+                            //memoryProgressBar.Value = (int)memUsage;
                         }
 
                         Rectangle region = _layoutManager.NewLayerMetrics(image.Size);
@@ -238,7 +238,12 @@ namespace VectorImageEdit.Forms.AppWindow
             exportFileMenu.Click += listener.ActionPerformed;
         }
 
-        public void AddDragNDropListener(IDragActionListener listener)
+        public void AddOpenFileListener(IActionListener listener)
+        {
+            openFileMenu.Click += listener.ActionPerformed;
+        }
+
+        public void AddFileDragDropListener(IDragActionListener listener)
         {
             panWorkRegion.DragDrop += listener.ActionPerformed;
         }

@@ -19,8 +19,6 @@ namespace VectorImageEdit.Forms.AppWindow
         private readonly LayerManager _layerManager;
         private readonly Layout _layoutManager;
 
-        private readonly ulong _totalRam;
-
         public AppWindow()
         {
             InitializeComponent();
@@ -39,9 +37,7 @@ namespace VectorImageEdit.Forms.AppWindow
                 layoutSettings.RowCount = 2;
             }
 
-            var cinfo = new Microsoft.VisualBasic.Devices.ComputerInfo();
-            _totalRam = cinfo.AvailablePhysicalMemory;
-            memoryProgressBar.Value = (int)(100UL - _totalRam * 100UL / cinfo.TotalPhysicalMemory);
+            memoryProgressBar.Value = BackgroundStatitics.MemoryUsagePercent;
             memoryUsedLabel.Text = string.Format("Memory Used ({0}%)", memoryProgressBar.Value.ToString());
         }
 

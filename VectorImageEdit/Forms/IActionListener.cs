@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace VectorImageEdit.Forms
 {
-    interface IActionListener
+    public interface IActionListener
     {
         void ActionPerformed(object sender, EventArgs e);
     }
 
-    interface IDragActionListener
+    public interface IDragActionListener
     {
         void ActionPerformed(object sender, DragEventArgs e);
     }

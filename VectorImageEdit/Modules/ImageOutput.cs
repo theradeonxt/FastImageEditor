@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace VectorImageEdit.Modules
@@ -36,6 +37,7 @@ namespace VectorImageEdit.Modules
             }
             catch (Exception e)
             {
+                // TODO: Remove MessageBox here
                 // Something unexpected happened
                 MessageBox.Show(@"Could not save image to: " + filePath + @"." + Environment.NewLine + e.Message,
                     @"ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -45,12 +47,9 @@ namespace VectorImageEdit.Modules
         private static ImageCodecInfo GetFormatEncoder(ImageFormat format)
         {
             // Get the encoder info for a specified ImageFormat
-            foreach (var codec in ImageCodecInfo.GetImageDecoders())
+            foreach (var codec in ImageCodecInfo.GetImageDecoders().Where(codec => codec.FormatID == format.Guid))
             {
-                if (codec.FormatID == format.Guid)
-                {
-                    return codec;
-                }
+                return codec;
             }
             throw new ArgumentException("No codec available for the requested ImageFormat");
         }
