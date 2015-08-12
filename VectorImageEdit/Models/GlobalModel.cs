@@ -4,6 +4,8 @@ using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Models
 {
+    // TODO: Rename to AppModel?
+
     /// <summary>
     /// GlobalModel Module
     /// 
@@ -14,6 +16,8 @@ namespace VectorImageEdit.Models
     /// </summary>
     class GlobalModel
     {
+        //********************************************************
+        #region Singleton details
         // ReSharper disable once InconsistentNaming
         private static readonly Lazy<GlobalModel> _instance =
             new Lazy<GlobalModel>(() => new GlobalModel());
@@ -21,6 +25,9 @@ namespace VectorImageEdit.Models
         private GlobalModel() { }
 
         public static GlobalModel Instance { get { return _instance.Value; } }
+
+        #endregion
+        //********************************************************
 
         //********************************************************
         #region Actual global data goes here

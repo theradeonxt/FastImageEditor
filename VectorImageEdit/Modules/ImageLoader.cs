@@ -20,19 +20,6 @@ namespace VectorImageEdit.Modules
         private static readonly ConcurrentDictionary<string, Bitmap> ImageCache
             = new ConcurrentDictionary<string, Bitmap>();
 
-        private static Bitmap OpenImage(string fileName)
-        {
-            Bitmap image = Resources.placeholder;
-            try
-            {
-                image = (Bitmap)Image.FromFile(fileName);
-            }
-            catch (OutOfMemoryException) { }
-            catch (FileNotFoundException) { }
-            catch (ArgumentException) { }
-            return image;
-        }
-
         public static Bitmap ScaledSize(string fileName, Size maximumSize)
         {
             Bitmap original = OpenImage(fileName);
@@ -79,6 +66,19 @@ namespace VectorImageEdit.Modules
                 ImageCache.TryGetValue(keyId, out result);
             }
             return result;
+        }
+
+        private static Bitmap OpenImage(string fileName)
+        {
+            Bitmap image = Resources.placeholder;
+            try
+            {
+                image = (Bitmap)Image.FromFile(fileName);
+            }
+            catch (OutOfMemoryException) { }
+            catch (FileNotFoundException) { }
+            catch (ArgumentException) { }
+            return image;
         }
     }
 }

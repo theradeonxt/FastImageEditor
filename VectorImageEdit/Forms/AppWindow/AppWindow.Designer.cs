@@ -192,7 +192,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.openFileMenu.Name = "openFileMenu";
             this.openFileMenu.Size = new System.Drawing.Size(167, 22);
             this.openFileMenu.Text = "Open Image";
-            this.openFileMenu.Click += new System.EventHandler(this.openFileMenu_Click);
             // 
             // openVectorMenu
             // 
@@ -200,7 +199,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.openVectorMenu.Name = "openVectorMenu";
             this.openVectorMenu.Size = new System.Drawing.Size(167, 22);
             this.openVectorMenu.Text = "Open Vector Data";
-            this.openVectorMenu.Click += new System.EventHandler(this.openVectorMenu_Click);
             // 
             // saveVectorMenu
             // 
@@ -208,7 +206,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.saveVectorMenu.Name = "saveVectorMenu";
             this.saveVectorMenu.Size = new System.Drawing.Size(167, 22);
             this.saveVectorMenu.Text = "Save Vector Data";
-            this.saveVectorMenu.Click += new System.EventHandler(this.saveVectorMenu_Click);
             // 
             // exportFileMenu
             // 
@@ -216,7 +213,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.exportFileMenu.Name = "exportFileMenu";
             this.exportFileMenu.Size = new System.Drawing.Size(167, 22);
             this.exportFileMenu.Text = "Export Image";
-            this.exportFileMenu.Click += new System.EventHandler(this.exportFileMenu_Click);
             // 
             // filePropertiesMenu
             // 
@@ -327,9 +323,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.panWorkRegion.Name = "panWorkRegion";
             this.panWorkRegion.Size = new System.Drawing.Size(907, 368);
             this.panWorkRegion.TabIndex = 6;
-            this.panWorkRegion.SizeChanged += new System.EventHandler(this.panWorkRegion_SizeChanged);
-            this.panWorkRegion.DragDrop += new System.Windows.Forms.DragEventHandler(this.panWorkRegion_DragDrop);
-            this.panWorkRegion.DragEnter += new System.Windows.Forms.DragEventHandler(this.panWorkRegion_DragEnter);
             // 
             // treeView1
             // 
@@ -930,7 +923,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Vector Image Editor";
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Borderless_MouseDown);
-            this.Move += new System.EventHandler(this.AppWindow_Move);
             this.cmsRightClickMenu.ResumeLayout(false);
             this.menuBarTop.ResumeLayout(false);
             this.menuBarTop.PerformLayout();

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows.Forms;
+using VectorImageEdit.Models;
 using VectorImageEdit.Modules;
 using VectorImageEdit.Modules.BasicShapes;
 using VectorImageEdit.Modules.Layers;
@@ -13,11 +16,9 @@ namespace VectorImageEdit.Forms.AppWindow
     /// This is the main application window
     /// 
     /// </summary>
-    
     public partial class AppWindow : Form
     {
-        private readonly LayerManager _layerManager;
-        private readonly Layout _layoutManager;
+        //private readonly LayerManager GlobalModel.Instance.LayerManager;
 
         public AppWindow()
         {
@@ -26,8 +27,7 @@ namespace VectorImageEdit.Forms.AppWindow
             edgecolorToolStripButton.BackColor = ShapeStyle.GlobalEdgeColor;
             fillcolortoolStripButton.BackColor = ShapeStyle.GlobalFillColor;
 
-            _layerManager = new LayerManager(panWorkRegion, lBoxActiveLayers);
-            _layoutManager = new Layout(panWorkRegion.Size);
+            //GlobalModel.Instance.LayerManager = new LayerManager(panWorkRegion, lBoxActiveLayers);
 
             topToolStrip.LayoutStyle = ToolStripLayoutStyle.Table;
             var layoutSettings = (topToolStrip.LayoutSettings as TableLayoutSettings);
@@ -49,58 +49,74 @@ namespace VectorImageEdit.Forms.AppWindow
 
         private void cmsMenuProperties_Click(object sender, EventArgs e)
         {
-            Layer selected = _layerManager.MouseHandler.SelectedLayer;
+            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
             PropertiesWindow layerProperties = new PropertiesWindow(selected);
             layerProperties.ShowDialog();
         }
 
         private void cmsMenuDelete_Click(object sender, EventArgs e)
         {
-            Layer selected = _layerManager.MouseHandler.SelectedLayer;
-            _layerManager.Remove(selected);
+            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            GlobalModel.Instance.LayerManager.Remove(selected);
         }
 
         private void layerDeleteMenu_Click(object sender, EventArgs e)
         {
-            Layer selected = _layerManager.MouseHandler.SelectedLayer;
-            _layerManager.Remove(selected);
+            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            GlobalModel.Instance.LayerManager.Remove(selected);
         }
 
         private void layerBringFrontMenu_Click(object sender, EventArgs e)
         {
-            Layer selected = _layerManager.MouseHandler.SelectedLayer;
-            _layerManager.BringToFront(selected);
+            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            GlobalModel.Instance.LayerManager.BringToFront(selected);
         }
 
         private void layerSendBackMenu_Click(object sender, EventArgs e)
         {
-            Layer selected = _layerManager.MouseHandler.SelectedLayer;
-            _layerManager.SendToBack(selected);
+            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            GlobalModel.Instance.LayerManager.SendToBack(selected);
         }
 
         private void layerSendBackwMenu_Click(object sender, EventArgs e)
         {
-            Layer selected = _layerManager.MouseHandler.SelectedLayer;
-            _layerManager.SendBackwards(selected);
+            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            GlobalModel.Instance.LayerManager.SendBackwards(selected);
         }
 
-        ////////////////////////////
-        //
-        // Form Modified Events
-        //
-        ////////////////////////////
+        #region View Listeners
 
-        private void panWorkRegion_SizeChanged(object sender, EventArgs e)
+        public void AddWorkspaceSizeChangedListener(IListener listener)
         {
-            _layerManager.Resize(panWorkRegion);
-            _layerManager.UpdateFrame(_layerManager.GetSortedLayers());
+            panWorkRegion.SizeChanged += listener.ActionPerformed;
         }
 
-        private void AppWindow_Move(object sender, EventArgs e)
+        public void AddAppWindowMovedListener(IListener listener)
         {
-            _layerManager.RefreshFrame();
+            Move += listener.ActionPerformed;
         }
 
-        
+        public void AddListboxSelectionChangedListener(IListener listener)
+        {
+            lBoxActiveLayers.SelectedIndexChanged += listener.ActionPerformed;
+        }
+
+        #endregion
+
+        #region View Getters/Setters
+
+        public string ListboxSelectedLayer
+        {
+            get { return (string)lBoxActiveLayers.SelectedItem; }
+            set
+            {
+                if (string.IsNullOrEmpty(value)) return;
+                lBoxActiveLayers.SelectedItem = value;
+            }
+        }
+
+        public IEnumerable ListboxSelectedLayers { get { return lBoxActiveLayers.SelectedItems; } }
+
+        #endregion
     }
 }

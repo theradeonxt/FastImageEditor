@@ -2,25 +2,26 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace VectorImageEdit.Modules
 {
     static class ImageOutput
     {
-        public static void SaveImage(Bitmap image, string filePath, ImageFormat imageType)
+        /// <summary>
+        /// Saves the given bitmap to the file specified by filePath,
+        /// using specified ImageFormat
+        /// </summary>
+        /// <param name="image"> Input bitmap </param>
+        /// <param name="filePath"> Output file </param>
+        /// <param name="format"> Image format to use </param>
+        public static void SaveImage(Bitmap image, string filePath, ImageFormat format)
         {
-            /*
-             * Saves the given bitmap to the file specified by filePath,
-             * using given format
-             */
-
             try
             {
                 // ReSharper disable once PossibleUnintendedReferenceComparison
-                if (imageType == ImageFormat.Jpeg)
+                if (format == ImageFormat.Jpeg)
                 {
-                    // Set default jpeg quality to 90 (best quality & size)
+                    // Set default jpeg quality to 90 (seems to have best quality & size properties)
                     ImageCodecInfo jgpEncoder = GetFormatEncoder(ImageFormat.Jpeg);
                     Encoder myEncoder = Encoder.Quality;
                     EncoderParameters myEncoderParameters = new EncoderParameters(1);
@@ -32,26 +33,28 @@ namespace VectorImageEdit.Modules
                 }
                 else
                 {
-                    image.Save(filePath, imageType);
+                    image.Save(filePath, format);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                // TODO: Remove MessageBox here
                 // Something unexpected happened
-                MessageBox.Show(@"Could not save image to: " + filePath + @"." + Environment.NewLine + e.Message,
-                    @"ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new Exception(string.Format(@"Could not save image to: {0}.{1}", filePath, ex.Message));
             }
         }
 
         private static ImageCodecInfo GetFormatEncoder(ImageFormat format)
         {
-            // Get the encoder info for a specified ImageFormat
-            foreach (var codec in ImageCodecInfo.GetImageDecoders().Where(codec => codec.FormatID == format.Guid))
+            try
             {
-                return codec;
+                // Get the encoder info for specified ImageFormat
+                return ImageCodecInfo.GetImageDecoders()
+                    .First(codec => codec.FormatID == format.Guid);
             }
-            throw new ArgumentException("No codec available for the requested ImageFormat");
+            catch (Exception)
+            {
+                throw new ArgumentException("No codec available for the requested ImageFormat");
+            }
         }
     }
 }

@@ -39,9 +39,9 @@ namespace VectorImageEdit.Modules.Layers
             formControl.MouseMove += MouseHandler.MouseMovement;
             formControl.MouseUp += MouseHandler.MouseUp;
 
-            _uiObjectList = formLayerList;
+            /*_uiObjectList = formLayerList;
             _uiObjectList.Items.Clear();
-            _uiObjectList.SelectedIndexChanged += uiObjectList_SelectedIndexChanged;
+            _uiObjectList.SelectedIndexChanged += uiObjectList_SelectedIndexChanged;*/
         }
 
         // TODO: have a callback registered here for items selected/deselected
@@ -59,7 +59,7 @@ namespace VectorImageEdit.Modules.Layers
         {
             if (policy == InsertionPolicy.BringToFront) BringToFront(newLayer);
             _activeLayers.Add(newLayer);
-            _uiObjectList.Items.Add(newLayer.ToString());
+            //_uiObjectList.Items.Add(newLayer.ToString());
             UpdateFrame(_activeLayers);
         }
 
@@ -69,7 +69,7 @@ namespace VectorImageEdit.Modules.Layers
             foreach (Layer layer in newLayers)
             {
                 if (policy == InsertionPolicy.BringToFront) BringToFront(layer);
-                _uiObjectList.Items.Add(layer.ToString());
+                //_uiObjectList.Items.Add(layer.ToString());
                 _activeLayers.Add(layer);
             }
             UpdateFrame(_activeLayers);
@@ -80,7 +80,7 @@ namespace VectorImageEdit.Modules.Layers
             if (existingLayer == null) return;
 
             _activeLayers.Remove(existingLayer);
-            _uiObjectList.Items.Remove(existingLayer.ToString());
+            //_uiObjectList.Items.Remove(existingLayer.ToString());
 
             existingLayer.Dispose();
             UpdateFrame(_activeLayers);

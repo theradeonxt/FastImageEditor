@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using VectorImageEdit.Controllers;
 
-namespace VectorImageEdit.Forms
+namespace VectorImageEdit
 {
     static class Program
     {
@@ -13,7 +14,12 @@ namespace VectorImageEdit.Forms
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new AppWindow.AppWindow());
+
+            var appWnd = new Forms.AppWindow.AppWindow();
+            // ReSharper disable once UnusedVariable
+            AppController appCtrl = new AppController(appWnd);
+
+            Application.Run(appWnd);
         }
     }
 }

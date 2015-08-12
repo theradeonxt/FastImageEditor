@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 namespace VectorImageEdit.Modules.Layers
 {
+    // TODO: refactor the 3 events into MVC model: WorkspaceModel
     /// <summary>
     /// 
     /// MouseInteraction Module
@@ -104,7 +105,6 @@ namespace VectorImageEdit.Modules.Layers
             else
             {
                 // Movement begin
-                // The offset used when dragging
                 _pointOffset.X = _pointDown.X - layer.Region.Left;
                 _pointOffset.Y = _pointDown.Y - layer.Region.Top;
 

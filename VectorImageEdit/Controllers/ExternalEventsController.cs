@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using VectorImageEdit.Forms;
@@ -9,21 +12,24 @@ namespace VectorImageEdit.Controllers
 {
     class ExternalEventsController
     {
-        private AppWindow _appView;
+        private readonly AppWindow _appView;
         private readonly ExternalEventsModel _model;
 
-        ExternalEventsController(AppWindow appView, ExternalEventsModel model)
+        public ExternalEventsController(AppWindow appView, ExternalEventsModel model)
         {
             _appView = appView;
             _model = model;
 
+            // TODO: have a generic file opener/exporter and handle vector and image formats differently?
             _appView.AddSaveVectorListener(new SaveVectorListener(this));
             _appView.AddOpenVectorListener(new OpenVectorListener(this));
             _appView.AddExportFileListener(new ExportFileListener(this));
             _appView.AddOpenFileListener(new OpenFileListener(this));
+            _appView.AddDragDropFileListener(new DragDropFileListener(this));
+            _appView.AddDragEnterListener(new DragEnterListener(this));
         }
 
-        private class SaveVectorListener : AbstractListener<ExternalEventsController>, IActionListener
+        private class SaveVectorListener : AbstractListener<ExternalEventsController>, IListener
         {
             public SaveVectorListener(ExternalEventsController controller)
                 : base(controller)
@@ -43,7 +49,7 @@ namespace VectorImageEdit.Controllers
             }
         }
 
-        private class OpenVectorListener : AbstractListener<ExternalEventsController>, IActionListener
+        private class OpenVectorListener : AbstractListener<ExternalEventsController>, IListener
         {
             public OpenVectorListener(ExternalEventsController controller)
                 : base(controller)
@@ -74,7 +80,7 @@ namespace VectorImageEdit.Controllers
             }
         }
 
-        private class ExportFileListener : AbstractListener<ExternalEventsController>, IActionListener
+        private class ExportFileListener : AbstractListener<ExternalEventsController>, IListener
         {
             public ExportFileListener(ExternalEventsController controller)
                 : base(controller)
@@ -92,19 +98,21 @@ namespace VectorImageEdit.Controllers
                 };
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
-                // TODO: Move validation to export and return a boolean flag because this is part of logic
-                if (Controller._model.ValidateExportFile(dialog.FileName))
+                try
                 {
-                    Controller._model.ExportToFile(dialog.FileName);
+                    if (!Controller._model.ExportToFile(dialog.FileName))
+                    {
+                        MessageBox.Show(@"The selected file type is not a supported image format.");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show(@"The selected file type is not a supported image format.");
+                    MessageBox.Show(@"Could not save the workspace image. Detailed Info: " + ex.Message);
                 }
             }
         }
 
-        private class OpenFileListener : AbstractListener<ExternalEventsController>, IActionListener
+        private class OpenFileListener : AbstractListener<ExternalEventsController>, IListener
         {
             public OpenFileListener(ExternalEventsController controller)
                 : base(controller)
@@ -120,7 +128,63 @@ namespace VectorImageEdit.Controllers
                     Filter = @"Image Files|*.jpg;*.png;*.tiff;*.bmp"
                 };
                 if (fileDialog.ShowDialog() != DialogResult.OK) return;
+                string[] fileNames = fileDialog.FileNames;
+
+                // TODO: Validate image files OR implement generic handling (able to drag & drop any supported file format!)
+                Controller.CreateBackgroundFileTask(fileNames);
             }
+        }
+
+        private class DragDropFileListener : AbstractListener<ExternalEventsController>, IDragListener
+        {
+            public DragDropFileListener(ExternalEventsController controller)
+                : base(controller)
+            {
+            }
+
+            public void ActionPerformed(object sender, DragEventArgs e)
+            {
+                if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+                string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // TODO: Validate image files OR implement generic handling (able to drag & drop any supported file format!)
+                Controller.CreateBackgroundFileTask(fileNames);
+            }
+        }
+
+        private class DragEnterListener : AbstractListener<ExternalEventsController>, IDragListener
+        {
+            public DragEnterListener(ExternalEventsController controller)
+                : base(controller)
+            {
+            }
+
+            public void ActionPerformed(object sender, DragEventArgs e)
+            {
+                e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+            }
+        }
+
+        private void CreateBackgroundFileTask(string[] fileNames)
+        {
+            var bw = new BackgroundWorker { WorkerReportsProgress = true };
+            bw.DoWork += (obj, workEvent) =>
+            {
+                workEvent.Result = _model.LoadImageFiles((string[])workEvent.Argument, bw.ReportProgress);
+            };
+            bw.ProgressChanged += (obj, progressEvent) =>
+            {
+                int percentage = progressEvent.ProgressPercentage;
+                _appView.StatusProgressbarPercentage = percentage;
+                _appView.StatusLabelText = @"Loading " + percentage + @"/" + fileNames.Length + @" images...";
+            };
+            bw.RunWorkerCompleted += (obj, completeEvent) =>
+            {
+                _model.LoadImageLayers((List<Bitmap>)completeEvent.Result);
+                _appView.StatusProgressbarPercentage = 0;
+                _appView.StatusLabelText = @"No action";
+            };
+            bw.RunWorkerAsync(fileNames);
         }
     }
 }

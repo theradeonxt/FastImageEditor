@@ -22,7 +22,7 @@ namespace VectorImageEdit.Modules
     /// </summary>
     public class GraphicsManager
     {
-        private Control _formControl;            // reference to the form object used to draw on
+        private readonly Control _formControl;   // reference to the form object used to draw on
 
         private Bitmap _frame;                   // buffer for the current frame data
         private Bitmap _frameBackup;             // buffer with a copy of the frame data
@@ -35,20 +35,19 @@ namespace VectorImageEdit.Modules
         // TODO: move to global styles
         private readonly Pen _borderStyle;       // the style used to draw the selection border
 
-        public GraphicsManager(Control formControl)
+        protected GraphicsManager(Control formControl)
         {
             _formControl = formControl;
 
             // default aspect of selection border
-            _borderStyle = new Pen(Brushes.Black, 3);
-            _borderStyle.DashStyle = DashStyle.Dash;
+            _borderStyle = new Pen(Brushes.Black, 3) { DashStyle = DashStyle.Dash };
 
-            Resize(formControl);
+            Resize();
         }
 
         ~GraphicsManager()
         {
-            ClearResources();
+            DisposeGraphicsResources();
         }
 
         /////////////////////////////////
@@ -57,25 +56,23 @@ namespace VectorImageEdit.Modules
         //
         /////////////////////////////////
 
-        public void Resize(Control formControl)
+        public void Resize()
         {
-            _formControl = formControl;
-
             // Clear resources used by previous frame
-            ClearResources();
+            DisposeGraphicsResources();
 
             // Allocate resources for the new frame
-            _formGraphics = formControl.CreateGraphics();
-            GraphicsLowQ(_formGraphics);
-            _frame = new Bitmap(formControl.Width + 1, formControl.Height + 1, _formGraphics);
-            _frameBackup = new Bitmap(formControl.Width + 1, formControl.Height + 1, _formGraphics);
+            _formGraphics = _formControl.CreateGraphics();
+            GraphicsLow(_formGraphics);
+            _frame = new Bitmap(_formControl.Width + 1, _formControl.Height + 1, _formGraphics);
+            _frameBackup = new Bitmap(_formControl.Width + 1, _formControl.Height + 1, _formGraphics);
             _frameGraphics = Graphics.FromImage(_frame);
-            GraphicsLowQ(_frameGraphics);
+            GraphicsLow(_frameGraphics);
             _frameBackupGraphics = Graphics.FromImage(_frameBackup);
-            GraphicsLowQ(_frameBackupGraphics);
+            GraphicsLow(_frameBackupGraphics);
         }
 
-        void GraphicsLowQ(Graphics g)
+        private void GraphicsLow(Graphics g)
         {
             g.CompositingQuality = CompositingQuality.HighSpeed;
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
@@ -85,8 +82,8 @@ namespace VectorImageEdit.Modules
 
         public Bitmap GetImagePreview()
         {
-            Bitmap prev = new Bitmap(_frame);
-            return prev;
+            Bitmap preview = new Bitmap(_frame);
+            return preview;
         }
 
         /////////////////////////////////
@@ -112,7 +109,7 @@ namespace VectorImageEdit.Modules
             RefreshFrame();
         }
 
-        public void UpdateSelection(Rectangle selectionBorder, ClearMode mode)
+        protected void UpdateSelection(Rectangle selectionBorder, ClearMode mode)
         {
             // This only updates the selection rectangle of objects
 
@@ -122,18 +119,18 @@ namespace VectorImageEdit.Modules
                 _formGraphics.DrawImage(_frameBackup, _frameBackupRegion, _frameBackupRegion, GraphicsUnit.Pixel);
             }
 
-            // Copy the affected region of the frame 
-            // to a backup frame
+            // Copy the affected region of the frame to a backup frame
             _frameBackupGraphics.DrawImage(_frame, selectionBorder, selectionBorder, GraphicsUnit.Pixel);
 
             // Draw selection over frame region
-            _formGraphics.DrawRectangle(_borderStyle, selectionBorder.Left, selectionBorder.Top, selectionBorder.Width - 1, selectionBorder.Height - 1);
+            _formGraphics.DrawRectangle(_borderStyle,
+                selectionBorder.Left, selectionBorder.Top, selectionBorder.Width - 1, selectionBorder.Height - 1);
 
             _frameBackupRegion = selectionBorder;
             _frameBackupRegion.Inflate(1, 1);
         }
 
-        private void ClearResources()
+        private void DisposeGraphicsResources()
         {
             // Resources used by the graphics process (frame buffers, graphics objects) are disposed here
             if (_frame != null) _frame.Dispose();

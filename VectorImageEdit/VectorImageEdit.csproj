@@ -68,7 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\ExternalEventsController.cs" />
+    <Compile Include="Controllers\WorkspaceController.cs" />
     <Compile Include="Models\GlobalModel.cs" />
     <Compile Include="Forms\AbstractListener.cs" />
     <Compile Include="Forms\AppWindow\AppBorderlessForm.cs">
@@ -80,8 +82,9 @@
     <Compile Include="Forms\AppWindow\AppToolbars.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\IActionListener.cs" />
+    <Compile Include="Forms\IListener.cs" />
     <Compile Include="Models\ExternalEventsModel.cs" />
+    <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
     <Compile Include="Modules\BasicShapes\StyleBuilder.cs" />
