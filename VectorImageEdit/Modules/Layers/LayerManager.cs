@@ -21,45 +21,31 @@ namespace VectorImageEdit.Modules.Layers
     /// </summary>
     public partial class LayerManager : GraphicsManager
     {
-        private readonly SortedContainer _activeLayers;
-        // TODO: this should be part of the view since it's an UI element
-        // TODO: have a callback registered here for items added/removed
-        private readonly ListBox _uiObjectList;
-
         public readonly MouseInteraction MouseHandler;
 
-        public LayerManager(Control formControl, ListBox formLayerList)
+        private readonly SortedContainer _activeLayers;
+        private readonly Action _onLayerListChangedCallback;
+
+        public LayerManager(Control formControl, Action onLayerListChangedCallback)
             : base(formControl)
         {
             _activeLayers = new SortedContainer();
+            _onLayerListChangedCallback = onLayerListChangedCallback;
             MouseHandler = new MouseInteraction(_activeLayers, ObjectUpdateCallback);
 
             // TODO: move to its own controller
             formControl.MouseDown += MouseHandler.MouseDown;
             formControl.MouseMove += MouseHandler.MouseMovement;
             formControl.MouseUp += MouseHandler.MouseUp;
-
-            /*_uiObjectList = formLayerList;
-            _uiObjectList.Items.Clear();
-            _uiObjectList.SelectedIndexChanged += uiObjectList_SelectedIndexChanged;*/
         }
 
-        // TODO: have a callback registered here for items selected/deselected
-        void uiObjectList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int index = _uiObjectList.SelectedIndex;
-            if (index < 0 || index >= _activeLayers.Count) return;
-            MouseHandler.SelectedLayer = _activeLayers[index];
-        }
-
-        //********************************************************
         #region Objects creation/deletion
 
         public void Add(Layer newLayer, InsertionPolicy policy = InsertionPolicy.BringToFront)
         {
             if (policy == InsertionPolicy.BringToFront) BringToFront(newLayer);
             _activeLayers.Add(newLayer);
-            //_uiObjectList.Items.Add(newLayer.ToString());
+            _onLayerListChangedCallback();
             UpdateFrame(_activeLayers);
         }
 
@@ -69,9 +55,9 @@ namespace VectorImageEdit.Modules.Layers
             foreach (Layer layer in newLayers)
             {
                 if (policy == InsertionPolicy.BringToFront) BringToFront(layer);
-                //_uiObjectList.Items.Add(layer.ToString());
                 _activeLayers.Add(layer);
             }
+            _onLayerListChangedCallback();
             UpdateFrame(_activeLayers);
         }
 
@@ -80,7 +66,7 @@ namespace VectorImageEdit.Modules.Layers
             if (existingLayer == null) return;
 
             _activeLayers.Remove(existingLayer);
-            //_uiObjectList.Items.Remove(existingLayer.ToString());
+            _onLayerListChangedCallback();
 
             existingLayer.Dispose();
             UpdateFrame(_activeLayers);
@@ -93,10 +79,10 @@ namespace VectorImageEdit.Modules.Layers
                 layer.Dispose();
             }
             _activeLayers.Clear();
+            _onLayerListChangedCallback();
         }
 
-        #endregion
-        //********************************************************
+        #endregion Objects creation/deletion
 
         public SortedContainer GetSortedLayers()
         {
@@ -108,6 +94,7 @@ namespace VectorImageEdit.Modules.Layers
             return _activeLayers.ToList();
         }
 
+        // TODO: List<ShapeBase>
         public List<Layer> GetShapesList()
         {
             return _activeLayers.Where(layer => !(layer is Picture)).ToList();

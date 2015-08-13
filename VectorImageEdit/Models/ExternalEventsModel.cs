@@ -108,9 +108,7 @@ namespace VectorImageEdit.Models
             }
         }
 
-        public delegate void ProgressChangedCallback(int progress);
-
-        public List<Bitmap> LoadImageFiles(string[] fileNames, ProgressChangedCallback callback)
+        public List<Bitmap> LoadImageFiles(string[] fileNames, Action<int> onProgressChangedCallback)
         {
             var images = new List<Bitmap>();
             int progress = 0;
@@ -118,7 +116,7 @@ namespace VectorImageEdit.Models
             {
                 Bitmap image = ImageLoader.ScaledSize(fileName, GlobalModel.Instance.Layout.MaximumSize());
                 images.Add(image);
-                callback(Interlocked.Increment(ref progress));
+                onProgressChangedCallback(Interlocked.Increment(ref progress));
             });
             return images;
         }

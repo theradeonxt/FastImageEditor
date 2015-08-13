@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules;
@@ -9,6 +8,7 @@ using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Forms.AppWindow
 {
+    // TODO: remove GlobalModel dependency
     /// <summary>
     /// 
     /// AppWindow Module
@@ -18,16 +18,12 @@ namespace VectorImageEdit.Forms.AppWindow
     /// </summary>
     public partial class AppWindow : Form
     {
-        //private readonly LayerManager GlobalModel.Instance.LayerManager;
-
         public AppWindow()
         {
             InitializeComponent();
 
             edgecolorToolStripButton.BackColor = ShapeStyle.GlobalEdgeColor;
             fillcolortoolStripButton.BackColor = ShapeStyle.GlobalFillColor;
-
-            //GlobalModel.Instance.LayerManager = new LayerManager(panWorkRegion, lBoxActiveLayers);
 
             topToolStrip.LayoutStyle = ToolStripLayoutStyle.Table;
             var layoutSettings = (topToolStrip.LayoutSettings as TableLayoutSettings);
@@ -101,10 +97,16 @@ namespace VectorImageEdit.Forms.AppWindow
             lBoxActiveLayers.SelectedIndexChanged += listener.ActionPerformed;
         }
 
-        #endregion
+        #endregion View Listeners
 
         #region View Getters/Setters
 
+        public Control WorkspaceArea
+        {
+            get { return panWorkRegion; }
+        }
+
+        // TODO: have setters in mind for one/more layers so this will update based on user selection on workspace
         public string ListboxSelectedLayer
         {
             get { return (string)lBoxActiveLayers.SelectedItem; }
@@ -115,8 +117,44 @@ namespace VectorImageEdit.Forms.AppWindow
             }
         }
 
-        public IEnumerable ListboxSelectedLayers { get { return lBoxActiveLayers.SelectedItems; } }
+        public IEnumerable ListboxSelectedLayers
+        {
+            get { return lBoxActiveLayers.SelectedItems; }
+        }
 
-        #endregion
+        public IEnumerable ListboxLayers
+        {
+            get { return lBoxActiveLayers.Items; }
+            set
+            {
+                lBoxActiveLayers.Items.Clear();
+                foreach (var item in value)
+                {
+                    lBoxActiveLayers.Items.Add(item);
+                }
+            }
+        }
+
+        // TODO: how to prevent multiple BackgroundWorkers from modifying the label/progressbar?
+        // TODO: it's a waste to restrict to only one background task? OR dynamically add action status + progressbar?
+        public int StatusProgressbarPercentage
+        {
+            get { return statusProgressBar.Value; }
+            set
+            {
+                if (statusProgressBar.Minimum <= value && value <= statusProgressBar.Maximum)
+                {
+                    statusProgressBar.Value = value;
+                }
+            }
+        }
+
+        public string StatusLabelText
+        {
+            get { return statusActionLabel.Text; }
+            set { statusActionLabel.Text = value; }
+        }
+
+        #endregion View Getters/Setters
     }
 }

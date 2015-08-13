@@ -100,6 +100,7 @@ namespace VectorImageEdit.Controllers
 
                 try
                 {
+                    // BUG: always shows the message and no save
                     if (!Controller._model.ExportToFile(dialog.FileName))
                     {
                         MessageBox.Show(@"The selected file type is not a supported image format.");

@@ -71,6 +71,7 @@
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\ExternalEventsController.cs" />
     <Compile Include="Controllers\WorkspaceController.cs" />
+    <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\GlobalModel.cs" />
     <Compile Include="Forms\AbstractListener.cs" />
     <Compile Include="Forms\AppWindow\AppBorderlessForm.cs">
