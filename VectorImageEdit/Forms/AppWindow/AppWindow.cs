@@ -43,41 +43,22 @@ namespace VectorImageEdit.Forms.AppWindow
         //
         ////////////////////////////
 
-        private void cmsMenuProperties_Click(object sender, EventArgs e)
-        {
-            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            PropertiesWindow layerProperties = new PropertiesWindow(selected);
-            layerProperties.ShowDialog();
-        }
-
-        private void cmsMenuDelete_Click(object sender, EventArgs e)
-        {
-            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            GlobalModel.Instance.LayerManager.Remove(selected);
-        }
-
-        private void layerDeleteMenu_Click(object sender, EventArgs e)
-        {
-            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            GlobalModel.Instance.LayerManager.Remove(selected);
-        }
-
         private void layerBringFrontMenu_Click(object sender, EventArgs e)
         {
-            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            GlobalModel.Instance.LayerManager.BringToFront(selected);
+            Layer selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            AppGlobalModel.Instance.LayerManager.BringToFront(selected);
         }
 
         private void layerSendBackMenu_Click(object sender, EventArgs e)
         {
-            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            GlobalModel.Instance.LayerManager.SendToBack(selected);
+            Layer selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            AppGlobalModel.Instance.LayerManager.SendToBack(selected);
         }
 
         private void layerSendBackwMenu_Click(object sender, EventArgs e)
         {
-            Layer selected = GlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            GlobalModel.Instance.LayerManager.SendBackwards(selected);
+            Layer selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+            AppGlobalModel.Instance.LayerManager.SendBackwards(selected);
         }
 
         #region View Listeners
@@ -95,6 +76,18 @@ namespace VectorImageEdit.Forms.AppWindow
         public void AddListboxSelectionChangedListener(IListener listener)
         {
             lBoxActiveLayers.SelectedIndexChanged += listener.ActionPerformed;
+        }
+
+        public void AddContextMenuPropertiesListener(IListener listener)
+        {
+            cmsMenuProperties.Click += listener.ActionPerformed;
+            layerPropertiesMenu.Click += listener.ActionPerformed;
+        }
+
+        public void AddContextMenuDeleteListener(IListener listener)
+        {
+            cmsMenuDelete.Click += listener.ActionPerformed;
+            layerDeleteMenu.Click += listener.ActionPerformed;
         }
 
         #endregion View Listeners

@@ -19,7 +19,7 @@ namespace VectorImageEdit.Models
         {
             VectorSerializer serializer = new VectorSerializer
             {
-                Source = GlobalModel.Instance.LayerManager.GetLayers()
+                Source = AppGlobalModel.Instance.LayerManager.GetLayers()
             };
             serializer.Serialize(fileName);
         }
@@ -28,10 +28,10 @@ namespace VectorImageEdit.Models
         {
             VectorSerializer serializer = new VectorSerializer();
             var layers = serializer.Deserialize(fileName);
-            GlobalModel.Instance.LayerManager.RemoveAll();
+            AppGlobalModel.Instance.LayerManager.RemoveAll();
             foreach (Layer layer in layers)
             {
-                GlobalModel.Instance.LayerManager.Add(layer);
+                AppGlobalModel.Instance.LayerManager.Add(layer);
             }
         }
 
@@ -97,7 +97,7 @@ namespace VectorImageEdit.Models
             if (!ValidateExportFile(fileName)) return false;
 
             // Get the workspace data as an image
-            using (var preview = GlobalModel.Instance.LayerManager.GetImagePreview())
+            using (var preview = AppGlobalModel.Instance.LayerManager.GetImagePreview())
             {
                 string ext = Path.GetExtension(fileName) ?? "jpg";
 
@@ -114,7 +114,7 @@ namespace VectorImageEdit.Models
             int progress = 0;
             Parallel.ForEach(fileNames, fileName =>
             {
-                Bitmap image = ImageLoader.ScaledSize(fileName, GlobalModel.Instance.Layout.MaximumSize());
+                Bitmap image = ImageLoader.ScaledSize(fileName, AppGlobalModel.Instance.Layout.MaximumSize());
                 images.Add(image);
                 onProgressChangedCallback(Interlocked.Increment(ref progress));
             });
@@ -130,10 +130,10 @@ namespace VectorImageEdit.Models
                 {
                     BackgroundStatitics.CommitImageMemory(helper.SizeBytes);
                 }
-                Rectangle region = GlobalModel.Instance.Layout.NewLayerMetrics(image.Size);
+                Rectangle region = AppGlobalModel.Instance.Layout.NewLayerMetrics(image.Size);
                 layers.Add(new Picture(image, region, 0));
             }
-            GlobalModel.Instance.LayerManager.Add(layers);
+            AppGlobalModel.Instance.LayerManager.Add(layers);
         }
 
         #endregion

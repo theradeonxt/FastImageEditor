@@ -22,6 +22,7 @@ namespace VectorImageEdit.Modules
     /// </summary>
     public class GraphicsManager
     {
+        // TODO: unable to replace this with graphics handle for now
         private readonly Control _formControl;   // reference to the form object used to draw on
 
         private Bitmap _frame;                   // buffer for the current frame data

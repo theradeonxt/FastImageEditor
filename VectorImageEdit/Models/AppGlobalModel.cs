@@ -4,27 +4,25 @@ using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Models
 {
-    // TODO: Rename to AppModel?
-
     /// <summary>
-    /// GlobalModel Module
+    /// AppGlobalModel Module
     /// 
     /// - provides access to global data
     /// 
     /// Uses Sigleton pattern and lazy initialization as described here; is Thread-safe.
     /// http://geekswithblogs.net/BlackRabbitCoder/archive/2010/05/19/c-system.lazylttgt-and-the-singleton-design-pattern.aspx
     /// </summary>
-    class GlobalModel
+    class AppGlobalModel
     {
         //********************************************************
         #region Singleton details
         // ReSharper disable once InconsistentNaming
-        private static readonly Lazy<GlobalModel> _instance =
-            new Lazy<GlobalModel>(() => new GlobalModel());
+        private static readonly Lazy<AppGlobalModel> _instance =
+            new Lazy<AppGlobalModel>(() => new AppGlobalModel());
 
-        private GlobalModel() { }
+        private AppGlobalModel() { }
 
-        public static GlobalModel Instance { get { return _instance.Value; } }
+        public static AppGlobalModel Instance { get { return _instance.Value; } }
 
         #endregion
         //********************************************************

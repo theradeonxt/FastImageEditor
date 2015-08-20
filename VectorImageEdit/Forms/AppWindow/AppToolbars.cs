@@ -48,7 +48,7 @@ namespace VectorImageEdit.Forms.AppWindow
         {
             Point center = new Point(panWorkRegion.Width / 2, panWorkRegion.Height / 2);
             Circle c = new Circle(center, panWorkRegion.Width / 7, StyleBuilder.FromGlobalStyles());
-            GlobalModel.Instance.LayerManager.Add(c);
+            AppGlobalModel.Instance.LayerManager.Add(c);
         }
 
         private void btnOval_Click(object sender, EventArgs e)
@@ -56,7 +56,7 @@ namespace VectorImageEdit.Forms.AppWindow
             Point location = new Point(panWorkRegion.Width / 3, panWorkRegion.Height / 3);
             Size size = new Size(panWorkRegion.Width / 5, panWorkRegion.Width / 7);
             Oval o = new Oval(new Rectangle(location, size), StyleBuilder.FromGlobalStyles());
-            GlobalModel.Instance.LayerManager.Add(o);
+            AppGlobalModel.Instance.LayerManager.Add(o);
         }
 
         private void btnSquare_Click(object sender, EventArgs e)
@@ -64,7 +64,7 @@ namespace VectorImageEdit.Forms.AppWindow
             Point location = new Point(panWorkRegion.Width / 3, panWorkRegion.Height / 3);
             int side = panWorkRegion.Width / 4;
             Square s = new Square(location, side, StyleBuilder.FromGlobalStyles());
-            GlobalModel.Instance.LayerManager.Add(s);
+            AppGlobalModel.Instance.LayerManager.Add(s);
         }
 
         private void btnRectangle_Click(object sender, EventArgs e)
@@ -74,7 +74,7 @@ namespace VectorImageEdit.Forms.AppWindow
             int height = panWorkRegion.Width / 6;
             Rectangle region = new Rectangle(location.X, location.Y, width, height);
             SRectangle r = new SRectangle(region, StyleBuilder.FromGlobalStyles());
-            GlobalModel.Instance.LayerManager.Add(r);
+            AppGlobalModel.Instance.LayerManager.Add(r);
         }
 
         private void btnDiamond_Click(object sender, EventArgs e)
@@ -102,7 +102,7 @@ namespace VectorImageEdit.Forms.AppWindow
             Point begin = new Point(panWorkRegion.Width / 4, panWorkRegion.Height / 5);
             Point end = new Point(panWorkRegion.Width / 2, panWorkRegion.Height / 4);
             Line l = new Line(begin, end, StyleBuilder.FromGlobalStyles());
-            GlobalModel.Instance.LayerManager.Add(l);
+            AppGlobalModel.Instance.LayerManager.Add(l);
         }
 
         #endregion

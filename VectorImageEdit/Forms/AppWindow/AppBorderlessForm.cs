@@ -65,7 +65,8 @@ namespace VectorImageEdit.Forms.AppWindow
             const int htBottomRight = 17;
             const int gripOffset = 7;
 
-            if (m.Msg == wmNcHitTest)
+            if (m.Msg == wmNcHitTest && 
+                WindowState == FormWindowState.Normal)  // disable gripper on maximized window
             {
                 int x = (int)(m.LParam.ToInt64() & 0xFFFF);
                 int y = (int)((m.LParam.ToInt64() & 0xFFFF0000) >> 16);
@@ -169,10 +170,17 @@ namespace VectorImageEdit.Forms.AppWindow
 
         private void maximizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WindowState = (WindowState == FormWindowState.Maximized)
-                ? FormWindowState.Normal
-                : FormWindowState.Maximized;
+            switch (WindowState)
+            {
+                case FormWindowState.Maximized:
+                    WindowState = FormWindowState.Normal;
+                    break;
+                case FormWindowState.Normal:
+                    WindowState = FormWindowState.Maximized;
+                    break;
+            }
         }
+
         #endregion
         //***********************************************************
     }

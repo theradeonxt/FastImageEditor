@@ -13,7 +13,7 @@ namespace VectorImageEdit.Models
                 string.IsNullOrWhiteSpace(itemName)) return;
             try
             {
-                LayerManager manager = GlobalModel.Instance.LayerManager;
+                LayerManager manager = AppGlobalModel.Instance.LayerManager;
                 Layer layer = manager.GetSortedLayers()
                     .First(item => item.DisplayName == itemName);
                 manager.MouseHandler.SelectedLayer = layer;
@@ -23,7 +23,7 @@ namespace VectorImageEdit.Models
 
         public IList GetSortedLayers()
         {
-            return GlobalModel.Instance.LayerManager.GetSortedLayers();
+            return AppGlobalModel.Instance.LayerManager.GetSortedLayers();
         }
     }
 }

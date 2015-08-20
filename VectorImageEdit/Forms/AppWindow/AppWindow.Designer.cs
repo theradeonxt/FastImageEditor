@@ -32,12 +32,12 @@ namespace VectorImageEdit.Forms.AppWindow
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node1");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node2");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Node3");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Node1");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Node2");
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
+            treeNode5,
+            treeNode6});
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Node3");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AppWindow));
             this.lBoxActiveLayers = new System.Windows.Forms.ListBox();
             this.cmsRightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -147,14 +147,12 @@ namespace VectorImageEdit.Forms.AppWindow
             this.cmsMenuProperties.Name = "cmsMenuProperties";
             this.cmsMenuProperties.Size = new System.Drawing.Size(127, 22);
             this.cmsMenuProperties.Text = "Properties";
-            this.cmsMenuProperties.Click += new System.EventHandler(this.cmsMenuProperties_Click);
             // 
             // cmsMenuDelete
             // 
             this.cmsMenuDelete.Name = "cmsMenuDelete";
             this.cmsMenuDelete.Size = new System.Drawing.Size(127, 22);
             this.cmsMenuDelete.Text = "Delete";
-            this.cmsMenuDelete.Click += new System.EventHandler(this.cmsMenuDelete_Click);
             // 
             // menuBarTop
             // 
@@ -285,7 +283,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.layerDeleteMenu.Name = "layerDeleteMenu";
             this.layerDeleteMenu.Size = new System.Drawing.Size(127, 22);
             this.layerDeleteMenu.Text = "Delete";
-            this.layerDeleteMenu.Click += new System.EventHandler(this.layerDeleteMenu_Click);
             // 
             // layerPropertiesMenu
             // 
@@ -293,7 +290,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.layerPropertiesMenu.Name = "layerPropertiesMenu";
             this.layerPropertiesMenu.Size = new System.Drawing.Size(127, 22);
             this.layerPropertiesMenu.Text = "Properties";
-            this.layerPropertiesMenu.Click += new System.EventHandler(this.cmsMenuProperties_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -328,19 +324,19 @@ namespace VectorImageEdit.Forms.AppWindow
             // 
             this.treeView1.Location = new System.Drawing.Point(942, 405);
             this.treeView1.Name = "treeView1";
-            treeNode1.Name = "Node1";
-            treeNode1.Text = "Node1";
-            treeNode2.Name = "Node2";
-            treeNode2.Text = "Node2";
-            treeNode3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            treeNode3.Name = "Node0";
-            treeNode3.Text = "Node0";
-            treeNode4.BackColor = System.Drawing.Color.Aqua;
-            treeNode4.Name = "Node3";
-            treeNode4.Text = "Node3";
+            treeNode5.Name = "Node1";
+            treeNode5.Text = "Node1";
+            treeNode6.Name = "Node2";
+            treeNode6.Text = "Node2";
+            treeNode7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            treeNode7.Name = "Node0";
+            treeNode7.Text = "Node0";
+            treeNode8.BackColor = System.Drawing.Color.Aqua;
+            treeNode8.Name = "Node3";
+            treeNode8.Text = "Node3";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4});
+            treeNode7,
+            treeNode8});
             this.treeView1.Size = new System.Drawing.Size(129, 55);
             this.treeView1.TabIndex = 10;
             // 
@@ -919,6 +915,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MainMenuStrip = this.menuBarTop;
+            this.MinimumSize = new System.Drawing.Size(1105, 513);
             this.Name = "AppWindow";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Vector Image Editor";
