@@ -1,0 +1,33 @@
+// =================================================================================================
+// 
+// - Blend24bgr_24bgr: 
+// - Test sample: 2 x 7680 * 4320 images (24bpp) => same-sized output
+//
+// - >>> Test System 1: AMD Athlon X4 860K @4.1GHz <<<
+//      - Single-thread: 38ms
+//      - Parallelizing the loop by pragma loop(hint_parallel(2) => improvement by 10ms
+//        for total ~28ms at the price of almost double CPU utilization;
+//        calling from managed C# using Parallel.For results in the same 28ms.
+//      - If addresses of the src, tar, dst images are 16byte-aligned there is a ~8ms benefit from
+//        using the first loop method.
+//
+//      - CONCLUSION: - images >4K => use >2 cores, otherwise not worth it (either here or in caller);
+//                      better have < CPU usage than a small increase in performance
+//                    - A 1080p image will result in ~6Mil bytes to process and SIMD reduces this to
+//                      ~380,000 iterations with 22 SSE2 instructions/loop after full optimizations.
+//
+// - >>> Test System 2: Intel Corei7 3770 @3.4Ghz <<<
+//      - Single-thread: 16ms
+//      - Using more cores does not seem to help, this might be due to memory bottleneck.
+//
+// ==================================================================================================
+
+// ======================================================================================
+// Notes:
+// - Blend24bgr_24bgr_ref:
+//      - on 4.1Ghz AMD Athlon X4 860K and 7680 * 4320 images results in 250ms (1 thread)
+//        and 136ms (2 threads), 108ms (4 threads) so worth parallelizing; when called
+//        from managed C# with Parallel.For this gets to 93ms.
+//      - above is naive method using byte-float-byte casting. Using byte-int-byte method
+//	  this gets to 55-90ms (4 threads). Unrolling in this case does not help much.    
+// ======================================================================================

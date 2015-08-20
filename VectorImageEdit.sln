@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.40418.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorImageEdit", "VectorImageEdit\VectorImageEdit.csproj", "{AE181555-A63A-45E9-896D-8D5156E49269}"
 EndProject
@@ -10,18 +10,75 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessorFrontend", "ImageInterpolation\ImageInterpolation\ImageProcessorFrontend.csproj", "{84257572-1E72-4D5E-9578-2924125A38AC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{782D1F34-171C-42AF-B948-62E54512B5AE} = {782D1F34-171C-42AF-B948-62E54512B5AE}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageProcessing", "ImageInterpolation\ImageProcessing\ImageProcessing.vcxproj", "{782D1F34-171C-42AF-B948-62E54512B5AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items (2)", "Solution Items (2)", "{5382CDC8-CFFE-41BA-B87D-F10850A4445C}"
+	ProjectSection(SolutionItems) = preProject
+		ImageInterpolation\Performance1.psess = ImageInterpolation\Performance1.psess
+		ImageInterpolation\Performance2.psess = ImageInterpolation\Performance2.psess
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AE181555-A63A-45E9-896D-8D5156E49269}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE181555-A63A-45E9-896D-8D5156E49269}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{AE181555-A63A-45E9-896D-8D5156E49269}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE181555-A63A-45E9-896D-8D5156E49269}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Release|Win32.ActiveCfg = Release|Any CPU
+		{AE181555-A63A-45E9-896D-8D5156E49269}.Release|x64.ActiveCfg = Release|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Release|Win32.ActiveCfg = Release|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Release|x64.ActiveCfg = Release|Any CPU
+		{84257572-1E72-4D5E-9578-2924125A38AC}.Release|x64.Build.0 = Release|Any CPU
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Debug|Mixed Platforms.Build.0 = Debug|x64
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Debug|Win32.Build.0 = Debug|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Debug|x64.ActiveCfg = Debug|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Debug|x64.Build.0 = Debug|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Release|Any CPU.ActiveCfg = Release|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Release|Mixed Platforms.ActiveCfg = Release|x64
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Release|Mixed Platforms.Build.0 = Release|x64
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Release|Win32.ActiveCfg = Release|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Release|Win32.Build.0 = Release|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Release|x64.ActiveCfg = Release|Win32
+		{782D1F34-171C-42AF-B948-62E54512B5AE}.Release|x64.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
