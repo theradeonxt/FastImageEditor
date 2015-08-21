@@ -20,9 +20,9 @@
 // ====================================================================
 
 // SIMD Settings
-static const int SIMD_SIZE = 16;
+#include <stdint.h>
+static const int32_t SIMD_SIZE = 16;
 
-typedef unsigned char byte;
 #define READONLY(PTR_TYPE) const PTR_TYPE const // CAN'T modify pointer and data
 #define READWRITE(PTR_TYPE) PTR_TYPE const      // CAN'T modify pointer but CAN modify data
 

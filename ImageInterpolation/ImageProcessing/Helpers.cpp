@@ -6,30 +6,31 @@
 
 // system include
 #include <new>
+#include <stdint.h>
+#include <assert.h>
 
-READONLY(int*)
-PixelOffsetsLookup(unsigned width,
-                   unsigned height,
-                   unsigned pixelSize)
+READONLY(int32_t*)
+PixelOffsetsLookup(uint32_t width, uint32_t height, uint32_t pixelSize)
 {
     // Calculate offsets from center of kernel to outside. 
     // This is used to jump from the current pixel to 
     // the ones on the edges of the kernel.
 
-    unsigned midpointX = width / 2;
-    unsigned midpointY = height / 2;
-    unsigned byteMid = (midpointY * pixelSize + midpointX * pixelSize);
+    uint32_t midpointX = width / 2;
+    uint32_t midpointY = height / 2;
+    uint32_t byteMid = (midpointY * pixelSize + midpointX * pixelSize);
 
-    int* offsets = new (std::nothrow) int[width * height];
-
+    int32_t* offsets(nullptr);
+    offsets = new (std::nothrow) int32_t[width * height];
     if (offsets)
     {
-        for (unsigned i = 0; i < height; i++)
-        for (unsigned j = 0; j < width; j++)
+        for (uint32_t i = 0; i < height; i++)
+        for (uint32_t j = 0; j < width; j++)
         {
             // subtract from current byte location the midpoint byte location
-            unsigned byte = (i * pixelSize + j * pixelSize);
-            offsets[i*width + j] = byte - byteMid;
+            uint32_t byteNow = (i * pixelSize + j * pixelSize);
+            assert(byteNow - byteMid >= 0);
+            offsets[i*width + j] = byteNow - byteMid;
         }
     }
 

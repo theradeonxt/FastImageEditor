@@ -1,36 +1,43 @@
 
+// local include
 #include "ImageProcessing.h"
 #include "ReferenceProcessing.h"
-#include "HelpersSIMD.cpp"
 #include "Common.h"
 #include "CommonPrivate.h"
+#include "HelpersSIMD.cpp"
 
-//#include <vectori128.h>
+// system include
 #include <stdint.h>
+
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4309) // disable truncation of constant value warning
+#endif
 
 // ====================================================
 // 24bpp Image Operations
 // ====================================================
 
-IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int
-Blend24bgr_24bgr(READONLY(byte*) source,
-                 READONLY(byte*) target,
-                 READWRITE(byte*) destination,
-                 unsigned sizeBytes,
-                 float percentage)
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+Blend24bgr_24bgr(READONLY (uint8_t*) source,
+                 READONLY (uint8_t*) target,
+                 READWRITE(uint8_t*) destination,
+                 uint32_t            sizeBytes,
+                 float               percentage)
 {
     WANT_SCALAR_IMPL(Blend24bgr_24bgr,
         source, target, destination, sizeBytes, percentage);
 
-    int index = 0, szb = sizeBytes;
+    int32_t szb = sizeBytes;
 
     // prescaled alpha coefficients mapped from [0.0-1.0] to [0-255]
-    __m128i alpha16 = _mm_set1_epi16((short)(percentage * 255.0f));
-    __m128i _1alpha16 = _mm_set1_epi16((short)((1.0f - percentage) * 255.0f));
+    __m128i alpha16   = _mm_set1_epi16((int16_t)(percentage * 255.0f));
+    __m128i _1alpha16 = _mm_set1_epi16((int16_t)((1.0f - percentage) * 255.0f));
 
     if (AlignCheck(source, target, destination))
     {
-        PARALLELFOR(2)(; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
+#pragma omp parallel for
+        for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
             __m128i src = _mm_load_si128((const __m128i *)(source + index));
             __m128i tar = _mm_load_si128((const __m128i *)(target + index));
@@ -64,7 +71,8 @@ Blend24bgr_24bgr(READONLY(byte*) source,
     }
     else
     {
-        PARALLELFOR(2)(; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
+#pragma omp parallel for
+        for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
             __m128i src   = _mm_loadu_si128((const __m128i *)(source + index));
             __m128i tar   = _mm_loadu_si128((const __m128i *)(target + index));
@@ -84,11 +92,11 @@ Blend24bgr_24bgr(READONLY(byte*) source,
     }
 
     // Handle non-multiple of SIMD size images using reference implementation
-    if (index < szb)
+    /*if (index < szb)
     {
         return REFERENCE_IMPL(Blend24bgr_24bgr,
             source + index, target + index, destination + index, sizeBytes - index, percentage);
-    }
+    }*/
 
     return OperationSuccess;
 }
@@ -97,25 +105,25 @@ Blend24bgr_24bgr(READONLY(byte*) source,
 // 32bpp Image Operations
 // ====================================================
 
-IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int
-OpacityAdjust_32bgra(READONLY(byte*) source,
-                     READWRITE(byte*) destination,
-                     unsigned sizeBytes,
-                     float percentage)
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+OpacityAdjust_32bgra(READONLY (uint8_t*) source,
+                     READWRITE(uint8_t*) destination,
+                     uint32_t            sizeBytes,
+                     float               percentage)
 {
     WANT_SCALAR_IMPL(OpacityAdjust_32bgra,
        source, destination, sizeBytes, percentage);
 
-    int index = 0, szb = sizeBytes;
+    int32_t szb = sizeBytes;
 
-    byte a = (byte)(percentage * 255.0f);
-    __m128i alphaMask = _mm_set_epi8(0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80);
+    uint8_t a = (uint8_t)(percentage * 255.0f);
+    __m128i alphaMask  = _mm_set_epi8(0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80);
     __m128i alphaLevel = _mm_set_epi8(a, 0, 0, 0, a, 0, 0, 0, a, 0, 0, 0, a, 0, 0, 0);
     
     if (AlignCheck(source, destination))
     {
 #pragma omp parallel for
-        for (int index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
+        for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
             __m128i src   = _mm_load_si128((const __m128i *)(source + index));
             __m128i dst   = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
@@ -126,7 +134,7 @@ OpacityAdjust_32bgra(READONLY(byte*) source,
     else
     {
 #pragma omp parallel for
-        for (int index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
+        for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
             __m128i src   = _mm_loadu_si128((const __m128i *)(source + index));
             __m128i dst   = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
@@ -145,32 +153,34 @@ OpacityAdjust_32bgra(READONLY(byte*) source,
     return OperationSuccess;
 }
 
-IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int
-AlphaBlend32bgra_32bgra(READONLY(byte*) source,
-                        READONLY(byte*) target,
-                        READWRITE(byte*) destination,
-                        unsigned sizeBytes)
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
+                        READONLY (uint8_t*) target,
+                        READWRITE(uint8_t*) destination,
+                        uint32_t            sizeBytes)
 {
     WANT_SCALAR_IMPL(AlphaBlend32bgra_32bgra,
         source, target, destination, sizeBytes);
 
-    int szb = sizeBytes;
+    int32_t szb = sizeBytes;
 
     // Mask out alpha channel in 4 pixels
     __m128i alpha_mask = _mm_set_epi8(0xff, 0, 0, 0, 0xff, 0, 0, 0, 0xff, 0, 0, 0, 0xff, 0, 0, 0);
+    
     // Splicing masks: convert from 4 x INT32 => 8 x INT16
     // [0|0|0|AH2|0|0|0|AH1|0|0|0|AL2|0|0|0|AL1] => [0|AL2|0|AL2|0|AL2|0|AL2|0|AL1|0|AL1|0|AL1|0AL1]
     // [0|0|0|AH2|0|0|0|AH1|0|0|0|AL2|0|0|0|AL1] => [0|AH2|0|AH2|0|AH2|0|AH2|0|AH1|0|AH1|0|AH1|0AH1]
     __m128i alpha_splice_lo_mask = _mm_set_epi8(0x80, 4, 0x80, 4, 0x80, 4, 0x80, 4, 0x80, 0, 0x80, 0, 0x80, 0, 0x80, 0);
     __m128i alpha_splice_hi_mask = _mm_set_epi8(0x80, 12, 0x80, 12, 0x80, 12, 0x80, 12, 0x80, 8, 0x80, 8, 0x80, 8, 0x80, 8);
+    
     // Constant vectors: 8 x INT16 = {256}, 16  x INT8 = {255}
-    __m128i bunch_8x_256 = _mm_set1_epi16(256); 
+    __m128i bunch_8x_256  = _mm_set1_epi16(256); 
     __m128i bunch_16x_255 = _mm_set1_epi8(255);
 
     if (AlignCheck(source, destination))
     {
 #pragma omp parallel for
-        for (int index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
+        for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
             // load 4 BGRA pixels (source and target)
             __m128i src = _mm_load_si128((const __m128i *)(source + index));
@@ -191,8 +201,8 @@ AlphaBlend32bgra_32bgra(READONLY(byte*) source,
             __m128i scale_fact_lo = _mm_shuffle_epi8(scale_fact, alpha_splice_lo_mask); // Distribute the 4 scaling factors 
             __m128i scale_fact_hi = _mm_shuffle_epi8(scale_fact, alpha_splice_hi_mask); // to every color channel for each pixel
 
-            __m128i scale_fact_lo_offset = _mm_sub_epi16(bunch_8x_256, scale_fact_lo); // Offsetted scale_factor (in 16bit): 
-            __m128i scale_fact_hi_offset = _mm_sub_epi16(bunch_8x_256, scale_fact_hi); // 256 - scale_factor
+            __m128i scale_fact_lo_offset = _mm_sub_epi16(bunch_8x_256, scale_fact_lo);  // Offsetted scale_factor (in 16bit): 
+            __m128i scale_fact_hi_offset = _mm_sub_epi16(bunch_8x_256, scale_fact_hi);  // 256 - scale_factor
 
             __m128i srclo = _mm_unpacklo_epi8(src, _mm_setzero_si128());  // Unpack [...ARGB] into [...0A0R0G0B]
             __m128i tarlo = _mm_unpacklo_epi8(tar, _mm_setzero_si128());  // aka zero-extend each channel 8bit -> 16bit   
@@ -216,17 +226,17 @@ AlphaBlend32bgra_32bgra(READONLY(byte*) source,
     {
         /*
 #pragma omp parallel for
-        for (int index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
+        for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src = _mm_loadu_si128((const __m128i *)(source + index));
-            __m128i tar = _mm_loadu_si128((const __m128i *)(target + index));
+            __m128i src   = _mm_loadu_si128((const __m128i *)(source + index));
+            __m128i tar   = _mm_loadu_si128((const __m128i *)(target + index));
             __m128i srclo = _mm_unpacklo_epi8(src, _mm_setzero_si128());
             __m128i tarlo = _mm_unpacklo_epi8(tar, _mm_setzero_si128());
             __m128i srchi = _mm_unpackhi_epi8(src, _mm_setzero_si128());
             __m128i tarhi = _mm_unpackhi_epi8(tar, _mm_setzero_si128());
             __m128i dstlo = _mm_alphablendx2_epi16(srclo, tarlo);
             __m128i dsthi = _mm_alphablendx2_epi16(srchi, tarhi);
-            __m128i dst = _mm_packus_epi16(dstlo, dsthi);
+            __m128i dst   = _mm_packus_epi16(dstlo, dsthi);
             _mm_storeu_si128((__m128i *)(destination + index), dst);
         }*/
     }
@@ -241,19 +251,20 @@ AlphaBlend32bgra_32bgra(READONLY(byte*) source,
     return OperationSuccess;
 }
 
-IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int
-ConvFilter_32bgra(READONLY(byte*) source,
-                  READWRITE(byte*) destination,
-                  unsigned sizeBytes,
-                  READONLY(float*) kernel,
-                  unsigned width,
-                  unsigned height)
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+ConvFilter_32bgra(READONLY (uint8_t*) source,
+                  READWRITE(uint8_t*) destination,
+                  uint32_t            sizeBytes,
+                  READONLY (float*)   kernel,
+                  uint32_t            width,
+                  uint32_t            height)
 {
     WANT_SCALAR_IMPL(ConvFilter_32bgra,
         source, destination, sizeBytes, kernel, width, height);
 
-    // TODO: this crashes if not accounting for border offsetting (~filter size)
-    unsigned index = 0;
+    uint32_t index = 0;
+
+    // BUG: this crashes for values near the edges of filter window
 
     // Handle non-multiple of SIMD size images using reference implementation
     if (index < sizeBytes)
@@ -264,3 +275,7 @@ ConvFilter_32bgra(READONLY(byte*) source,
 
     return OperationSuccess;
 }
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
