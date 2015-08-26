@@ -3,7 +3,6 @@
 #include "ReferenceProcessing.h"
 #include "Helpers.cpp"
 #include "Common.h"
-#include "CommonPrivate.h"
 
 // system include
 #include <stdint.h>
@@ -50,7 +49,7 @@ OpacityAdjust_32bgra_ref(READONLY (uint8_t*) source,
     uint32_t alphaLevel = ((uint32_t)(percentage * 255.0f)) << 24;
 
 #pragma omp parallel for
-    for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4uint8_ts (32bpp-BGRA)
+    for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
     {
         uint32_t bgra = *(uint32_t*)(source + index);
         uint32_t dst  = (bgra & 0x00ffffff) | alphaLevel;
@@ -69,7 +68,7 @@ AlphaBlend32bgra_32bgra_ref(READONLY (uint8_t*) source,
     int32_t szb = sizeBytes;
 
 #pragma omp parallel for
-    for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4uint8_ts (32bpp-BGRA)
+    for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
     {
         // read source & target pixels and get their alpha values
         uint32_t sp = *(uint32_t*)(source + index);
@@ -88,7 +87,7 @@ AlphaBlend32bgra_32bgra_ref(READONLY (uint8_t*) source,
         // precompute division factors
         uint32_t scaled_dsa = ((da - sa) * 256) / da;
 
-        // blend each color value according to the alpha values in each pixel(optimized lerp)
+        // blend each color value according to the alpha values in each pixel (optimized lerp)
         uint32_t dr = ((256 - scaled_dsa) * ((sp & 0x00FF0000) >> 16) + scaled_dsa * ((tp & 0x00FF0000) >> 16)) / 256;
         uint32_t dg = ((256 - scaled_dsa) * ((sp & 0x0000FF00) >> 8)  + scaled_dsa * ((tp & 0x0000FF00) >> 8) ) / 256;
         uint32_t db = ((256 - scaled_dsa) * ( sp & 0x000000FF)        + scaled_dsa * ( tp & 0x000000FF)       ) / 256; 
@@ -130,7 +129,7 @@ ConvFilter_32bgra_ref(READONLY (uint8_t*) source,
 
     // BUG: this crashes for values near the edges of filter window
 #pragma omp parallel for
-    for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4uint8_ts (32bpp-BGRA)
+    for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
     {
         float sumB(0.0f);
         float sumG(0.0f);

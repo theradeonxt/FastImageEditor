@@ -15,13 +15,20 @@
     #define IMAGEPROCESSING_API __declspec(dllimport)
 #endif // IMAGEPROCESSING_EXPORTS
 
+// Enable/Disable reference implementation
+//#define FORCE_SCALAR_IMPL
+#define REFERENCE_IMPL(FUNCTION_NAME, ...) FUNCTION_NAME##_ref(__VA_ARGS__)
+#ifdef FORCE_SCALAR_IMPL
+    #define WANT_REFERENCE_IMPL(FUNCTION_NAME, ...) { return FUNCTION_NAME##_ref(__VA_ARGS__); }
+#else
+    #define WANT_REFERENCE_IMPL(FUNCTION_NAME, ...)
+#endif // FORCE_SCALAR_IMPL
+
 // ====================================================================
 // Constants Definitions
 // ====================================================================
 
-// SIMD Settings
-#include <stdint.h>
-static const int32_t SIMD_SIZE = 16;
+static const auto SIMD_SIZE = 16i32;
 
 #define READONLY(PTR_TYPE) const PTR_TYPE const // CAN'T modify pointer and data
 #define READWRITE(PTR_TYPE) PTR_TYPE const      // CAN'T modify pointer but CAN modify data

@@ -179,7 +179,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
-    <ClInclude Include="CommonPrivate.h" />
     <ClInclude Include="Helpers.cpp" />
     <ClCompile Include="HelpersSIMD.cpp" />
     <ClInclude Include="ImageProcessing.h" />

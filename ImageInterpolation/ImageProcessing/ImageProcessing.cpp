@@ -3,11 +3,11 @@
 #include "ImageProcessing.h"
 #include "ReferenceProcessing.h"
 #include "Common.h"
-#include "CommonPrivate.h"
 #include "HelpersSIMD.cpp"
 
 // system include
 #include <stdint.h>
+
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -25,7 +25,7 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
                  uint32_t            sizeBytes,
                  float               percentage)
 {
-    WANT_SCALAR_IMPL(Blend24bgr_24bgr,
+    WANT_REFERENCE_IMPL(Blend24bgr_24bgr,
         source, target, destination, sizeBytes, percentage);
 
     int32_t szb = sizeBytes;
@@ -111,7 +111,7 @@ OpacityAdjust_32bgra(READONLY (uint8_t*) source,
                      uint32_t            sizeBytes,
                      float               percentage)
 {
-    WANT_SCALAR_IMPL(OpacityAdjust_32bgra,
+    WANT_REFERENCE_IMPL(OpacityAdjust_32bgra,
        source, destination, sizeBytes, percentage);
 
     int32_t szb = sizeBytes;
@@ -159,7 +159,7 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
                         READWRITE(uint8_t*) destination,
                         uint32_t            sizeBytes)
 {
-    WANT_SCALAR_IMPL(AlphaBlend32bgra_32bgra,
+    WANT_REFERENCE_IMPL(AlphaBlend32bgra_32bgra,
         source, target, destination, sizeBytes);
 
     int32_t szb = sizeBytes;
@@ -259,7 +259,7 @@ ConvFilter_32bgra(READONLY (uint8_t*) source,
                   uint32_t            width,
                   uint32_t            height)
 {
-    WANT_SCALAR_IMPL(ConvFilter_32bgra,
+    WANT_REFERENCE_IMPL(ConvFilter_32bgra,
         source, destination, sizeBytes, kernel, width, height);
 
     uint32_t index = 0;

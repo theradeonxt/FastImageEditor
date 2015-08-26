@@ -30,9 +30,6 @@
     <ClInclude Include="Helpers.cpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="CommonPrivate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcessing.cpp">
