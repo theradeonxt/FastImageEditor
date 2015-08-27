@@ -8,7 +8,6 @@
 // system include
 #include <stdint.h>
 
-
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4309) // disable truncation of constant value warning
@@ -92,11 +91,11 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
     }
 
     // Handle non-multiple of SIMD size images using reference implementation
-    /*if (index < szb)
+    if (int32_t mod = szb % SIMD_SIZE) // if this is not 0
     {
         return REFERENCE_IMPL(Blend24bgr_24bgr,
-            source + index, target + index, destination + index, sizeBytes - index, percentage);
-    }*/
+            source + (szb - mod), target + (szb - mod), destination + (szb - mod), mod, percentage);
+    }
 
     return OperationSuccess;
 }
@@ -138,17 +137,17 @@ OpacityAdjust_32bgra(READONLY (uint8_t*) source,
         {
             __m128i src   = _mm_loadu_si128((const __m128i *)(source + index));
             __m128i dst   = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
-            //__m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask);
+            //__m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask); // NOTE: SSE4.1 instruction!
             _mm_storeu_si128((__m128i *)(destination + index), dst);
         }
     }
 
     // Handle non-multiple of SIMD size images using reference implementation
-    /*if (index < szb)
+    if (int32_t mod = szb % SIMD_SIZE) // if this is not 0
     {
         return REFERENCE_IMPL(OpacityAdjust_32bgra,
-            source + index, destination + index, sizeBytes - index, percentage);
-    }*/
+            source + (szb - mod), destination + (szb - mod), mod, percentage);
+    }
 
     return OperationSuccess;
 }
@@ -167,7 +166,7 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
     // Mask out alpha channel in 4 pixels
     __m128i alpha_mask = _mm_set_epi8(0xff, 0, 0, 0, 0xff, 0, 0, 0, 0xff, 0, 0, 0, 0xff, 0, 0, 0);
     
-    // Splicing masks: convert from 4 x INT32 => 8 x INT16
+    // Splicing masks: convert from low-8-bit parts of 4 x INT32 => 8 x INT16
     // [0|0|0|AH2|0|0|0|AH1|0|0|0|AL2|0|0|0|AL1] => [0|AL2|0|AL2|0|AL2|0|AL2|0|AL1|0|AL1|0|AL1|0AL1]
     // [0|0|0|AH2|0|0|0|AH1|0|0|0|AL2|0|0|0|AL1] => [0|AH2|0|AH2|0|AH2|0|AH2|0|AH1|0|AH1|0|AH1|0AH1]
     __m128i alpha_splice_lo_mask = _mm_set_epi8(0x80, 4, 0x80, 4, 0x80, 4, 0x80, 4, 0x80, 0, 0x80, 0, 0x80, 0, 0x80, 0);
@@ -197,7 +196,7 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
             __m128 scale_fact_f32  = _mm_div_ps(dsta_scaled_f32, dsta_f32); // Perform FP32 divide: (alpha_dst - alpha_src) * 256 / alpha_dst
             __m128i scale_fact     = _mm_cvttps_epi32(scale_fact_f32);      // Truncate result back to INT32   
 
-            // TODO: this is SuplementalSSE3, make it also SSE2
+            // TODO: this is SuplementalSSE3, make it also SSE2!!!
             __m128i scale_fact_lo = _mm_shuffle_epi8(scale_fact, alpha_splice_lo_mask); // Distribute the 4 scaling factors 
             __m128i scale_fact_hi = _mm_shuffle_epi8(scale_fact, alpha_splice_hi_mask); // to every color channel for each pixel
 
@@ -242,11 +241,11 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
     }
 
     // Handle non-multiple of SIMD size images using reference implementation
-    /*if (index < szb)
+    if (int32_t mod = szb % SIMD_SIZE) // if this is not 0
     {
         return REFERENCE_IMPL(AlphaBlend32bgra_32bgra,
-            source + index, target + index, destination + index, sizeBytes - index);
-    }*/
+            source + (szb - mod), target + (szb - mod), destination + (szb - mod), mod);
+    }
 
     return OperationSuccess;
 }
@@ -262,15 +261,15 @@ ConvFilter_32bgra(READONLY (uint8_t*) source,
     WANT_REFERENCE_IMPL(ConvFilter_32bgra,
         source, destination, sizeBytes, kernel, width, height);
 
-    uint32_t index = 0;
+    int32_t szb = sizeBytes;
 
     // BUG: this crashes for values near the edges of filter window
 
     // Handle non-multiple of SIMD size images using reference implementation
-    if (index < sizeBytes)
+    if (int32_t mod = szb % SIMD_SIZE) // if this is not 0
     {
         return REFERENCE_IMPL(ConvFilter_32bgra,
-            source + index, destination + index, sizeBytes - index, kernel, width, height);
+            source + (szb - mod), destination + (szb - mod), mod, kernel, width, height);
     }
 
     return OperationSuccess;

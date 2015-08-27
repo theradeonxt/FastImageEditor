@@ -9,11 +9,14 @@
 #endif // __cplusplus
 
 // Dll exporting/importing
-#ifdef IMAGEPROCESSING_EXPORTS
+#if defined(IMAGEPROCESSING_EXPORTS) && defined(_MSC_VER)
     #define IMAGEPROCESSING_API __declspec(dllexport)
 #else
     #define IMAGEPROCESSING_API __declspec(dllimport)
 #endif // IMAGEPROCESSING_EXPORTS
+#ifndef IMAGEPROCESSING_API
+    #define IMAGEPROCESSING_API
+#endif
 
 // Enable/Disable reference implementation
 //#define FORCE_SCALAR_IMPL

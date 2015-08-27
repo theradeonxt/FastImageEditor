@@ -118,7 +118,7 @@ namespace ImageInterpolation
             catch (FileNotFoundException) { }
             catch (ArgumentException) { }
 
-            //image = BitmapUtility.ConvertToFormat(image, PixelFormat.Format32bppArgb);
+            image = BitmapUtility.ConvertToFormat(image, PixelFormat.Format32bppArgb);
 
             var scaled = BitmapUtility.Resize(
                 image,
