@@ -1,6 +1,9 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 using System.Windows.Forms;
+using VectorImageEdit.Modules.BasicShapes;
 using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Modules
@@ -100,13 +103,40 @@ namespace VectorImageEdit.Modules
 
         public void UpdateFrame(SortedContainer objectCollection)
         {
-            // Clears the frame and redraws all the objects
             _frameGraphics.Clear(_formControl.BackColor);
 
-            foreach (Layer layer in objectCollection)
+            /*foreach (Layer layer in objectCollection)
             {
                 layer.DrawGraphics(_frameGraphics);
+            }*/
+
+            var layerMapping = new ConcurrentDictionary<int, Layer>();
+
+            using (BitmapHelper frameData = new BitmapHelper(_frame))
+            {
+                unsafe
+                {
+                    Parallel.For(0, _frame.Height, y =>
+                    {
+                        byte* currentLine = (byte*)frameData.Start + (y * frameData.Stride);
+
+                        // intersection of layers with current scanline
+                        foreach (Layer layer in objectCollection)
+                        {
+                            if (layer is ShapeBase)
+                            {
+                                if (layerMapping.ContainsKey(layer.Uid)) continue;
+                                layer.DrawGraphics(_frameGraphics);
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    });
+                }
             }
+
             RefreshFrame();
         }
 
