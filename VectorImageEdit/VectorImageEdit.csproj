@@ -125,7 +125,9 @@
     <Compile Include="Modules\Layers\MouseInteraction.cs" />
     <Compile Include="Modules\Layout.cs" />
     <Compile Include="Modules\Layers\Picture.cs" />
+    <Compile Include="Modules\RasterizerStage.cs" />
     <Compile Include="Modules\SortedContainer.cs" />
+    <Compile Include="Modules\Utility\ImagingHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Forms\ProgressWindow.cs">
       <SubType>Form</SubType>
@@ -208,9 +210,7 @@
   <ItemGroup>
     <None Include="Resources\triangle.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modules\Utility\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\placeholder.png" />
   </ItemGroup>

@@ -20,16 +20,16 @@ Blend24bgr_24bgr_ref(READONLY (uint8_t*) source,
                      float               percentage)
 {
     int32_t szb        = sizeBytes;
-    int32_t ipercent   = (int32_t)(percentage * 255.0f);
-    int32_t _1ipercent = (int32_t)((1.0f - percentage) * 255.0f);
+    int32_t ipercent   = int32_t(percentage * 255.0f);
+    int32_t _1ipercent = int32_t((1.0f - percentage) * 255.0f);
 
 #pragma omp parallel for
     for (int32_t index = 0; index < szb; index++)
     {
-        int32_t src = (int32_t)source[index];
-        int32_t tar = (int32_t)target[index];
+        int32_t src = int32_t(source[index]);
+        int32_t tar = int32_t(target[index]);
         int32_t dst = (src * _1ipercent + tar * ipercent) / 255;
-        destination[index] = (uint8_t)dst;
+        destination[index] = uint8_t(dst);
     }
 
     return OperationSuccess;
@@ -46,14 +46,14 @@ OpacityAdjust_32bgra_ref(READONLY (uint8_t*) source,
                          float               percentage)
 {
     int32_t  szb        = sizeBytes;
-    uint32_t alphaLevel = ((uint32_t)(percentage * 255.0f)) << 24;
+    uint32_t alphaLevel = uint32_t(percentage * 255.0f) << 24;
 
 #pragma omp parallel for
     for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
     {
-        uint32_t bgra = *(uint32_t*)(source + index);
+        uint32_t bgra = *reinterpret_cast<const uint32_t*>(source + index);
         uint32_t dst  = (bgra & 0x00ffffff) | alphaLevel;
-        *(uint32_t*)(destination + index) = dst;
+        *reinterpret_cast<uint32_t*>(destination + index) = dst;
     }
 
     return OperationSuccess;
@@ -71,8 +71,8 @@ AlphaBlend32bgra_32bgra_ref(READONLY (uint8_t*) source,
     for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
     {
         // read source & target pixels and get their alpha values
-        uint32_t sp = *(uint32_t*)(source + index);
-        uint32_t tp = *(uint32_t*)(target + index);
+        uint32_t sp = *reinterpret_cast<const uint32_t*>(source + index);
+        uint32_t tp = *reinterpret_cast<const uint32_t*>(target + index);
         uint32_t sa = (sp >> 24);
         uint32_t ta = (tp >> 24);
 
@@ -80,7 +80,7 @@ AlphaBlend32bgra_32bgra_ref(READONLY (uint8_t*) source,
         uint32_t da = sa + ta * (255 - sa) / 255;
         if (da == 0)
         {
-            *(uint32_t*)(destination + index) = 0;
+            *reinterpret_cast<uint32_t*>(destination + index) = 0;
             continue;
         }
 
@@ -93,7 +93,7 @@ AlphaBlend32bgra_32bgra_ref(READONLY (uint8_t*) source,
         uint32_t db = ((256 - scaled_dsa) * ( sp & 0x000000FF)        + scaled_dsa * ( tp & 0x000000FF)       ) / 256; 
 
         // assemble the output pixel
-        *(uint32_t*)(destination + index) = (da << 24) | (dr << 16) | (dg << 8) | (db);
+        *reinterpret_cast<uint32_t*>(destination + index) = (da << 24) | (dr << 16) | (dg << 8) | (db);
     }
 
     // this was the original code, but unsigned divs (/da) can be replaced with /256 
@@ -144,10 +144,10 @@ ConvFilter_32bgra_ref(READONLY (uint8_t*) source,
             sumR += *(source + index + 2 + offsets[k]) * kernel[k];
             sumA += *(source + index + 3 + offsets[k]) * kernel[k];
         }
-        *(destination + index + 0) = (uint8_t)Clamp(sumB, 0, 255);
-        *(destination + index + 1) = (uint8_t)Clamp(sumG, 0, 255);
-        *(destination + index + 2) = (uint8_t)Clamp(sumR, 0, 255);
-        *(destination + index + 3) = (uint8_t)Clamp(sumA, 0, 255);
+        *(destination + index + 0) = uint8_t(Clamp(sumB, 0, 255));
+        *(destination + index + 1) = uint8_t(Clamp(sumG, 0, 255));
+        *(destination + index + 2) = uint8_t(Clamp(sumR, 0, 255));
+        *(destination + index + 3) = uint8_t(Clamp(sumA, 0, 255));
     }
 
     return OperationSuccess;

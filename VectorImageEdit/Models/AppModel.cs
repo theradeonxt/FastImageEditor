@@ -5,6 +5,7 @@ using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Models
 {
+    // TODO: This is confusing with AppGlobalModel
     class AppModel
     {
         public void LayerListSelect(string itemName)

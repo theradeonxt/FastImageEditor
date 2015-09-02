@@ -21,8 +21,7 @@ PixelOffsetsLookup(uint32_t width, uint32_t height, uint32_t pixelSize)
     uint32_t byteMid = (midpointY * pixelSize + midpointX * pixelSize);
 
     int32_t* offsets(nullptr);
-    offsets = new (std::nothrow) int32_t[width * height];
-    if (offsets)
+    if ((offsets = new (std::nothrow) int32_t[width * height]))
     {
         for (uint32_t i = 0; i < height; i++)
         for (uint32_t j = 0; j < width; j++)

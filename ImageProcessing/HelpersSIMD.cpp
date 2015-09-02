@@ -7,13 +7,14 @@
 // system include
 #include <stdint.h>
 #include <emmintrin.h> // SSE2 intrinsics: this is the baseline
+// ReSharper disable once CppUnusedIncludeDirective
 #include <tmmintrin.h> // SSSE3 intrinsics
 
 // ============================================================
 // SIMD Extra Functions
 // ============================================================
 
-static inline __m128i
+static __m128i
 _mm_div255_epu16(__m128i x)
 {
     // http://www.alfredklomp.com/programming/sse-intrinsics/
@@ -30,7 +31,7 @@ _mm_div255_epu16(__m128i x)
         _mm_srli_epi16(x, 8)), 8);
 }
 
-static inline __m128i
+static __m128i
 _mm_scale_epu8(__m128i x, __m128i y)
 {
     // http://www.alfredklomp.com/programming/sse-intrinsics/
@@ -56,7 +57,7 @@ _mm_scale_epu8(__m128i x, __m128i y)
     return _mm_packus_epi16(xlo, xhi);
 }
 
-static inline __m128
+static __m128
 _mm_clamp_ps(__m128 value, __m128 min, __m128 max)
 {
     // Limits the range of 4 packed floats between [min, max].
@@ -73,16 +74,16 @@ _mm_clamp_ps(__m128 value, __m128 min, __m128 max)
 // Various Helper Functions
 // ============================================================
 
-template<typename T> static inline bool
+template<typename T> static bool
 AlignCheck1(READONLY(T*) address, uint32_t by = SIMD_SIZE)
 {
     // Check that the address given is a multiple of given value;
     // Treat address as 64-bit to keep x64 compatibility.
 
-    return ((uintptr_t)address % (uintptr_t)by == 0);
+    return uintptr_t(address) % uintptr_t(by) == 0;
 }
 
-template<typename T> static inline bool
+template<typename T> static bool
 AlignCheck(READONLY(T*) a1, 
            READONLY(T*) a2 = nullptr, READONLY(T*) a3 = nullptr, 
            READONLY(T*) a4 = nullptr, READONLY(T*) a5 = nullptr)
@@ -92,7 +93,7 @@ AlignCheck(READONLY(T*) a1,
         && AlignCheck1(a4) && AlignCheck1(a5);
 }
 
-template<typename T> static inline T*
+template<typename T> static T*
 NextAlignedAddress(READWRITE(T*) start, uint32_t by = SIMD_SIZE)
 {
     // Finds the next adress that is a multiple of given value.
@@ -101,6 +102,6 @@ NextAlignedAddress(READWRITE(T*) start, uint32_t by = SIMD_SIZE)
     //       and needs write access
 
     T* address = start;
-    while (AlignCheck1(address++, by) == false);
+    while (AlignCheck1(address++, by) == false){}
     return address;
 }

@@ -1,10 +1,10 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System.Windows.Forms;
-using VectorImageEdit.Modules.BasicShapes;
 using VectorImageEdit.Modules.Layers;
+using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Modules
 {
@@ -54,12 +54,6 @@ namespace VectorImageEdit.Modules
             DisposeGraphicsResources();
         }
 
-        /////////////////////////////////
-        //
-        // Additional functionality
-        //
-        /////////////////////////////////
-
         public void Resize()
         {
             // Clear resources used by previous frame
@@ -67,21 +61,14 @@ namespace VectorImageEdit.Modules
 
             // Allocate resources for the new frame
             _formGraphics = _formControl.CreateGraphics();
-            GraphicsLow(_formGraphics);
-            _frame = new Bitmap(_formControl.Width + 1, _formControl.Height + 1, _formGraphics);
-            _frameBackup = new Bitmap(_formControl.Width + 1, _formControl.Height + 1, _formGraphics);
+            _frame = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
+            _frameBackup = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
             _frameGraphics = Graphics.FromImage(_frame);
-            GraphicsLow(_frameGraphics);
             _frameBackupGraphics = Graphics.FromImage(_frameBackup);
-            GraphicsLow(_frameBackupGraphics);
-        }
 
-        private void GraphicsLow(Graphics g)
-        {
-            g.CompositingQuality = CompositingQuality.HighSpeed;
-            g.InterpolationMode = InterpolationMode.NearestNeighbor;
-            g.SmoothingMode = SmoothingMode.None;
-            g.CompositingMode = CompositingMode.SourceCopy;
+            ImagingHelpers.GraphicsFastDrawing(_formGraphics);
+            ImagingHelpers.GraphicsFastDrawing(_frameGraphics);
+            ImagingHelpers.GraphicsFastDrawing(_frameBackupGraphics);
         }
 
         public Bitmap GetImagePreview()
@@ -90,51 +77,35 @@ namespace VectorImageEdit.Modules
             return preview;
         }
 
-        /////////////////////////////////
-        //
-        // Object Rendering
-        //
-        /////////////////////////////////
-
         public void RefreshFrame()
         {
             _formGraphics.DrawImageUnscaled(_frame, 0, 0);
         }
 
+        [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
         public void UpdateFrame(SortedContainer objectCollection)
         {
             _frameGraphics.Clear(_formControl.BackColor);
 
-            /*foreach (Layer layer in objectCollection)
+            // Lock the frame data
+            using (var frameData = new BitmapHelper(_frame))
+            using (var rasterizer = new RasterizerStage(objectCollection))
             {
-                layer.DrawGraphics(_frameGraphics);
-            }*/
-
-            var layerMapping = new ConcurrentDictionary<int, Layer>();
-
-            using (BitmapHelper frameData = new BitmapHelper(_frame))
-            {
-                unsafe
+                Parallel.For(0, _frame.Height, y =>
                 {
-                    Parallel.For(0, _frame.Height, y =>
+                    unsafe
                     {
                         byte* currentLine = (byte*)frameData.Start + (y * frameData.Stride);
 
                         // intersection of layers with current scanline
                         foreach (Layer layer in objectCollection)
                         {
-                            if (layer is ShapeBase)
-                            {
-                                if (layerMapping.ContainsKey(layer.Uid)) continue;
-                                layer.DrawGraphics(_frameGraphics);
-                            }
-                            else
-                            {
+                            if (y < layer.Region.Top || y > layer.Region.Bottom) continue;
 
-                            }
+
                         }
-                    });
-                }
+                    }
+                });
             }
 
             RefreshFrame();
@@ -147,11 +118,13 @@ namespace VectorImageEdit.Modules
             // Restore the previously saved region
             if (mode == ClearMode.UpdateOld)
             {
-                _formGraphics.DrawImage(_frameBackup, _frameBackupRegion, _frameBackupRegion, GraphicsUnit.Pixel);
+                _formGraphics.DrawImage(_frameBackup, _frameBackupRegion, _frameBackupRegion,
+                    GraphicsUnit.Pixel);
             }
 
             // Copy the affected region of the frame to a backup frame
-            _frameBackupGraphics.DrawImage(_frame, selectionBorder, selectionBorder, GraphicsUnit.Pixel);
+            _frameBackupGraphics.DrawImage(_frame, selectionBorder, selectionBorder,
+                GraphicsUnit.Pixel);
 
             // Draw selection over frame region
             _formGraphics.DrawRectangle(_borderStyle,

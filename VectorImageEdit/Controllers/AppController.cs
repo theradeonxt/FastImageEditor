@@ -58,6 +58,7 @@ namespace VectorImageEdit.Controllers
 
         private void OnListboxItemsChangedCallback()
         {
+            // TODO: FIX issues with invalidCast at selection from the list
             // This will be run un the UI thread, but can be invoked from other threads safely
             var layers = _appModel.GetSortedLayers();
             MethodInvoker del = delegate { _appView.ListboxLayers = layers; };
