@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Modules.Layers
 {
@@ -22,7 +23,7 @@ namespace VectorImageEdit.Modules.Layers
         };
 
         private LayerState _currentState;
-        private readonly SortedContainer _sortedCollection;
+        private readonly SortedContainer<Layer> _sortedCollection;
         private readonly ObjectModifiedEvent _onObjectModified;
         private Layer _selectedLayer;                    // the single object selected with focus
         private Point _pointOffset;                      // the mouse offset when used to drag objects
@@ -31,7 +32,7 @@ namespace VectorImageEdit.Modules.Layers
         // Callback method when an object has changed to trigger some update if needed
         public delegate void ObjectModifiedEvent(Rectangle objectRegion, ClearMode mode);
 
-        public MouseInteraction(SortedContainer sortedCollection, ObjectModifiedEvent onObjectModified)
+        public MouseInteraction(SortedContainer<Layer> sortedCollection, ObjectModifiedEvent onObjectModified)
         {
             _sortedCollection = sortedCollection;
             _onObjectModified = onObjectModified;

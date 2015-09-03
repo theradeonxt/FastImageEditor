@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Modules.Layers
 {
@@ -23,13 +24,13 @@ namespace VectorImageEdit.Modules.Layers
     {
         public readonly MouseInteraction MouseHandler;
 
-        private readonly SortedContainer _activeLayers;
+        private readonly SortedContainer<Layer> _activeLayers;
         private readonly Action _onLayerListChangedCallback;
 
         public LayerManager(Control formControl, Action onLayerListChangedCallback)
             : base(formControl)
         {
-            _activeLayers = new SortedContainer();
+            _activeLayers = new SortedContainer<Layer>();
             _onLayerListChangedCallback = onLayerListChangedCallback;
             MouseHandler = new MouseInteraction(_activeLayers, ObjectUpdateCallback);
 
@@ -84,7 +85,7 @@ namespace VectorImageEdit.Modules.Layers
 
         #endregion Objects creation/deletion
 
-        public SortedContainer GetSortedLayers()
+        public SortedContainer<Layer> GetSortedLayers()
         {
             return _activeLayers;
         }

@@ -5,7 +5,7 @@ using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Models
 {
-    // TODO: This is confusing with AppGlobalModel
+    // TODO: This is only used for object selection, move it to its own section
     class AppModel
     {
         public void LayerListSelect(string itemName)
@@ -14,17 +14,18 @@ namespace VectorImageEdit.Models
                 string.IsNullOrWhiteSpace(itemName)) return;
             try
             {
-                LayerManager manager = AppGlobalModel.Instance.LayerManager;
+                LayerManager manager = AppGlobalData.Instance.LayerManager;
                 Layer layer = manager.GetSortedLayers()
                     .First(item => item.DisplayName == itemName);
                 manager.MouseHandler.SelectedLayer = layer;
             }
             catch (InvalidOperationException) { }
+            catch (NullReferenceException) { }
         }
 
         public IList GetSortedLayers()
         {
-            return AppGlobalModel.Instance.LayerManager.GetSortedLayers();
+            return AppGlobalData.Instance.LayerManager.GetSortedLayers();
         }
     }
 }

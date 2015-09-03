@@ -3,7 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace VectorImageEdit.Modules.ExportFormats
+namespace VectorImageEdit.Modules.ImportExports
 {
     class VectorSerializer
     {

@@ -4,7 +4,7 @@
     {
         public void WorkspaceResize()
         {
-            var layerManager = AppGlobalModel.Instance.LayerManager;
+            var layerManager = AppGlobalData.Instance.LayerManager;
             layerManager.Resize();
             layerManager.UpdateFrame(layerManager.GetSortedLayers());
         }
@@ -12,7 +12,7 @@
         public void AppWindowMove()
         {
             //TODO: might be expensive to refresh every time
-            AppGlobalModel.Instance.LayerManager.RefreshFrame();
+            AppGlobalData.Instance.LayerManager.RefreshFrame();
         }
     }
 }

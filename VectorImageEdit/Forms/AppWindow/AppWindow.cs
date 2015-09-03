@@ -3,12 +3,9 @@ using System.Collections;
 using System.Windows.Forms;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules;
-using VectorImageEdit.Modules.BasicShapes;
-using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Forms.AppWindow
 {
-    // TODO: remove GlobalModel dependency
     /// <summary>
     /// 
     /// AppWindow Module
@@ -22,9 +19,11 @@ namespace VectorImageEdit.Forms.AppWindow
         {
             InitializeComponent();
 
-            edgecolorToolStripButton.BackColor = ShapeStyle.GlobalEdgeColor;
-            fillcolortoolStripButton.BackColor = ShapeStyle.GlobalFillColor;
+            edgecolorToolStripButton.BackColor = AppGlobalData.Instance.ShapeEdgeColor;
+            fillcolortoolStripButton.BackColor = AppGlobalData.Instance.ShapeFillColor;
 
+            // This arranges the color picker toolbar items.
+            // Note: the look from designer is corrected here
             topToolStrip.LayoutStyle = ToolStripLayoutStyle.Table;
             var layoutSettings = (topToolStrip.LayoutSettings as TableLayoutSettings);
             if (layoutSettings != null)
@@ -35,30 +34,6 @@ namespace VectorImageEdit.Forms.AppWindow
 
             memoryProgressBar.Value = BackgroundStatitics.MemoryUsagePercent;
             memoryUsedLabel.Text = string.Format("Memory Used ({0}%)", memoryProgressBar.Value.ToString());
-        }
-
-        ////////////////////////////
-        //
-        // Menu Controls Events
-        //
-        ////////////////////////////
-
-        private void layerBringFrontMenu_Click(object sender, EventArgs e)
-        {
-            Layer selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            AppGlobalModel.Instance.LayerManager.BringToFront(selected);
-        }
-
-        private void layerSendBackMenu_Click(object sender, EventArgs e)
-        {
-            Layer selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            AppGlobalModel.Instance.LayerManager.SendToBack(selected);
-        }
-
-        private void layerSendBackwMenu_Click(object sender, EventArgs e)
-        {
-            Layer selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-            AppGlobalModel.Instance.LayerManager.SendBackwards(selected);
         }
 
         #region View Listeners
@@ -90,6 +65,21 @@ namespace VectorImageEdit.Forms.AppWindow
             layerDeleteMenu.Click += listener.ActionPerformed;
         }
 
+        public void AddContextMenuBringFrontListener(IListener listener)
+        {
+            layerBringFrontMenu.Click += listener.ActionPerformed;
+        }
+
+        public void AddContextMenuSendBackListener(IListener listener)
+        {
+            layerSendBackMenu.Click += listener.ActionPerformed;
+        }
+
+        public void AddContextMenuSendBackwardsListener(IListener listener)
+        {
+            layerSendBackMenu.Click += listener.ActionPerformed;
+        }
+
         #endregion View Listeners
 
         #region View Getters/Setters
@@ -99,10 +89,19 @@ namespace VectorImageEdit.Forms.AppWindow
             get { return panWorkRegion; }
         }
 
-        // TODO: have setters in mind for one/more layers so this will update based on user selection on workspace
         public string ListboxSelectedLayer
         {
-            get { return (string)lBoxActiveLayers.SelectedItem; }
+            get
+            {
+                try
+                {
+                    return lBoxActiveLayers.SelectedItem.ToString();
+                }
+                catch (NullReferenceException)
+                {
+                    return "";
+                }
+            }
             set
             {
                 if (string.IsNullOrEmpty(value)) return;

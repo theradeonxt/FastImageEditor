@@ -8,6 +8,11 @@ using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Controllers
 {
+    /// <summary>
+    /// Main Controller for the application.
+    /// 
+    /// - is the Controller and Model manager for all aplication modules.
+    /// </summary>
     class AppController
     {
         private readonly AppWindow _appView;
@@ -47,24 +52,26 @@ namespace VectorImageEdit.Controllers
             _workspaceCtrl = new WorkspaceController(_appView, _workspaceMdl);
             _menuCtrl = new MenuItemsController(_appView, _menuMdl);
 
+            // TODO: move this to object selection section
             _appView.AddListboxSelectionChangedListener(new LayerListSelectedChangedListener(this));
         }
 
         private void InitializeAppGlobalData()
         {
-            AppGlobalModel.Instance.LayerManager = new LayerManager(_appView.WorkspaceArea, OnListboxItemsChangedCallback);
-            AppGlobalModel.Instance.Layout = new Layout(_appView.Size);
+            AppGlobalData.Instance.LayerManager = new LayerManager(_appView.WorkspaceArea, OnListboxItemsChangedCallback);
+            AppGlobalData.Instance.Layout = new Layout(_appView.Size);
         }
 
+        // TODO: move this to object selection section
         private void OnListboxItemsChangedCallback()
         {
-            // TODO: FIX issues with invalidCast at selection from the list
             // This will be run un the UI thread, but can be invoked from other threads safely
             var layers = _appModel.GetSortedLayers();
             MethodInvoker del = delegate { _appView.ListboxLayers = layers; };
             _appView.Invoke(del);
         }
 
+        // TODO: move this to object selection section
         private class LayerListSelectedChangedListener : AbstractListener<AppController>, IListener
         {
             public LayerListSelectedChangedListener(AppController controller)

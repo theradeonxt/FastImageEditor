@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace VectorImageEdit.Modules
+namespace VectorImageEdit.Modules.Utility
 {
     class BitmapHelper : IDisposable
     {
@@ -12,7 +12,6 @@ namespace VectorImageEdit.Modules
         /// the caller must release this resource to unlock the image data.
         /// </summary>
         /// <param name="img"> Input image </param>
-
         public BitmapHelper(Bitmap img)
         {
             var bmd = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),
@@ -21,12 +20,6 @@ namespace VectorImageEdit.Modules
             Locked = true;
             ImageParameters(bmd, img);
         }
-
-        /// <summary>
-        /// Releases the resources used by this instance.
-        /// This is used to release the lock on the image if 
-        /// the instance was created with a Bitmap constructor
-        /// </summary>
 
         public void Dispose()
         {
@@ -54,7 +47,7 @@ namespace VectorImageEdit.Modules
         public uint PixelSize { get; private set; }
 
         /// <summary>
-        /// Return the size of an entire row of pixels.
+        /// Return the (padded) size of an entire row of pixels.
         /// </summary>
         public uint Stride { get; private set; }
 
@@ -73,7 +66,6 @@ namespace VectorImageEdit.Modules
             SourceData = bmd;
             SourceImage = img;
         }
-
         private void ImageParameters(BitmapData bmd)
         {
             switch (bmd.PixelFormat)

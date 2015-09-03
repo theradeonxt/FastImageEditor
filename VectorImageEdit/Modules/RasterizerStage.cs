@@ -8,10 +8,10 @@ namespace VectorImageEdit.Modules
 {
     class RasterizerStage : IDisposable
     {
-        private readonly SortedContainer _objectCollection;
+        private readonly SortedContainer<Layer> _objectCollection;
         private readonly IDictionary<int, Bitmap> _rasterMap;
 
-        public RasterizerStage(SortedContainer objectCollection)
+        public RasterizerStage(SortedContainer<Layer> objectCollection)
         {
             _objectCollection = objectCollection;
             _rasterMap = new Dictionary<int, Bitmap>();

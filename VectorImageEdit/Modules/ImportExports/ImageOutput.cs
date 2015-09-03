@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 
-namespace VectorImageEdit.Modules
+namespace VectorImageEdit.Modules.ImportExports
 {
     static class ImageOutput
     {

@@ -1,23 +1,25 @@
-﻿using System.Collections.Generic;
-using VectorImageEdit.Modules.Layers;
+﻿using System;
+using System.Collections.Generic;
 
-namespace VectorImageEdit.Modules
+namespace VectorImageEdit.Modules.Utility
 {
     /// <summary>
     /// 
     /// SortedContainer Module
     ///
-    /// - holds a sorted list of layers, using their comparison function
-    ///
+    /// - implements a sorted list of items, using their comparison function
+    /// - thread safe collection wrapper over SynchronizedCollection
+    /// 
     /// </summary>
-    public class SortedContainer : SynchronizedCollection<Layer>
+    public class SortedContainer<T> : SynchronizedCollection<T>
+        where T : IComparable<T>
     {
         /// <summary>
-        /// Adds the new layer keeping the collection sorted
-        /// based on the layers' comparison method
+        /// Adds the new item keeping the collection sorted
+        /// based on the items' comparison method
         /// </summary>
         /// <param name="item"></param>
-        public new void Add(Layer item)
+        public new void Add(T item)
         {
             // First element is a simple add
             if (Count == 0)
@@ -39,15 +41,15 @@ namespace VectorImageEdit.Modules
         }
 
         /// <summary>
-        /// Ensure item ordering after external modifications
-        ///  Up to caller to handle this
+        /// Ensure item ordering after external modifications;
+        /// it's up to caller to handle this
         /// </summary>
         public void Rebuild()
         {
-            Layer[] copy = new Layer[Count];
+            var copy = new T[Count];
             CopyTo(copy, 0);
             Clear();
-            foreach (Layer layer in copy)
+            foreach (var layer in copy)
             {
                 Add(layer);
             }

@@ -32,12 +32,12 @@ namespace VectorImageEdit.Forms.AppWindow
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Node1");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Node2");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6});
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Node3");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node1");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node2");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2});
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Node3");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AppWindow));
             this.lBoxActiveLayers = new System.Windows.Forms.ListBox();
             this.cmsRightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -130,6 +130,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.lBoxActiveLayers.HorizontalScrollbar = true;
             this.lBoxActiveLayers.Location = new System.Drawing.Point(940, 106);
             this.lBoxActiveLayers.Name = "lBoxActiveLayers";
+            this.lBoxActiveLayers.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lBoxActiveLayers.Size = new System.Drawing.Size(145, 366);
             this.lBoxActiveLayers.TabIndex = 0;
             // 
@@ -259,7 +260,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.layerBringFrontMenu.Name = "layerBringFrontMenu";
             this.layerBringFrontMenu.Size = new System.Drawing.Size(159, 22);
             this.layerBringFrontMenu.Text = "Bring to Front";
-            this.layerBringFrontMenu.Click += new System.EventHandler(this.layerBringFrontMenu_Click);
             // 
             // layerSendBackMenu
             // 
@@ -267,7 +267,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.layerSendBackMenu.Name = "layerSendBackMenu";
             this.layerSendBackMenu.Size = new System.Drawing.Size(159, 22);
             this.layerSendBackMenu.Text = "Send to Back";
-            this.layerSendBackMenu.Click += new System.EventHandler(this.layerSendBackMenu_Click);
             // 
             // layerSendBackwMenu
             // 
@@ -275,7 +274,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.layerSendBackwMenu.Name = "layerSendBackwMenu";
             this.layerSendBackwMenu.Size = new System.Drawing.Size(159, 22);
             this.layerSendBackwMenu.Text = "Send Backwards";
-            this.layerSendBackwMenu.Click += new System.EventHandler(this.layerSendBackwMenu_Click);
             // 
             // layerDeleteMenu
             // 
@@ -322,22 +320,28 @@ namespace VectorImageEdit.Forms.AppWindow
             // 
             // treeView1
             // 
-            this.treeView1.Location = new System.Drawing.Point(942, 405);
+            this.treeView1.BackColor = System.Drawing.Color.Gray;
+            this.treeView1.FullRowSelect = true;
+            this.treeView1.Indent = 15;
+            this.treeView1.LabelEdit = true;
+            this.treeView1.Location = new System.Drawing.Point(942, 319);
             this.treeView1.Name = "treeView1";
-            treeNode5.Name = "Node1";
-            treeNode5.Text = "Node1";
-            treeNode6.Name = "Node2";
-            treeNode6.Text = "Node2";
-            treeNode7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            treeNode7.Name = "Node0";
-            treeNode7.Text = "Node0";
-            treeNode8.BackColor = System.Drawing.Color.Aqua;
-            treeNode8.Name = "Node3";
-            treeNode8.Text = "Node3";
+            treeNode1.Name = "Node1";
+            treeNode1.Text = "Node1";
+            treeNode2.Name = "Node2";
+            treeNode2.Text = "Node2";
+            treeNode3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            treeNode3.Name = "Node0";
+            treeNode3.Text = "Node0";
+            treeNode4.BackColor = System.Drawing.Color.Aqua;
+            treeNode4.Name = "Node3";
+            treeNode4.Text = "Node3";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode7,
-            treeNode8});
-            this.treeView1.Size = new System.Drawing.Size(129, 55);
+            treeNode3,
+            treeNode4});
+            this.treeView1.ShowLines = false;
+            this.treeView1.ShowNodeToolTips = true;
+            this.treeView1.Size = new System.Drawing.Size(129, 141);
             this.treeView1.TabIndex = 10;
             // 
             // leftToolStrip

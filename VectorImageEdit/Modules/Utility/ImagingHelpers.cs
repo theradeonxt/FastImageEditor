@@ -43,18 +43,29 @@ namespace VectorImageEdit.Modules.Utility
         /// <summary>
         /// Creates a new Bitmap object with the specified size using an internal PixelFormat
         /// </summary>
-        /// <param name="width"> Inpt width </param>
+        /// <param name="width"> Input width </param>
         /// <param name="height"> Input height </param>
         /// <returns> Output Bitmap </returns>
         public static Bitmap Allocate(int width, int height)
         {
-            var bitmap = Properties.Resources.placeholder;
+            // TODO: remove the null
+            // TODO: Clone might not work if OutOfMemoryException - ensure Properties.Resources.placeholder has the right image format
             try
             {
-                bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+                return new Bitmap(width, height, PixelFormat.Format32bppArgb);
             }
-            catch (Exception) {/* ignored*/}
-            return bitmap;
+            catch (OutOfMemoryException)
+            {
+                Bitmap errorImage = Properties.Resources.placeholder;
+                try
+                {
+                    return errorImage.Clone(new Rectangle(0, 0, errorImage.Width, errorImage.Height),
+                        PixelFormat.Format32bppArgb);
+                }
+                catch (OutOfMemoryException) { }
+                catch (ArgumentException) { }
+            }
+            return null;
         }
     }
 }

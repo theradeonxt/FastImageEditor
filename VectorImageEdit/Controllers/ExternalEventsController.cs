@@ -29,6 +29,8 @@ namespace VectorImageEdit.Controllers
             _appView.AddDragEnterListener(new DragEnterListener(this));
         }
 
+        // TODO: catch and or log Exceptions here
+
         private class SaveVectorListener : AbstractListener<ExternalEventsController>, IListener
         {
             public SaveVectorListener(ExternalEventsController controller)
@@ -166,6 +168,7 @@ namespace VectorImageEdit.Controllers
             }
         }
 
+        // TODO: Verify that it doesn't crash even with invalid files
         private void CreateBackgroundFileTask(string[] fileNames)
         {
             var bw = new BackgroundWorker { WorkerReportsProgress = true };

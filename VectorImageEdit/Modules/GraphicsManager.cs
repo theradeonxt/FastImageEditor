@@ -83,7 +83,7 @@ namespace VectorImageEdit.Modules
         }
 
         [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
-        public void UpdateFrame(SortedContainer objectCollection)
+        public void UpdateFrame(SortedContainer<Layer> objectCollection)
         {
             _frameGraphics.Clear(_formControl.BackColor);
 

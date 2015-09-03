@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
+using VectorImageEdit.Models;
 
 namespace VectorImageEdit.Modules.BasicShapes
 {
@@ -13,9 +14,9 @@ namespace VectorImageEdit.Modules.BasicShapes
         {
             var style = new ShapeStyle
             {
-                EdgeColor = ShapeStyle.GlobalEdgeColor,
-                EdgeSize = ShapeStyle.GlobalEdgeSize,
-                FillColor = ShapeStyle.GlobalFillColor
+                EdgeColor = AppGlobalData.Instance.ShapeEdgeColor,
+                EdgeSize = AppGlobalData.Instance.ShapeEdgeSize,
+                FillColor = AppGlobalData.Instance.ShapeFillColor
             };
             return style;
         }

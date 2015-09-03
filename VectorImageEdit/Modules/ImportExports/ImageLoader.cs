@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using VectorImageEdit.Properties;
 
-namespace VectorImageEdit.Modules
+namespace VectorImageEdit.Modules.ImportExports
 {
     /// <summary>
     /// 

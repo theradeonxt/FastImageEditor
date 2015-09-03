@@ -58,10 +58,6 @@ namespace VectorImageEdit.Modules.Layers
         {
             return DepthLevel.CompareTo(other.DepthLevel);
         }
-        public int CompareTo(Layer other)
-        {
-            return DepthLevel.CompareTo(other.DepthLevel);
-        }
 
         public abstract void Dispose();
         public abstract void DrawGraphics(Graphics destination);

@@ -6,8 +6,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using VectorImageEdit.Modules;
-using VectorImageEdit.Modules.ExportFormats;
+using VectorImageEdit.Modules.ImportExports;
 using VectorImageEdit.Modules.Layers;
+using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Models
 {
@@ -19,7 +20,7 @@ namespace VectorImageEdit.Models
         {
             VectorSerializer serializer = new VectorSerializer
             {
-                Source = AppGlobalModel.Instance.LayerManager.GetLayers()
+                Source = AppGlobalData.Instance.LayerManager.GetLayers()
             };
             serializer.Serialize(fileName);
         }
@@ -28,10 +29,10 @@ namespace VectorImageEdit.Models
         {
             VectorSerializer serializer = new VectorSerializer();
             var layers = serializer.Deserialize(fileName);
-            AppGlobalModel.Instance.LayerManager.RemoveAll();
+            AppGlobalData.Instance.LayerManager.RemoveAll();
             foreach (Layer layer in layers)
             {
-                AppGlobalModel.Instance.LayerManager.Add(layer);
+                AppGlobalData.Instance.LayerManager.Add(layer);
             }
         }
 
@@ -97,7 +98,7 @@ namespace VectorImageEdit.Models
             if (!ValidateExportFile(fileName)) return false;
 
             // Get the workspace data as an image
-            using (var preview = AppGlobalModel.Instance.LayerManager.GetImagePreview())
+            using (var preview = AppGlobalData.Instance.LayerManager.GetImagePreview())
             {
                 string ext = Path.GetExtension(fileName) ?? "jpg";
 
@@ -114,7 +115,7 @@ namespace VectorImageEdit.Models
             int progress = 0;
             Parallel.ForEach(fileNames, fileName =>
             {
-                Bitmap image = ImageLoader.ScaledSize(fileName, AppGlobalModel.Instance.Layout.MaximumSize());
+                Bitmap image = ImageLoader.ScaledSize(fileName, AppGlobalData.Instance.Layout.MaximumSize());
                 images.Add(image);
                 onProgressChangedCallback(Interlocked.Increment(ref progress));
             });
@@ -130,10 +131,10 @@ namespace VectorImageEdit.Models
                 {
                     BackgroundStatitics.CommitImageMemory(helper.SizeBytes);
                 }
-                Rectangle region = AppGlobalModel.Instance.Layout.NewLayerMetrics(image.Size);
+                Rectangle region = AppGlobalData.Instance.Layout.NewLayerMetrics(image.Size);
                 layers.Add(new Picture(image, region, 0));
             }
-            AppGlobalModel.Instance.LayerManager.Add(layers);
+            AppGlobalData.Instance.LayerManager.Add(layers);
         }
 
         #endregion

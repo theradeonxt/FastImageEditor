@@ -7,7 +7,9 @@ namespace VectorImageEdit.Controllers
 {
     class MenuItemsController
     {
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly AppWindow _appView;
+        // ReSharper disable once NotAccessedField.Local
         private readonly MenuItemsModel _model;
 
         public MenuItemsController(AppWindow appView, MenuItemsModel model)
@@ -17,6 +19,9 @@ namespace VectorImageEdit.Controllers
 
             _appView.AddContextMenuPropertiesListener(new ContextMenuPropertiesListener(this));
             _appView.AddContextMenuDeleteListener(new ContextMenuDeleteListener(this));
+            _appView.AddContextMenuBringFrontListener(new ContextMenuBringFrontListener(this));
+            _appView.AddContextMenuSendBackListener(new ContextMenuSendBackListener(this));
+            _appView.AddContextMenuSendBackwardsListener(new ContextMenuSendBackwardsListener(this));
         }
 
         private class ContextMenuPropertiesListener : AbstractListener<MenuItemsController>, IListener
@@ -28,7 +33,7 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
                 PropertiesWindow layerProperties = new PropertiesWindow(selected);
                 layerProperties.ShowDialog();
             }
@@ -43,8 +48,50 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var selected = AppGlobalModel.Instance.LayerManager.MouseHandler.SelectedLayer;
-                AppGlobalModel.Instance.LayerManager.Remove(selected);
+                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
+                AppGlobalData.Instance.LayerManager.Remove(selected);
+            }
+        }
+
+        private class ContextMenuBringFrontListener : AbstractListener<MenuItemsController>, IListener
+        {
+            public ContextMenuBringFrontListener(MenuItemsController controller)
+                : base(controller)
+            {
+            }
+
+            public void ActionPerformed(object sender, EventArgs e)
+            {
+                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
+                AppGlobalData.Instance.LayerManager.BringToFront(selected);
+            }
+        }
+
+        private class ContextMenuSendBackListener : AbstractListener<MenuItemsController>, IListener
+        {
+            public ContextMenuSendBackListener(MenuItemsController controller)
+                : base(controller)
+            {
+            }
+
+            public void ActionPerformed(object sender, EventArgs e)
+            {
+                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
+                AppGlobalData.Instance.LayerManager.SendToBack(selected);
+            }
+        }
+
+        private class ContextMenuSendBackwardsListener : AbstractListener<MenuItemsController>, IListener
+        {
+            public ContextMenuSendBackwardsListener(MenuItemsController controller)
+                : base(controller)
+            {
+            }
+
+            public void ActionPerformed(object sender, EventArgs e)
+            {
+                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
+                AppGlobalData.Instance.LayerManager.SendBackwards(selected);
             }
         }
     }

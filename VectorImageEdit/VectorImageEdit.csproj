@@ -71,9 +71,10 @@
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\ExternalEventsController.cs" />
     <Compile Include="Controllers\MenuItemsController.cs" />
+    <Compile Include="Controllers\SceneTreeViewController.cs" />
     <Compile Include="Controllers\WorkspaceController.cs" />
     <Compile Include="Models\AppModel.cs" />
-    <Compile Include="Models\AppGlobalModel.cs" />
+    <Compile Include="Models\AppGlobalData.cs" />
     <Compile Include="Forms\AbstractListener.cs" />
     <Compile Include="Forms\AppWindow\AppBorderlessForm.cs">
       <SubType>Form</SubType>
@@ -91,9 +92,9 @@
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
     <Compile Include="Modules\BasicShapes\StyleBuilder.cs" />
-    <Compile Include="Modules\BitmapHelper.cs" />
-    <Compile Include="Modules\ExportFormats\VectorSerializer.cs" />
-    <Compile Include="Modules\ImageOutput.cs" />
+    <Compile Include="Modules\Utility\BitmapHelper.cs" />
+    <Compile Include="Modules\ImportExports\VectorSerializer.cs" />
+    <Compile Include="Modules\ImportExports\ImageOutput.cs" />
     <Compile Include="Forms\AppWindow\AppWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,7 +118,7 @@
     <Compile Include="Modules\BasicShapes\Star.cs" />
     <Compile Include="Modules\BasicShapes\Triangle.cs" />
     <Compile Include="Modules\GraphicsManager.cs" />
-    <Compile Include="Modules\ImageLoader.cs" />
+    <Compile Include="Modules\ImportExports\ImageLoader.cs" />
     <Compile Include="Modules\Layers\LayerMetadata.cs" />
     <Compile Include="Modules\Layers\Layer.cs" />
     <Compile Include="Modules\Layers\LayerManager.cs" />
@@ -126,7 +127,7 @@
     <Compile Include="Modules\Layout.cs" />
     <Compile Include="Modules\Layers\Picture.cs" />
     <Compile Include="Modules\RasterizerStage.cs" />
-    <Compile Include="Modules\SortedContainer.cs" />
+    <Compile Include="Modules\Utility\SortedContainer.cs" />
     <Compile Include="Modules\Utility\ImagingHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Forms\ProgressWindow.cs">
