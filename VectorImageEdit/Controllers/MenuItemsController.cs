@@ -7,9 +7,7 @@ namespace VectorImageEdit.Controllers
 {
     class MenuItemsController
     {
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly AppWindow _appView;
-        // ReSharper disable once NotAccessedField.Local
         private readonly MenuItemsModel _model;
 
         public MenuItemsController(AppWindow appView, MenuItemsModel model)

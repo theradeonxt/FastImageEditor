@@ -1,31 +1,23 @@
-﻿using System;
-using System.Collections;
-using System.Linq;
-using VectorImageEdit.Modules.Layers;
-
-namespace VectorImageEdit.Models
+﻿namespace VectorImageEdit.Models
 {
-    // TODO: This is only used for object selection, move it to its own section
+    /// <summary>
+    /// Main Model for the aplication
+    /// 
+    /// - is the Model manager for all aplcation modules.
+    /// </summary>
     class AppModel
     {
-        public void LayerListSelect(string itemName)
-        {
-            if (string.IsNullOrEmpty(itemName) ||
-                string.IsNullOrWhiteSpace(itemName)) return;
-            try
-            {
-                LayerManager manager = AppGlobalData.Instance.LayerManager;
-                Layer layer = manager.GetSortedLayers()
-                    .First(item => item.DisplayName == itemName);
-                manager.MouseHandler.SelectedLayer = layer;
-            }
-            catch (InvalidOperationException) { }
-            catch (NullReferenceException) { }
-        }
+        public WorkspaceModel WorkspaceModel { get; private set; }
+        public ExternalEventsModel ExternalModel { get; private set; }
+        public MenuItemsModel MenuModel { get; private set; }
+        public SceneTreeModel SceneTreeModel { get; private set; }
 
-        public IList GetSortedLayers()
+        public AppModel()
         {
-            return AppGlobalData.Instance.LayerManager.GetSortedLayers();
+            ExternalModel = new ExternalEventsModel();
+            WorkspaceModel = new WorkspaceModel();
+            MenuModel = new MenuItemsModel();
+            SceneTreeModel = new SceneTreeModel();
         }
     }
 }

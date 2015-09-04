@@ -32,7 +32,8 @@ namespace VectorImageEdit.Models
 
         #region Global data
 
-        // Note: These should be initialized once at app startup.
+        // Note: These are initialized by the AppController that has
+        //       enough information to create these with the right parameters 
         public LayerManager LayerManager { get; set; }
         public Layout Layout { get; set; }
 

@@ -71,7 +71,7 @@
     <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\ExternalEventsController.cs" />
     <Compile Include="Controllers\MenuItemsController.cs" />
-    <Compile Include="Controllers\SceneTreeViewController.cs" />
+    <Compile Include="Controllers\SceneTreeController.cs" />
     <Compile Include="Controllers\WorkspaceController.cs" />
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\AppGlobalData.cs" />
@@ -88,6 +88,7 @@
     <Compile Include="Forms\IListener.cs" />
     <Compile Include="Models\ExternalEventsModel.cs" />
     <Compile Include="Models\MenuItemsModel.cs" />
+    <Compile Include="Models\SceneTreeModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />

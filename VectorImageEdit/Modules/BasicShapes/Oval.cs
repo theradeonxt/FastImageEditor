@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Modules.BasicShapes
 {

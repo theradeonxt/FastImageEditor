@@ -29,7 +29,8 @@ namespace VectorImageEdit.Controllers
             _appView.AddDragEnterListener(new DragEnterListener(this));
         }
 
-        // TODO: catch and or log Exceptions here
+        // TODO: Exceptions should be catched and logged in Controller
+        // TODO: Each listener can have its own exception handling for operations and common logging of messages
 
         private class SaveVectorListener : AbstractListener<ExternalEventsController>, IListener
         {

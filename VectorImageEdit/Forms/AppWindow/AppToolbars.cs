@@ -23,11 +23,9 @@ namespace VectorImageEdit.Forms.AppWindow
         {
             ColorDialog colorPicker = new ColorDialog();
             DialogResult dlg = colorPicker.ShowDialog();
-            if (dlg == DialogResult.OK)
-            {
-                fillcolortoolStripButton.BackColor = colorPicker.Color;
-                AppGlobalData.Instance.ShapeFillColor = colorPicker.Color;
-            }
+            if (dlg != DialogResult.OK) return;
+            fillcolortoolStripButton.BackColor = colorPicker.Color;
+            AppGlobalData.Instance.ShapeFillColor = colorPicker.Color;
         }
 
         private void color1Pick_Click(object sender, EventArgs e)
@@ -43,6 +41,8 @@ namespace VectorImageEdit.Forms.AppWindow
         }
 
         #region Shape toolbar buttons
+
+        // TODO: Remove direct dependency on shapes here in the View and move it to Model
 
         private void btnCircle_Click(object sender, EventArgs e)
         {

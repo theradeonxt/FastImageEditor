@@ -48,24 +48,16 @@ namespace VectorImageEdit.Modules.Utility
         /// <returns> Output Bitmap </returns>
         public static Bitmap Allocate(int width, int height)
         {
-            // TODO: remove the null
-            // TODO: Clone might not work if OutOfMemoryException - ensure Properties.Resources.placeholder has the right image format
             try
             {
                 return new Bitmap(width, height, PixelFormat.Format32bppArgb);
             }
-            catch (OutOfMemoryException)
+            catch (ArgumentException)
             {
                 Bitmap errorImage = Properties.Resources.placeholder;
-                try
-                {
-                    return errorImage.Clone(new Rectangle(0, 0, errorImage.Width, errorImage.Height),
-                        PixelFormat.Format32bppArgb);
-                }
-                catch (OutOfMemoryException) { }
-                catch (ArgumentException) { }
+                return errorImage.Clone(new Rectangle(0, 0, errorImage.Width, errorImage.Height),
+                    PixelFormat.Format32bppArgb);
             }
-            return null;
         }
     }
 }

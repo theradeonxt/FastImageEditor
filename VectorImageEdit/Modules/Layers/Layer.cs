@@ -12,6 +12,7 @@ namespace VectorImageEdit.Modules.Layers
     /// 
     /// </summary>
     [Serializable]
+    // TODO: LayerMetadata could be made instance member instead of inheritance
     public abstract class Layer : LayerMetadata, IComparable<Layer>, IDisposable
     {
         // this is shadowed by a property for validation reasons and serialization hiding

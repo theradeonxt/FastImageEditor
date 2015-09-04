@@ -6,7 +6,6 @@ namespace VectorImageEdit.Modules
     /// <summary>
     /// Layout Module
     ///
-    /// - implements object scaling functionality
     /// - gets size & location for new objects
     /// 
     /// </summary>
@@ -46,8 +45,8 @@ namespace VectorImageEdit.Modules
         /// If the given size exceeds the maximum layout bounds,
         /// it is scaled down randomly and tries to keep aspect ratio.
         /// </summary>
-        /// <param name="layerSize"> Original layer size </param>
-        /// <returns> The layer region as a Rectangle </returns>
+        /// <param name="layerSize"> Original size </param>
+        /// <returns> New bounds </returns>
         public Rectangle NewLayerMetrics(Size layerSize)
         {
             int width, height;
@@ -60,7 +59,7 @@ namespace VectorImageEdit.Modules
                 width = _random.Next(
                     Math.Abs(_maximumSize.Width - 3 * Padding),
                     Math.Abs(_maximumSize.Width - Padding));
-                float heightf = width / aspectRatio;
+                float heightf = width / aspectRatio; // TODO: not enough to keep aspect ratio: this height can be > workspace height
                 height = (int)heightf;
             }
             else

@@ -28,13 +28,18 @@ namespace VectorImageEdit.Modules
                     _rasterMap.Add(layer.Uid, ((Picture)layer).Image);
                     continue;
                 }
-                // Only a Vector object (Shape) needs resterizing
-                var rasterized = ImagingHelpers.Allocate(layer.Region.Width, layer.Region.Height);
-                using (var gfx = Graphics.FromImage(rasterized))
+                // Only a Vector object (Shape) needs rasterizing
+                try
                 {
-                    layer.DrawGraphics(gfx);
+                    var rasterized = ImagingHelpers.Allocate(layer.Region.Width, layer.Region.Height);
+                    using (var gfx = Graphics.FromImage(rasterized))
+                    {
+                        layer.DrawGraphics(gfx);
+                    }
+                    _rasterMap.Add(layer.Uid, rasterized);
                 }
-                _rasterMap.Add(layer.Uid, rasterized);
+                catch (OutOfMemoryException) { }
+                catch (ArgumentException) { }
             }
         }
 

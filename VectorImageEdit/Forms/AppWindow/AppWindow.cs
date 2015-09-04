@@ -10,7 +10,7 @@ namespace VectorImageEdit.Forms.AppWindow
     /// 
     /// AppWindow Module
     ///
-    /// This is the main application window
+    /// This is the form for the main application window
     /// 
     /// </summary>
     public partial class AppWindow : Form
@@ -22,8 +22,7 @@ namespace VectorImageEdit.Forms.AppWindow
             edgecolorToolStripButton.BackColor = AppGlobalData.Instance.ShapeEdgeColor;
             fillcolortoolStripButton.BackColor = AppGlobalData.Instance.ShapeFillColor;
 
-            // This arranges the color picker toolbar items.
-            // Note: the look from designer is corrected here
+            // This arranges the color picker toolbar items; the designer look is corrected here
             topToolStrip.LayoutStyle = ToolStripLayoutStyle.Table;
             var layoutSettings = (topToolStrip.LayoutSettings as TableLayoutSettings);
             if (layoutSettings != null)

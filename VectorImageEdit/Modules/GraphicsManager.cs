@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
@@ -60,11 +61,16 @@ namespace VectorImageEdit.Modules
             DisposeGraphicsResources();
 
             // Allocate resources for the new frame
-            _formGraphics = _formControl.CreateGraphics();
-            _frame = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
-            _frameBackup = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
-            _frameGraphics = Graphics.FromImage(_frame);
-            _frameBackupGraphics = Graphics.FromImage(_frameBackup);
+            try
+            {
+                _formGraphics = _formControl.CreateGraphics();
+                _frame = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
+                _frameBackup = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
+                _frameGraphics = Graphics.FromImage(_frame);
+                _frameBackupGraphics = Graphics.FromImage(_frameBackup);
+            }
+            catch (OutOfMemoryException) { }
+            catch (ArgumentException) { }
 
             ImagingHelpers.GraphicsFastDrawing(_formGraphics);
             ImagingHelpers.GraphicsFastDrawing(_frameGraphics);

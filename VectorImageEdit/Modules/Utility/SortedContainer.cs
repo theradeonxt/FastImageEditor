@@ -11,15 +11,15 @@ namespace VectorImageEdit.Modules.Utility
     /// - thread safe collection wrapper over SynchronizedCollection
     /// 
     /// </summary>
-    public class SortedContainer<T> : SynchronizedCollection<T>
-        where T : IComparable<T>
+    public class SortedContainer<TItem> : SynchronizedCollection<TItem>
+        where TItem : IComparable<TItem>
     {
         /// <summary>
         /// Adds the new item keeping the collection sorted
         /// based on the items' comparison method
         /// </summary>
         /// <param name="item"></param>
-        public new void Add(T item)
+        public new void Add(TItem item)
         {
             // First element is a simple add
             if (Count == 0)
@@ -46,7 +46,7 @@ namespace VectorImageEdit.Modules.Utility
         /// </summary>
         public void Rebuild()
         {
-            var copy = new T[Count];
+            var copy = new TItem[Count];
             CopyTo(copy, 0);
             Clear();
             foreach (var layer in copy)
