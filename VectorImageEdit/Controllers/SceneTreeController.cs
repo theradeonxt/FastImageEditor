@@ -16,14 +16,14 @@ namespace VectorImageEdit.Controllers
             _appView = appView;
             _model = model;
 
-            _appView.AddListboxSelectionChangedListener(new LayerListSelectedChangedListener(this));
+            _appView.AddTreeSelectionChangedListener(new LayerListSelectedChangedListener(this));
         }
 
         public void OnListboxItemsChangedCallback()
         {
             // This will be run on the UI thread, but can be invoked from other threads safely
-            var layers = _model.GetSortedLayers();
-            MethodInvoker del = delegate { _appView.ListboxLayers = layers; };
+            var layers = AppGlobalData.Instance.LayerManager.GetLayers().ToArray();
+            MethodInvoker del = delegate { _appView.SceneTreeItems = layers; };
             _appView.Invoke(del);
         }
 
@@ -36,7 +36,8 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                Controller._model.LayerListSelect(Controller._appView.ListboxSelectedLayer);
+                // TODO: Fix this - trigger selection throws InvalidOperationException
+                Controller._model.SelectSceneTreeItem(Controller._appView.SceneTreeSelectedItem);
             }
         }
     }

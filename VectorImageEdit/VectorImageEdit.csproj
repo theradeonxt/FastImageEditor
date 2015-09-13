@@ -72,7 +72,15 @@
     <Compile Include="Controllers\ExternalEventsController.cs" />
     <Compile Include="Controllers\MenuItemsController.cs" />
     <Compile Include="Controllers\SceneTreeController.cs" />
+    <Compile Include="Controllers\ToolstripItemsController.cs" />
     <Compile Include="Controllers\WorkspaceController.cs" />
+    <Compile Include="Forms\AppWindow\AppMenuItems.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AppWindow\AppSceneTree.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CustomLook.cs" />
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\AppGlobalData.cs" />
     <Compile Include="Forms\AbstractListener.cs" />
@@ -82,13 +90,14 @@
     <Compile Include="Forms\AppWindow\AppExternalEvents.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AppWindow\AppToolbars.cs">
+    <Compile Include="Forms\AppWindow\AppToolstrips.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\IListener.cs" />
     <Compile Include="Models\ExternalEventsModel.cs" />
     <Compile Include="Models\MenuItemsModel.cs" />
     <Compile Include="Models\SceneTreeModel.cs" />
+    <Compile Include="Models\ToolbarItemsModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
@@ -212,9 +221,53 @@
   <ItemGroup>
     <None Include="Resources\triangle.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\lines-520432_640.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\placeholder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\File-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Image File-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Open Folder-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shutdown-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Edit-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Delete-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Hexagon-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rectangle Stroked-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Ellipse-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Diamond-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Circled-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Triangle-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Star-50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Memory Slot-50.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

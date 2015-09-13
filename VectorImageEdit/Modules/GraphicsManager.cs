@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using VectorImageEdit.Models;
 using VectorImageEdit.Modules.Layers;
 using VectorImageEdit.Modules.Utility;
 
@@ -37,15 +36,9 @@ namespace VectorImageEdit.Modules
         private Graphics _formGraphics;          // graphics object used to draw directly on the form control
         private Rectangle _frameBackupRegion;    // the region covered by the selection border
 
-        // TODO: move to global styles
-        private readonly Pen _borderStyle;       // the style used to draw the selection border
-
         protected GraphicsManager(Control formControl)
         {
             _formControl = formControl;
-
-            // default aspect of selection border
-            _borderStyle = new Pen(Brushes.Black, 3) { DashStyle = DashStyle.Dash };
 
             Resize();
         }
@@ -68,13 +61,13 @@ namespace VectorImageEdit.Modules
                 _frameBackup = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
                 _frameGraphics = Graphics.FromImage(_frame);
                 _frameBackupGraphics = Graphics.FromImage(_frameBackup);
+
+                ImagingHelpers.GraphicsFastDrawing(_formGraphics);
+                ImagingHelpers.GraphicsFastDrawing(_frameGraphics);
+                ImagingHelpers.GraphicsFastDrawing(_frameBackupGraphics);
             }
             catch (OutOfMemoryException) { }
             catch (ArgumentException) { }
-
-            ImagingHelpers.GraphicsFastDrawing(_formGraphics);
-            ImagingHelpers.GraphicsFastDrawing(_frameGraphics);
-            ImagingHelpers.GraphicsFastDrawing(_frameBackupGraphics);
         }
 
         public Bitmap GetImagePreview()
@@ -88,7 +81,6 @@ namespace VectorImageEdit.Modules
             _formGraphics.DrawImageUnscaled(_frame, 0, 0);
         }
 
-        [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
         public void UpdateFrame(SortedContainer<Layer> objectCollection)
         {
             _frameGraphics.Clear(_formControl.BackColor);
@@ -133,7 +125,7 @@ namespace VectorImageEdit.Modules
                 GraphicsUnit.Pixel);
 
             // Draw selection over frame region
-            _formGraphics.DrawRectangle(_borderStyle,
+            _formGraphics.DrawRectangle(AppGlobalData.Instance.LayerSelectionPen,
                 selectionBorder.Left, selectionBorder.Top, selectionBorder.Width - 1, selectionBorder.Height - 1);
 
             _frameBackupRegion = selectionBorder;

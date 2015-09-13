@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Windows.Forms;
-using VectorImageEdit.Models;
-using VectorImageEdit.Modules;
+﻿using System.Windows.Forms;
 
 namespace VectorImageEdit.Forms.AppWindow
 {
@@ -10,7 +6,7 @@ namespace VectorImageEdit.Forms.AppWindow
     /// 
     /// AppWindow Module
     ///
-    /// This is the form for the main application window
+    /// This is the Form for the main application window
     /// 
     /// </summary>
     public partial class AppWindow : Form
@@ -18,21 +14,7 @@ namespace VectorImageEdit.Forms.AppWindow
         public AppWindow()
         {
             InitializeComponent();
-
-            edgecolorToolStripButton.BackColor = AppGlobalData.Instance.ShapeEdgeColor;
-            fillcolortoolStripButton.BackColor = AppGlobalData.Instance.ShapeFillColor;
-
-            // This arranges the color picker toolbar items; the designer look is corrected here
-            topToolStrip.LayoutStyle = ToolStripLayoutStyle.Table;
-            var layoutSettings = (topToolStrip.LayoutSettings as TableLayoutSettings);
-            if (layoutSettings != null)
-            {
-                layoutSettings.ColumnCount = 11;
-                layoutSettings.RowCount = 2;
-            }
-
-            memoryProgressBar.Value = BackgroundStatitics.MemoryUsagePercent;
-            memoryUsedLabel.Text = string.Format("Memory Used ({0}%)", memoryProgressBar.Value.ToString());
+            InitializeToolbarLook();
         }
 
         #region View Listeners
@@ -41,89 +23,18 @@ namespace VectorImageEdit.Forms.AppWindow
         {
             panWorkRegion.SizeChanged += listener.ActionPerformed;
         }
-
-        public void AddAppWindowMovedListener(IListener listener)
+        public void AddWindowMovedListener(IListener listener)
         {
             Move += listener.ActionPerformed;
         }
 
-        public void AddListboxSelectionChangedListener(IListener listener)
-        {
-            lBoxActiveLayers.SelectedIndexChanged += listener.ActionPerformed;
-        }
-
-        public void AddContextMenuPropertiesListener(IListener listener)
-        {
-            cmsMenuProperties.Click += listener.ActionPerformed;
-            layerPropertiesMenu.Click += listener.ActionPerformed;
-        }
-
-        public void AddContextMenuDeleteListener(IListener listener)
-        {
-            cmsMenuDelete.Click += listener.ActionPerformed;
-            layerDeleteMenu.Click += listener.ActionPerformed;
-        }
-
-        public void AddContextMenuBringFrontListener(IListener listener)
-        {
-            layerBringFrontMenu.Click += listener.ActionPerformed;
-        }
-
-        public void AddContextMenuSendBackListener(IListener listener)
-        {
-            layerSendBackMenu.Click += listener.ActionPerformed;
-        }
-
-        public void AddContextMenuSendBackwardsListener(IListener listener)
-        {
-            layerSendBackMenu.Click += listener.ActionPerformed;
-        }
-
-        #endregion View Listeners
+        #endregion
 
         #region View Getters/Setters
 
         public Control WorkspaceArea
         {
             get { return panWorkRegion; }
-        }
-
-        public string ListboxSelectedLayer
-        {
-            get
-            {
-                try
-                {
-                    return lBoxActiveLayers.SelectedItem.ToString();
-                }
-                catch (NullReferenceException)
-                {
-                    return "";
-                }
-            }
-            set
-            {
-                if (string.IsNullOrEmpty(value)) return;
-                lBoxActiveLayers.SelectedItem = value;
-            }
-        }
-
-        public IEnumerable ListboxSelectedLayers
-        {
-            get { return lBoxActiveLayers.SelectedItems; }
-        }
-
-        public IEnumerable ListboxLayers
-        {
-            get { return lBoxActiveLayers.Items; }
-            set
-            {
-                lBoxActiveLayers.Items.Clear();
-                foreach (var item in value)
-                {
-                    lBoxActiveLayers.Items.Add(item);
-                }
-            }
         }
 
         // TODO: how to prevent multiple BackgroundWorkers from modifying the label/progressbar?
@@ -139,13 +50,31 @@ namespace VectorImageEdit.Forms.AppWindow
                 }
             }
         }
-
         public string StatusLabelText
         {
             get { return statusActionLabel.Text; }
             set { statusActionLabel.Text = value; }
         }
+        
+        public int MemoryProgressbarPercentage
+        {
+            get { return memoryProgressBar.Value; }
+            set
+            {
+                if (memoryProgressBar.Minimum <= value && value <= memoryProgressBar.Maximum)
+                {
+                    memoryProgressBar.Value = value;
+                }
+            }
+        }
+        public string MemoryLabelText
+        {
+            get { return memoryUsedLabel.Text; }
+            set { memoryUsedLabel.Text = value; }
+        }
 
-        #endregion View Getters/Setters
+        #endregion
+
+        
     }
 }

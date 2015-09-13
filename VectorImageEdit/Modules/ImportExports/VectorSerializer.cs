@@ -7,11 +7,6 @@ namespace VectorImageEdit.Modules.ImportExports
 {
     class VectorSerializer
     {
-        static VectorSerializer()
-        {
-            SupportedFileExt = ".vdata";
-        }
-
         /// <summary>
         /// Serializes the workspace layers into a vector format to a given file
         /// </summary>
@@ -43,7 +38,5 @@ namespace VectorImageEdit.Modules.ImportExports
         }
 
         public IList Source { get; set; }
-
-        public static string SupportedFileExt { get; private set; }
     }
 }

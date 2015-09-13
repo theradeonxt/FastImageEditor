@@ -12,18 +12,18 @@ namespace VectorImageEdit.Modules.Layers
     /// 
     /// </summary>
     [Serializable]
-    // TODO: LayerMetadata could be made instance member instead of inheritance
-    public abstract class Layer : LayerMetadata, IComparable<Layer>, IDisposable
+    public abstract class Layer : IComparable<Layer>, IDisposable
     {
+        public readonly LayerMetadata Metadata;
+
         // this is shadowed by a property for validation reasons and serialization hiding
         private Rectangle _region;
 
-        protected Layer()
+        /*protected Layer()
         {
-        }
+        }*/
 
         protected Layer(Rectangle region, int depthLevel, string displayName)
-            :base(displayName)
         {
             Debug.Assert(region.Width >= 0
                 && region.Height >= 0
@@ -33,6 +33,8 @@ namespace VectorImageEdit.Modules.Layers
 
             _region = region;
             DepthLevel = depthLevel;
+
+            Metadata = new LayerMetadata(displayName);
         }
 
         #region Property Getters/Setters
@@ -40,7 +42,6 @@ namespace VectorImageEdit.Modules.Layers
         public Rectangle Region
         {
             get { return _region; }
-            // ReSharper disable once UnusedMember.Global - Used by the deserializer
             set
             {
                 Debug.Assert(value.Width >= 0 && value.Height >= 0

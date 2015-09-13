@@ -2,6 +2,7 @@
 using VectorImageEdit.Forms;
 using VectorImageEdit.Forms.AppWindow;
 using VectorImageEdit.Models;
+using VectorImageEdit.Modules;
 
 namespace VectorImageEdit.Controllers
 {
@@ -19,7 +20,10 @@ namespace VectorImageEdit.Controllers
             _model = model;
 
             _appView.AddWorkspaceSizeChangedListener(new WorkspaceSizeChangedListener(this));
-            _appView.AddAppWindowMovedListener(new AppWindowMovedListener(this));
+            _appView.AddWindowMovedListener(new AppWindowMovedListener(this));
+
+            _appView.MemoryProgressbarPercentage = BackgroundStatitics.MemoryUsagePercent;
+            _appView.MemoryLabelText = string.Format("Memory Used ({0}%)", BackgroundStatitics.MemoryUsagePercent.ToString());
         }
 
         private class WorkspaceSizeChangedListener : AbstractListener<WorkspaceController>, IListener

@@ -44,7 +44,7 @@ namespace VectorImageEdit.Controllers
                 SaveFileDialog dialog = new SaveFileDialog
                 {
                     Title = @"Save vector data",
-                    Filter = string.Format("Vector data|*{0}", ExternalEventsModel.SupportedVectorExt)
+                    Filter = string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension)
                 };
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 
@@ -64,7 +64,7 @@ namespace VectorImageEdit.Controllers
                 OpenFileDialog dialog = new OpenFileDialog
                 {
                     Title = @"Open vector data",
-                    Filter = string.Format("Vector data|*{0}", ExternalEventsModel.SupportedVectorExt)
+                    Filter = string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension)
                 };
                 if (dialog.ShowDialog() != DialogResult.OK) return;
 

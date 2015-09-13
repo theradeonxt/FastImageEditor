@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using VectorImageEdit.Modules.Layers;
 
@@ -7,7 +6,7 @@ namespace VectorImageEdit.Models
 {
     class SceneTreeModel
     {
-        public void LayerListSelect(string itemName)
+        public void SelectSceneTreeItem(string itemName)
         {
             if (string.IsNullOrEmpty(itemName) ||
                 string.IsNullOrWhiteSpace(itemName)) return;
@@ -15,16 +14,11 @@ namespace VectorImageEdit.Models
             {
                 LayerManager manager = AppGlobalData.Instance.LayerManager;
                 Layer layer = manager.GetSortedLayers()
-                    .First(item => item.DisplayName == itemName);
+                    .First(item => item.Metadata.DisplayName == itemName);
                 manager.MouseHandler.SelectedLayer = layer;
             }
             catch (InvalidOperationException) { }
             catch (NullReferenceException) { }
-        }
-
-        public IList GetSortedLayers()
-        {
-            return AppGlobalData.Instance.LayerManager.GetSortedLayers();
         }
     }
 }

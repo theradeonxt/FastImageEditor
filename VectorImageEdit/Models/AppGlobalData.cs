@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using VectorImageEdit.Modules;
 using VectorImageEdit.Modules.Layers;
 
@@ -20,6 +21,10 @@ namespace VectorImageEdit.Models
             ShapeEdgeColor = Color.OrangeRed;
             ShapeFillColor = Color.LightBlue;
             ShapeEdgeSize = 4.0f;
+
+            LayerSelectionPen = new Pen(Brushes.Black, 3) { DashStyle = DashStyle.Dash };
+
+            VectorFileExtension = ".vdata";
         }
 
         #region Singleton implementation details
@@ -44,6 +49,10 @@ namespace VectorImageEdit.Models
         public Color ShapeEdgeColor { get; set; }
         public Color ShapeFillColor { get; set; }
         public float ShapeEdgeSize { get; set; }
+
+        public Pen LayerSelectionPen { get; private set; }
+
+        public string VectorFileExtension { get; private set; }
 
         #endregion
     }

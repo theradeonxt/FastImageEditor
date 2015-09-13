@@ -36,8 +36,6 @@ namespace VectorImageEdit.Models
             }
         }
 
-        public static string SupportedVectorExt { get { return VectorSerializer.SupportedFileExt; } }
-
         #endregion
 
         #region Open/Export File(s)

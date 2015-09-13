@@ -9,19 +9,14 @@ namespace VectorImageEdit.Modules.Layers
     /// - contains the layer metadata properties such as an UID and DisplayName
     /// </summary>
     [Serializable]
-    public abstract class LayerMetadata
+    public class LayerMetadata
     {
         private static int _nextId = -1;
 
-        protected LayerMetadata()
+        public LayerMetadata(string displayName)
         {
             Uid = Interlocked.Increment(ref _nextId);
-        }
-
-        protected LayerMetadata(string displayName)
-        {
-            Uid = Interlocked.Increment(ref _nextId);
-            DisplayName = displayName + " [" + Uid.ToString() + "]";
+            DisplayName = displayName + " [" + Uid + "]";
         }
 
         public override string ToString()

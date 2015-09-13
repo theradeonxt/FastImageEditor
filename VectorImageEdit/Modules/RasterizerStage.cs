@@ -25,7 +25,7 @@ namespace VectorImageEdit.Modules
             {
                 if (layer is Picture)
                 {
-                    _rasterMap.Add(layer.Uid, ((Picture)layer).Image);
+                    _rasterMap.Add(layer.Metadata.Uid, ((Picture)layer).Image);
                     continue;
                 }
                 // Only a Vector object (Shape) needs rasterizing
@@ -36,7 +36,7 @@ namespace VectorImageEdit.Modules
                     {
                         layer.DrawGraphics(gfx);
                     }
-                    _rasterMap.Add(layer.Uid, rasterized);
+                    _rasterMap.Add(layer.Metadata.Uid, rasterized);
                 }
                 catch (OutOfMemoryException) { }
                 catch (ArgumentException) { }

@@ -38,8 +38,8 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
 #pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src = _mm_load_si128(reinterpret_cast<const __m128i *>(source + index));
-            __m128i tar = _mm_load_si128(reinterpret_cast<const __m128i *>(target + index));
+            __m128i src = _mm_load_si128(reinterpret_cast<const __m128i*>(source + index));
+            __m128i tar = _mm_load_si128(reinterpret_cast<const __m128i*>(target + index));
 
             // unpack [BGRBGR...] into [B0G0R0B0G0R0...] (extend each color channel to 16-bit)
             __m128i srclo = _mm_unpacklo_epi8(src, _mm_setzero_si128());
@@ -65,7 +65,7 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
             __m128i dst = _mm_packus_epi16(dstlo, dsthi);
 
             // bypass the cache, non-temporal write to memory (this saves a few cycles)
-            _mm_stream_si128(reinterpret_cast<__m128i *>(destination + index), dst);
+            _mm_stream_si128(reinterpret_cast<__m128i*>(destination + index), dst);
         }
     }
     else
@@ -73,8 +73,8 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
 #pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src   = _mm_loadu_si128(reinterpret_cast<const __m128i *>(source + index));
-            __m128i tar   = _mm_loadu_si128(reinterpret_cast<const __m128i *>(target + index));
+            __m128i src   = _mm_loadu_si128(reinterpret_cast<const __m128i*>(source + index));
+            __m128i tar   = _mm_loadu_si128(reinterpret_cast<const __m128i*>(target + index));
             __m128i srclo = _mm_unpacklo_epi8(src, _mm_setzero_si128());
             __m128i srchi = _mm_unpackhi_epi8(src, _mm_setzero_si128());
             __m128i tarlo = _mm_unpacklo_epi8(tar, _mm_setzero_si128());
@@ -86,7 +86,7 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
             __m128i dstlo = _mm_add_epi16(taralphalo, _1srcalphalo);
             __m128i dsthi = _mm_add_epi16(taralphahi, _1srcalphahi);
             __m128i dst   = _mm_packus_epi16(_mm_div255_epu16(dstlo), _mm_div255_epu16(dsthi));
-            _mm_storeu_si128(reinterpret_cast<__m128i *>(destination + index), dst);
+            _mm_storeu_si128(reinterpret_cast<__m128i*>(destination + index), dst);
         }
     }
 
@@ -124,10 +124,10 @@ OpacityAdjust_32bgra(READONLY (uint8_t*) source,
 #pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src   = _mm_load_si128(reinterpret_cast<const __m128i *>(source + index));
+            __m128i src   = _mm_load_si128(reinterpret_cast<const __m128i*>(source + index));
             __m128i dst   = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
             //__m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask); // NOTE: SSE4.1 instruction!
-            _mm_stream_si128(reinterpret_cast<__m128i *>(destination + index), dst);
+            _mm_stream_si128(reinterpret_cast<__m128i*>(destination + index), dst);
         }
     }
     else
@@ -135,10 +135,10 @@ OpacityAdjust_32bgra(READONLY (uint8_t*) source,
 #pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src   = _mm_loadu_si128(reinterpret_cast<const __m128i *>(source + index));
+            __m128i src   = _mm_loadu_si128(reinterpret_cast<const __m128i*>(source + index));
             __m128i dst   = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
             //__m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask); // NOTE: SSE4.1 instruction!
-            _mm_storeu_si128(reinterpret_cast<__m128i *>(destination + index), dst);
+            _mm_storeu_si128(reinterpret_cast<__m128i*>(destination + index), dst);
         }
     }
 
@@ -182,8 +182,8 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
             // load 4 BGRA pixels (source and target)
-            __m128i src = _mm_load_si128(reinterpret_cast<const __m128i *>(source + index));
-            __m128i tar = _mm_load_si128(reinterpret_cast<const __m128i *>(target + index));
+            __m128i src = _mm_load_si128(reinterpret_cast<const __m128i*>(source + index));
+            __m128i tar = _mm_load_si128(reinterpret_cast<const __m128i*>(target + index));
 
             __m128i tara_scaled = _mm_scale_epu8(_mm_sub_epi8(bunch_16x_255, src), tar); // alpha_tar * (255 - alpha_src) / 255            
             __m128i dsta_scaled = _mm_srli_si128(_mm_and_si128(src, alpha_mask), 3);     // Keep the 4 alpha values from tara_scaled
@@ -218,7 +218,7 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
             __m128i dst = _mm_packus_epi16(dstlo, dsthi);       // Repack the 16bit pixel values to [0-255] 
 
             // store 4 output pixels
-            _mm_stream_si128(reinterpret_cast<__m128i *>(destination + index), dst);
+            _mm_stream_si128(reinterpret_cast<__m128i*>(destination + index), dst);
         }
     }
     else
@@ -227,8 +227,8 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
 #pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src   = _mm_loadu_si128((const __m128i *)(source + index));
-            __m128i tar   = _mm_loadu_si128((const __m128i *)(target + index));
+            __m128i src   = _mm_loadu_si128((const __m128i*)(source + index));
+            __m128i tar   = _mm_loadu_si128((const __m128i*)(target + index));
             __m128i srclo = _mm_unpacklo_epi8(src, _mm_setzero_si128());
             __m128i tarlo = _mm_unpacklo_epi8(tar, _mm_setzero_si128());
             __m128i srchi = _mm_unpackhi_epi8(src, _mm_setzero_si128());
@@ -236,7 +236,7 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
             __m128i dstlo = _mm_alphablendx2_epi16(srclo, tarlo);
             __m128i dsthi = _mm_alphablendx2_epi16(srchi, tarhi);
             __m128i dst   = _mm_packus_epi16(dstlo, dsthi);
-            _mm_storeu_si128((__m128i *)(destination + index), dst);
+            _mm_storeu_si128((__m128i*)(destination + index), dst);
         }*/
     }
 
