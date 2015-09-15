@@ -18,8 +18,8 @@ namespace VectorImageEdit.Models
     {
         private AppGlobalData()
         {
-            ShapeEdgeColor = Color.OrangeRed;
-            ShapeFillColor = Color.LightBlue;
+            PrimaryColor = Color.OrangeRed;
+            SecondaryColor = Color.LightBlue;
             ShapeEdgeSize = 4.0f;
 
             LayerSelectionPen = new Pen(Brushes.Black, 3) { DashStyle = DashStyle.Dash };
@@ -28,6 +28,7 @@ namespace VectorImageEdit.Models
         }
 
         #region Singleton implementation details
+
         private static readonly Lazy<AppGlobalData> ThisInstance =
             new Lazy<AppGlobalData>(() => new AppGlobalData());
 
@@ -46,8 +47,8 @@ namespace VectorImageEdit.Models
 
         #region Global settings
 
-        public Color ShapeEdgeColor { get; set; }
-        public Color ShapeFillColor { get; set; }
+        public Color PrimaryColor { get; set; }
+        public Color SecondaryColor { get; set; }
         public float ShapeEdgeSize { get; set; }
 
         public Pen LayerSelectionPen { get; private set; }

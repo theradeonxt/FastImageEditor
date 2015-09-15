@@ -4,20 +4,20 @@ using System.Drawing;
 namespace VectorImageEdit.Modules.BasicShapes
 {
     [Serializable]
-    public class Oval : ShapeBase
+    public class Ellipse : ShapeBase
     {
-        //public Oval() { }
+        //public Ellipse() { }
 
-        public Oval(Rectangle region, ShapeStyle style)
-            : base(region, 0, style, "Layer - Oval")
+        public Ellipse(Rectangle region, ShapeStyle style)
+            : base(region, 0, style, "Layer - Ellipse")
         {
             Style = style;
         }
 
         public override void DrawGraphics(Graphics destination)
         {
-            using (var brush = StyleBuilder.BrushBuilder(Style))
-            using (var pen = StyleBuilder.PenBuilder(Style))
+            using (var brush = Style.CreateBrush())
+            using (var pen = Style.CreatePen())
             {
                 destination.DrawEllipse(pen, Region);
                 destination.FillEllipse(brush, Region);

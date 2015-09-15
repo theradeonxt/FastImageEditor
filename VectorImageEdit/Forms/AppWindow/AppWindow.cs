@@ -74,7 +74,5 @@ namespace VectorImageEdit.Forms.AppWindow
         }
 
         #endregion
-
-        
     }
 }

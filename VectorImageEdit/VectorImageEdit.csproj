@@ -51,6 +51,9 @@
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>VectorImageEdit.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MRG.Controls.UI">
@@ -97,11 +100,12 @@
     <Compile Include="Models\ExternalEventsModel.cs" />
     <Compile Include="Models\MenuItemsModel.cs" />
     <Compile Include="Models\SceneTreeModel.cs" />
-    <Compile Include="Models\ToolbarItemsModel.cs" />
+    <Compile Include="Models\ToolstripItemsModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
-    <Compile Include="Modules\BasicShapes\StyleBuilder.cs" />
+    <Compile Include="Modules\Factories\ShapeFactory.cs" />
+    <Compile Include="Modules\Factories\ShapeStyleFactory.cs" />
     <Compile Include="Modules\Utility\BitmapHelper.cs" />
     <Compile Include="Modules\ImportExports\VectorSerializer.cs" />
     <Compile Include="Modules\ImportExports\ImageOutput.cs" />
@@ -122,7 +126,7 @@
     <Compile Include="Modules\BasicShapes\Diamond.cs" />
     <Compile Include="Modules\BasicShapes\Hexagon.cs" />
     <Compile Include="Modules\BasicShapes\Line.cs" />
-    <Compile Include="Modules\BasicShapes\Oval.cs" />
+    <Compile Include="Modules\BasicShapes\Ellipse.cs" />
     <Compile Include="Modules\BasicShapes\SRectangle.cs" />
     <Compile Include="Modules\BasicShapes\Square.cs" />
     <Compile Include="Modules\BasicShapes\Star.cs" />

@@ -9,15 +9,15 @@ namespace VectorImageEdit.Modules.BasicShapes
         //public SRectangle() { }
 
         public SRectangle(Rectangle region, ShapeStyle style)
-            : base(region, 0, style, "Layer - SRectangle")
+            : base(region, 0, style, "Layer - Rectangle")
         {
             Style = style;
         }
 
         public override void DrawGraphics(Graphics destination)
         {
-            using (var brush = StyleBuilder.BrushBuilder(Style))
-            using (var pen = StyleBuilder.PenBuilder(Style))
+            using (var brush = Style.CreateBrush())
+            using (var pen = Style.CreatePen())
             {
                 destination.DrawRectangle(pen, Region);
                 destination.FillRectangle(brush, Region);

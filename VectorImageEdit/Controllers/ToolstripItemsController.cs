@@ -9,20 +9,21 @@ namespace VectorImageEdit.Controllers
     class ToolstripItemsController
     {
         private readonly AppWindow _appView;
-        private readonly ToolbarItemsModel _model;
+        private readonly ToolstripItemsModel _model;
 
-        public ToolstripItemsController(AppWindow appView, ToolbarItemsModel model)
+        public ToolstripItemsController(AppWindow appView, ToolstripItemsModel model)
         {
             _appView = appView;
             _model = model;
 
-            _appView.ToolbarPrimaryColor = AppGlobalData.Instance.ShapeEdgeColor;
-            _appView.ToolbarSecondaryColor = AppGlobalData.Instance.ShapeFillColor;
+            _appView.ToolbarPrimaryColor = AppGlobalData.Instance.PrimaryColor;
+            _appView.ToolbarSecondaryColor = AppGlobalData.Instance.SecondaryColor;
             _appView.SetPrimaryColorActive();
 
             _appView.AddSwitchColorClickListener(new SwitchColorClickListener(this));
             _appView.AddCustomColorClickListener(new CustomColorClickListener(this));
             _appView.AddPresetColorClickListener(new PresetColorClickListener(this));
+            _appView.AddShapeItemClickListener(new ShapeItemClickListener(this));
         }
 
         private class CustomColorClickListener : AbstractListener<ToolstripItemsController>, IListener
@@ -41,13 +42,13 @@ namespace VectorImageEdit.Controllers
                 ColorType colorMode = Controller._model.ColorMode;
                 if (colorMode == ColorType.PrimaryColor)
                 {
-                    AppGlobalData.Instance.ShapeEdgeColor = colorPicker.Color;
+                    AppGlobalData.Instance.PrimaryColor = colorPicker.Color;
                     Controller._appView.ToolbarPrimaryColor = colorPicker.Color;
                     Controller._appView.SetPrimaryColorActive();
                 }
                 else
                 {
-                    AppGlobalData.Instance.ShapeFillColor = colorPicker.Color;
+                    AppGlobalData.Instance.SecondaryColor = colorPicker.Color;
                     Controller._appView.ToolbarSecondaryColor = colorPicker.Color;
                     Controller._appView.SetSecondaryColorActive();
                 }
@@ -65,7 +66,7 @@ namespace VectorImageEdit.Controllers
             {
                 try
                 {
-                    var stripButton = (ToolStripButton)sender;
+                    var stripButton = (ToolStripItem)sender;
                     if (stripButton.Name.ToLower().Contains("primary"))
                     {
                         Controller._model.ColorMode = ColorType.PrimaryColor;
@@ -92,12 +93,37 @@ namespace VectorImageEdit.Controllers
             {
                 try
                 {
+                    var itemColor = ((ToolStripItem)sender).BackColor;
                     if (Controller._model.ColorMode == ColorType.PrimaryColor)
-                        Controller._appView.ToolbarPrimaryColor = ((ToolStripItem)sender).BackColor;
+                        Controller._appView.ToolbarPrimaryColor = itemColor;
                     else
-                        Controller._appView.ToolbarSecondaryColor = ((ToolStripItem)sender).BackColor;
+                        Controller._appView.ToolbarSecondaryColor = itemColor;
                 }
                 catch (InvalidCastException) { }
+            }
+        }
+
+        private class ShapeItemClickListener : AbstractListener<ToolstripItemsController>, IListener
+        {
+            public ShapeItemClickListener(ToolstripItemsController controller)
+                : base(controller)
+            {
+            }
+
+            public void ActionPerformed(object sender, EventArgs e)
+            {
+                try
+                {
+                    var stripItem = (ToolStripItem)sender;
+                    string key = stripItem.Name.ToLower()
+                        .Replace("toolstrip", "")
+                        .Replace("shape", "")
+                        .ToLower();
+                    Controller._model.CreateNewShape(key);
+                }
+                catch (ArgumentException) { }
+                catch (InvalidCastException) { }
+                catch (OutOfMemoryException) { }
             }
         }
     }

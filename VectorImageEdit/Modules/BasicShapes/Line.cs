@@ -23,7 +23,7 @@ namespace VectorImageEdit.Modules.BasicShapes
 
         public override void DrawGraphics(Graphics destination)
         {
-            using (var pen = StyleBuilder.PenBuilder(Style))
+            using (var pen = Style.CreatePen())
             {
                 destination.DrawLine(pen, Region.Left, Region.Top, Region.Right, Region.Bottom);
             }

@@ -66,15 +66,15 @@ namespace VectorImageEdit.Forms.AppWindow
             this.panWorkRegion = new System.Windows.Forms.Panel();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.leftToolStrip = new System.Windows.Forms.ToolStrip();
-            this.circleToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.squareToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.diamondToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.triangleToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.hexagon = new System.Windows.Forms.ToolStripButton();
-            this.starToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.ovalToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.rectangleToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolstripCircleShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripSquareShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripDiamondShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripTriangleShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripHexagonShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripStarShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripEllipseShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripRectangleShape = new System.Windows.Forms.ToolStripButton();
+            this.toolstripLineShape = new System.Windows.Forms.ToolStripButton();
             this.topToolStrip = new System.Windows.Forms.ToolStrip();
             this.toolstripPrimaryColorTrigger = new System.Windows.Forms.ToolStripButton();
             this.toolstripPrimaryColorPreview = new System.Windows.Forms.ToolStripButton();
@@ -134,10 +134,10 @@ namespace VectorImageEdit.Forms.AppWindow
             this.lBoxActiveLayers.ContextMenuStrip = this.cmsRightClickMenu;
             this.lBoxActiveLayers.FormattingEnabled = true;
             this.lBoxActiveLayers.HorizontalScrollbar = true;
-            this.lBoxActiveLayers.Location = new System.Drawing.Point(940, 106);
+            this.lBoxActiveLayers.Location = new System.Drawing.Point(820, 106);
             this.lBoxActiveLayers.Name = "lBoxActiveLayers";
             this.lBoxActiveLayers.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lBoxActiveLayers.Size = new System.Drawing.Size(145, 366);
+            this.lBoxActiveLayers.Size = new System.Drawing.Size(145, 327);
             this.lBoxActiveLayers.TabIndex = 0;
             // 
             // cmsRightClickMenu
@@ -172,7 +172,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.helpToolStripMenuItem});
             this.menuBarTop.Location = new System.Drawing.Point(0, 27);
             this.menuBarTop.Name = "menuBarTop";
-            this.menuBarTop.Size = new System.Drawing.Size(1092, 24);
+            this.menuBarTop.Size = new System.Drawing.Size(972, 24);
             this.menuBarTop.TabIndex = 5;
             this.menuBarTop.Text = "menuStrip1";
             this.menuBarTop.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Borderless_MouseDown);
@@ -342,7 +342,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.panWorkRegion.Controls.Add(this.treeView1);
             this.panWorkRegion.Location = new System.Drawing.Point(29, 106);
             this.panWorkRegion.Name = "panWorkRegion";
-            this.panWorkRegion.Size = new System.Drawing.Size(907, 368);
+            this.panWorkRegion.Size = new System.Drawing.Size(787, 335);
             this.panWorkRegion.TabIndex = 6;
             // 
             // treeView1
@@ -351,7 +351,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.treeView1.FullRowSelect = true;
             this.treeView1.Indent = 15;
             this.treeView1.LabelEdit = true;
-            this.treeView1.Location = new System.Drawing.Point(760, 132);
+            this.treeView1.Location = new System.Drawing.Point(624, 163);
             this.treeView1.Name = "treeView1";
             treeNode1.Name = "Node1";
             treeNode1.Text = "Node1";
@@ -376,130 +376,121 @@ namespace VectorImageEdit.Forms.AppWindow
             // 
             this.leftToolStrip.Dock = System.Windows.Forms.DockStyle.Left;
             this.leftToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.circleToolStripButton,
-            this.squareToolStripButton,
-            this.diamondToolStripButton,
-            this.triangleToolStripButton,
-            this.hexagon,
-            this.starToolStripButton,
-            this.ovalToolStripButton,
-            this.rectangleToolStripButton,
-            this.toolStripButton1});
+            this.toolstripCircleShape,
+            this.toolstripSquareShape,
+            this.toolstripDiamondShape,
+            this.toolstripTriangleShape,
+            this.toolstripHexagonShape,
+            this.toolstripStarShape,
+            this.toolstripEllipseShape,
+            this.toolstripRectangleShape,
+            this.toolstripLineShape});
             this.leftToolStrip.Location = new System.Drawing.Point(0, 51);
             this.leftToolStrip.Margin = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.leftToolStrip.Name = "leftToolStrip";
-            this.leftToolStrip.Size = new System.Drawing.Size(26, 450);
+            this.leftToolStrip.Size = new System.Drawing.Size(26, 417);
             this.leftToolStrip.TabIndex = 12;
             this.leftToolStrip.Text = "toolStrip2";
             // 
-            // circleToolStripButton
+            // toolstripCircleShape
             // 
-            this.circleToolStripButton.AutoSize = false;
-            this.circleToolStripButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.circleToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.circleToolStripButton.Image = global::VectorImageEdit.Properties.Resources.Circled_50;
-            this.circleToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.circleToolStripButton.Name = "circleToolStripButton";
-            this.circleToolStripButton.Size = new System.Drawing.Size(25, 25);
-            this.circleToolStripButton.Text = "toolStripButton1";
-            this.circleToolStripButton.ToolTipText = "Circle";
-            this.circleToolStripButton.Click += new System.EventHandler(this.btnCircle_Click);
+            this.toolstripCircleShape.AutoSize = false;
+            this.toolstripCircleShape.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.toolstripCircleShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripCircleShape.Image = global::VectorImageEdit.Properties.Resources.Circled_50;
+            this.toolstripCircleShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripCircleShape.Name = "toolstripCircleShape";
+            this.toolstripCircleShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripCircleShape.Text = "toolStripButton1";
+            this.toolstripCircleShape.ToolTipText = "Circle";
             // 
-            // squareToolStripButton
+            // toolstripSquareShape
             // 
-            this.squareToolStripButton.AutoSize = false;
-            this.squareToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.squareToolStripButton.Image = global::VectorImageEdit.Properties.Resources.Rectangle_Stroked_50;
-            this.squareToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.squareToolStripButton.Name = "squareToolStripButton";
-            this.squareToolStripButton.Size = new System.Drawing.Size(25, 25);
-            this.squareToolStripButton.Text = "toolStripButton2";
-            this.squareToolStripButton.ToolTipText = "Square";
-            this.squareToolStripButton.Click += new System.EventHandler(this.btnSquare_Click);
+            this.toolstripSquareShape.AutoSize = false;
+            this.toolstripSquareShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripSquareShape.Image = global::VectorImageEdit.Properties.Resources.Rectangle_Stroked_50;
+            this.toolstripSquareShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripSquareShape.Name = "toolstripSquareShape";
+            this.toolstripSquareShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripSquareShape.Text = "toolStripButton2";
+            this.toolstripSquareShape.ToolTipText = "Square";
             // 
-            // diamondToolStripButton
+            // toolstripDiamondShape
             // 
-            this.diamondToolStripButton.AutoSize = false;
-            this.diamondToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.diamondToolStripButton.Image = global::VectorImageEdit.Properties.Resources.Diamond_50;
-            this.diamondToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.diamondToolStripButton.Name = "diamondToolStripButton";
-            this.diamondToolStripButton.Size = new System.Drawing.Size(25, 25);
-            this.diamondToolStripButton.Text = "toolStripButton3";
-            this.diamondToolStripButton.ToolTipText = "Diamond";
-            this.diamondToolStripButton.Click += new System.EventHandler(this.btnDiamond_Click);
+            this.toolstripDiamondShape.AutoSize = false;
+            this.toolstripDiamondShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripDiamondShape.Image = global::VectorImageEdit.Properties.Resources.Diamond_50;
+            this.toolstripDiamondShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripDiamondShape.Name = "toolstripDiamondShape";
+            this.toolstripDiamondShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripDiamondShape.Text = "toolStripButton3";
+            this.toolstripDiamondShape.ToolTipText = "Diamond";
             // 
-            // triangleToolStripButton
+            // toolstripTriangleShape
             // 
-            this.triangleToolStripButton.AutoSize = false;
-            this.triangleToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.triangleToolStripButton.Image = global::VectorImageEdit.Properties.Resources.Triangle_50;
-            this.triangleToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.triangleToolStripButton.Name = "triangleToolStripButton";
-            this.triangleToolStripButton.Size = new System.Drawing.Size(25, 25);
-            this.triangleToolStripButton.Text = "toolStripButton4";
-            this.triangleToolStripButton.ToolTipText = "Triangle";
-            this.triangleToolStripButton.Click += new System.EventHandler(this.btnTriangle_Click);
+            this.toolstripTriangleShape.AutoSize = false;
+            this.toolstripTriangleShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripTriangleShape.Image = global::VectorImageEdit.Properties.Resources.Triangle_50;
+            this.toolstripTriangleShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripTriangleShape.Name = "toolstripTriangleShape";
+            this.toolstripTriangleShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripTriangleShape.Text = "toolStripButton4";
+            this.toolstripTriangleShape.ToolTipText = "Triangle";
             // 
-            // hexagon
+            // toolstripHexagonShape
             // 
-            this.hexagon.AutoSize = false;
-            this.hexagon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.hexagon.Image = global::VectorImageEdit.Properties.Resources.Hexagon_50;
-            this.hexagon.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.hexagon.Name = "hexagon";
-            this.hexagon.Size = new System.Drawing.Size(25, 25);
-            this.hexagon.Text = "toolStripButton5";
-            this.hexagon.ToolTipText = "Hexagon";
-            this.hexagon.Click += new System.EventHandler(this.btnHexagon_Click);
+            this.toolstripHexagonShape.AutoSize = false;
+            this.toolstripHexagonShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripHexagonShape.Image = global::VectorImageEdit.Properties.Resources.Hexagon_50;
+            this.toolstripHexagonShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripHexagonShape.Name = "toolstripHexagonShape";
+            this.toolstripHexagonShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripHexagonShape.Text = "toolStripButton5";
+            this.toolstripHexagonShape.ToolTipText = "Hexagon";
             // 
-            // starToolStripButton
+            // toolstripStarShape
             // 
-            this.starToolStripButton.AutoSize = false;
-            this.starToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.starToolStripButton.Image = global::VectorImageEdit.Properties.Resources.Star_50;
-            this.starToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.starToolStripButton.Name = "starToolStripButton";
-            this.starToolStripButton.Size = new System.Drawing.Size(25, 25);
-            this.starToolStripButton.Text = "toolStripButton6";
-            this.starToolStripButton.ToolTipText = "Star";
-            this.starToolStripButton.Click += new System.EventHandler(this.btnStar_Click);
+            this.toolstripStarShape.AutoSize = false;
+            this.toolstripStarShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripStarShape.Image = global::VectorImageEdit.Properties.Resources.Star_50;
+            this.toolstripStarShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripStarShape.Name = "toolstripStarShape";
+            this.toolstripStarShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripStarShape.Text = "toolStripButton6";
+            this.toolstripStarShape.ToolTipText = "Star";
             // 
-            // ovalToolStripButton
+            // toolstripEllipseShape
             // 
-            this.ovalToolStripButton.AutoSize = false;
-            this.ovalToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ovalToolStripButton.Image = global::VectorImageEdit.Properties.Resources.Ellipse_50;
-            this.ovalToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ovalToolStripButton.Name = "ovalToolStripButton";
-            this.ovalToolStripButton.Size = new System.Drawing.Size(25, 25);
-            this.ovalToolStripButton.Text = "toolStripButton7";
-            this.ovalToolStripButton.ToolTipText = "Oval";
-            this.ovalToolStripButton.Click += new System.EventHandler(this.btnOval_Click);
+            this.toolstripEllipseShape.AutoSize = false;
+            this.toolstripEllipseShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripEllipseShape.Image = global::VectorImageEdit.Properties.Resources.Ellipse_50;
+            this.toolstripEllipseShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripEllipseShape.Name = "toolstripEllipseShape";
+            this.toolstripEllipseShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripEllipseShape.Text = "toolStripButton7";
+            this.toolstripEllipseShape.ToolTipText = "Ellipse";
             // 
-            // rectangleToolStripButton
+            // toolstripRectangleShape
             // 
-            this.rectangleToolStripButton.AutoSize = false;
-            this.rectangleToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.rectangleToolStripButton.Image = global::VectorImageEdit.Properties.Resources.Rectangle_Stroked_50;
-            this.rectangleToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.rectangleToolStripButton.Name = "rectangleToolStripButton";
-            this.rectangleToolStripButton.Size = new System.Drawing.Size(25, 25);
-            this.rectangleToolStripButton.Text = "toolStripButton8";
-            this.rectangleToolStripButton.ToolTipText = "Rectangle";
-            this.rectangleToolStripButton.Click += new System.EventHandler(this.btnRectangle_Click);
+            this.toolstripRectangleShape.AutoSize = false;
+            this.toolstripRectangleShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripRectangleShape.Image = global::VectorImageEdit.Properties.Resources.Rectangle_Stroked_50;
+            this.toolstripRectangleShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripRectangleShape.Name = "toolstripRectangleShape";
+            this.toolstripRectangleShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripRectangleShape.Text = "toolStripButton8";
+            this.toolstripRectangleShape.ToolTipText = "Rectangle";
             // 
-            // toolStripButton1
+            // toolstripLineShape
             // 
-            this.toolStripButton1.AutoSize = false;
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = global::VectorImageEdit.Properties.Resources.line;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(25, 25);
-            this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.ToolTipText = "Line";
-            this.toolStripButton1.Click += new System.EventHandler(this.btnLine_Click);
+            this.toolstripLineShape.AutoSize = false;
+            this.toolstripLineShape.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolstripLineShape.Image = global::VectorImageEdit.Properties.Resources.line;
+            this.toolstripLineShape.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolstripLineShape.Name = "toolstripLineShape";
+            this.toolstripLineShape.Size = new System.Drawing.Size(25, 25);
+            this.toolstripLineShape.Text = "toolStripButton1";
+            this.toolstripLineShape.ToolTipText = "Line";
             // 
             // topToolStrip
             // 
@@ -531,7 +522,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.topToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.topToolStrip.Location = new System.Drawing.Point(26, 51);
             this.topToolStrip.Name = "topToolStrip";
-            this.topToolStrip.Size = new System.Drawing.Size(1066, 25);
+            this.topToolStrip.Size = new System.Drawing.Size(946, 25);
             this.topToolStrip.TabIndex = 11;
             this.topToolStrip.Text = "toolStrip1";
             // 
@@ -573,6 +564,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset1.Name = "toolStripColorPreset1";
             this.toolStripColorPreset1.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset1.Text = "toolStripButton2";
+            this.toolStripColorPreset1.ToolTipText = " ";
             // 
             // toolStripColorPreset2
             // 
@@ -584,6 +576,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset2.Name = "toolStripColorPreset2";
             this.toolStripColorPreset2.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset2.Text = "toolStripButton3";
+            this.toolStripColorPreset2.ToolTipText = " ";
             // 
             // toolStripColorPreset3
             // 
@@ -595,6 +588,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset3.Name = "toolStripColorPreset3";
             this.toolStripColorPreset3.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset3.Text = "toolStripButton4";
+            this.toolStripColorPreset3.ToolTipText = " ";
             // 
             // toolStripColorPreset4
             // 
@@ -606,6 +600,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset4.Name = "toolStripColorPreset4";
             this.toolStripColorPreset4.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset4.Text = "toolStripButton5";
+            this.toolStripColorPreset4.ToolTipText = " ";
             // 
             // toolStripColorPreset5
             // 
@@ -617,6 +612,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset5.Name = "toolStripColorPreset5";
             this.toolStripColorPreset5.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset5.Text = "toolStripButton6";
+            this.toolStripColorPreset5.ToolTipText = " ";
             // 
             // toolStripColorPreset6
             // 
@@ -628,6 +624,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset6.Name = "toolStripColorPreset6";
             this.toolStripColorPreset6.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset6.Text = "toolStripButton7";
+            this.toolStripColorPreset6.ToolTipText = " ";
             // 
             // toolStripColorPreset7
             // 
@@ -639,6 +636,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset7.Name = "toolStripColorPreset7";
             this.toolStripColorPreset7.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset7.Text = "toolStripButton8";
+            this.toolStripColorPreset7.ToolTipText = " ";
             // 
             // toolStripColorPreset8
             // 
@@ -650,6 +648,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.toolStripColorPreset8.Name = "toolStripColorPreset8";
             this.toolStripColorPreset8.Size = new System.Drawing.Size(20, 20);
             this.toolStripColorPreset8.Text = "toolStripButton9";
+            this.toolStripColorPreset8.ToolTipText = " ";
             // 
             // toolStripSeparator2
             // 
@@ -802,10 +801,10 @@ namespace VectorImageEdit.Forms.AppWindow
             this.memoryUsedLabel,
             this.memoryProgressBar});
             this.statusStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.statusStrip1.Location = new System.Drawing.Point(26, 479);
+            this.statusStrip1.Location = new System.Drawing.Point(26, 446);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
-            this.statusStrip1.Size = new System.Drawing.Size(1066, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(946, 22);
             this.statusStrip1.TabIndex = 9;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -853,7 +852,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.loadingCircleToolStripMenuItem1});
             this.appBarmenuStrip.Location = new System.Drawing.Point(0, 0);
             this.appBarmenuStrip.Name = "appBarmenuStrip";
-            this.appBarmenuStrip.Size = new System.Drawing.Size(1092, 27);
+            this.appBarmenuStrip.Size = new System.Drawing.Size(972, 27);
             this.appBarmenuStrip.TabIndex = 14;
             this.appBarmenuStrip.Text = "menuStrip1";
             this.appBarmenuStrip.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.appBarmenuStrip_MouseDoubleClick);
@@ -949,7 +948,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.panel1.Controls.Add(this.appBarmenuStrip);
             this.panel1.Location = new System.Drawing.Point(5, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1094, 503);
+            this.panel1.Size = new System.Drawing.Size(974, 470);
             this.panel1.TabIndex = 15;
             // 
             // AppWindow
@@ -958,12 +957,12 @@ namespace VectorImageEdit.Forms.AppWindow
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SlateGray;
-            this.ClientSize = new System.Drawing.Size(1105, 513);
+            this.ClientSize = new System.Drawing.Size(985, 480);
             this.Controls.Add(this.panel1);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MainMenuStrip = this.menuBarTop;
-            this.MinimumSize = new System.Drawing.Size(1105, 513);
+            this.MinimumSize = new System.Drawing.Size(640, 480);
             this.Name = "AppWindow";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Vector Image Editor";
@@ -1022,7 +1021,7 @@ namespace VectorImageEdit.Forms.AppWindow
         private ToolStripButton toolstripSecondaryColorPreview;
         private ToolStripButton toolstripPrimaryColorPreview;
         private ToolStrip leftToolStrip;
-        private ToolStripButton circleToolStripButton;
+        private ToolStripButton toolstripCircleShape;
         private MenuStrip appBarmenuStrip;
         private ToolStripMenuItem closeToolStripMenuItem;
         private ToolStripMenuItem maximizeToolStripMenuItem;
@@ -1030,14 +1029,14 @@ namespace VectorImageEdit.Forms.AppWindow
         private ToolStripMenuItem toolStripMenuItem3;
         private ToolStripMenuItem toolStripMenuItem4;
         private MRG.Controls.UI.LoadingCircleToolStripMenuItem loadingCircleToolStripMenuItem1;
-        private ToolStripButton squareToolStripButton;
-        private ToolStripButton diamondToolStripButton;
-        private ToolStripButton triangleToolStripButton;
-        private ToolStripButton hexagon;
-        private ToolStripButton starToolStripButton;
-        private ToolStripButton ovalToolStripButton;
-        private ToolStripButton rectangleToolStripButton;
-        private ToolStripButton toolStripButton1;
+        private ToolStripButton toolstripSquareShape;
+        private ToolStripButton toolstripDiamondShape;
+        private ToolStripButton toolstripTriangleShape;
+        private ToolStripButton toolstripHexagonShape;
+        private ToolStripButton toolstripStarShape;
+        private ToolStripButton toolstripEllipseShape;
+        private ToolStripButton toolstripRectangleShape;
+        private ToolStripButton toolstripLineShape;
         private ToolStripButton toolStripColorPreset1;
         private ToolStripButton toolStripColorPreset2;
         private ToolStripButton toolStripColorPreset3;

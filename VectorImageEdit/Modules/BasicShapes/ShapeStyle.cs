@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace VectorImageEdit.Modules.BasicShapes
 {
@@ -9,5 +10,24 @@ namespace VectorImageEdit.Modules.BasicShapes
         public Color EdgeColor { get; set; }
         public Color FillColor { get; set; }
         public float EdgeSize { get; set; }
+
+        /// <summary>
+        /// Obtains a new Brush from the style parameters
+        /// Note: use this in a using construct to auto-dispose!
+        /// </summary>
+        /// <returns> The new Brush </returns>
+        public Brush CreateBrush()
+        {
+            return new HatchBrush(HatchStyle.Cross, FillColor, FillColor);
+        }
+        /// <summary>
+        /// Obtains a new Pen from this ShapeStyle instance
+        /// Note: use this in a using construct to auto-dispose!
+        /// </summary>
+        /// <returns> The new Pen </returns>
+        public Pen CreatePen()
+        {
+            return new Pen(EdgeColor, EdgeSize);
+        }
     }
 }

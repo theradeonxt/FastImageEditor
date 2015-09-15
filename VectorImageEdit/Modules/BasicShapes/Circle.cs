@@ -16,8 +16,8 @@ namespace VectorImageEdit.Modules.BasicShapes
 
         public override void DrawGraphics(Graphics destination)
         {
-            using (var brush = StyleBuilder.BrushBuilder(Style))
-            using (var pen = StyleBuilder.PenBuilder(Style))
+            using (var brush = Style.CreateBrush())
+            using (var pen = Style.CreatePen())
             {
                 destination.DrawEllipse(pen, Region);
                 destination.FillEllipse(brush, Region);
