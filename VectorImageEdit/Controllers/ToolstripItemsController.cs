@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using VectorImageEdit.Forms;
 using VectorImageEdit.Forms.AppWindow;
 using VectorImageEdit.Models;
+using VectorImageEdit.Modules.Factories;
 
 namespace VectorImageEdit.Controllers
 {
@@ -35,21 +36,20 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                ColorDialog colorPicker = new ColorDialog { FullOpen = true };
-                DialogResult dlg = colorPicker.ShowDialog();
-                if (dlg != DialogResult.OK) return;
+                var factory = new ColorDialogFactory();
+                factory.CreateDialog();
 
                 ColorType colorMode = Controller._model.ColorMode;
                 if (colorMode == ColorType.PrimaryColor)
                 {
-                    AppGlobalData.Instance.PrimaryColor = colorPicker.Color;
-                    Controller._appView.ToolbarPrimaryColor = colorPicker.Color;
+                    AppGlobalData.Instance.PrimaryColor = factory.DialogData;
+                    Controller._appView.ToolbarPrimaryColor = factory.DialogData;
                     Controller._appView.SetPrimaryColorActive();
                 }
                 else
                 {
-                    AppGlobalData.Instance.SecondaryColor = colorPicker.Color;
-                    Controller._appView.ToolbarSecondaryColor = colorPicker.Color;
+                    AppGlobalData.Instance.SecondaryColor = factory.DialogData;
+                    Controller._appView.ToolbarSecondaryColor = factory.DialogData;
                     Controller._appView.SetSecondaryColorActive();
                 }
             }

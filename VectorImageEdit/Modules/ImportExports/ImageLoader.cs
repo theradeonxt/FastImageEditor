@@ -17,9 +17,14 @@ namespace VectorImageEdit.Modules.ImportExports
     public static class ImageLoader
     {
         // Image cache to find the path to full image if required
-        private static readonly ConcurrentDictionary<string, Bitmap> ImageCache
-            = new ConcurrentDictionary<string, Bitmap>();
+        private static readonly ConcurrentDictionary<string, Bitmap> ImageCache;
 
+        static ImageLoader()
+        {
+            ImageCache = new ConcurrentDictionary<string, Bitmap>();
+        }
+
+        // TODO: Fix Overscaling bigger than actual window bounds
         public static Bitmap ScaledSize(string fileName, Size maximumSize)
         {
             Bitmap original = OpenImage(fileName);

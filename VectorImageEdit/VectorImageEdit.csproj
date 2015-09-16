@@ -104,8 +104,10 @@
     <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
+    <Compile Include="Modules\Factories\MessageBoxFactory.cs" />
     <Compile Include="Modules\Factories\ShapeFactory.cs" />
-    <Compile Include="Modules\Factories\ShapeStyleFactory.cs" />
+    <Compile Include="Modules\Factories\ShapeStyleBuilder.cs" />
+    <Compile Include="Modules\Factories\FormDialogFactory.cs" />
     <Compile Include="Modules\Utility\BitmapHelper.cs" />
     <Compile Include="Modules\ImportExports\VectorSerializer.cs" />
     <Compile Include="Modules\ImportExports\ImageOutput.cs" />

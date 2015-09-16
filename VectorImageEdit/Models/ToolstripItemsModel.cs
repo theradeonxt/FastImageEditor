@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VectorImageEdit.Modules.Factories;
 
 namespace VectorImageEdit.Models
@@ -7,22 +8,23 @@ namespace VectorImageEdit.Models
 
     class ToolstripItemsModel
     {
-        private readonly Dictionary<string, ShapeObject> _shapeActionMap;
+        private readonly Dictionary<string, IShapeFactory> _shapeActionMap;
 
         public ToolstripItemsModel()
         {
             ColorMode = ColorType.PrimaryColor;
 
-            _shapeActionMap = new Dictionary<string, ShapeObject>
+            _shapeActionMap = new Dictionary<string, IShapeFactory>
             {
-                {"circle", ShapeObject.Circle},
-                {"square", ShapeObject.Square},
-                {"rectangle", ShapeObject.Rectangle},
-                {"ellipse", ShapeObject.Ellipse},
-                {"star", ShapeObject.Star},
-                {"line", ShapeObject.Line},
-                {"hexagon", ShapeObject.Hexagon},
-                {"diamond", ShapeObject.Diamond}
+                {"circle", new CircleShapeFactory()},
+                {"square", new SquareShapeFactory()},
+                {"rectangle", new RectangleShapeFactory()},
+                {"ellipse", new EllipseShapeFactory()},
+                {"star", new StarShapeFactory()},
+                {"line", new LineShapeFactory()},
+                {"hexagon", new HexagonShapeFactory()},
+                {"diamond", new DiamondShapeFactory()},
+                {"triangle", new TriangleShapeFactory()}
             };
         }
 
@@ -34,11 +36,12 @@ namespace VectorImageEdit.Models
             {
                 var global = AppGlobalData.Instance;
                 var size = global.Layout.MaximumSize();
-                var style = ShapeStyleFactory.CreateShapeStyle(global.PrimaryColor,
+                var style = ShapeStyleBuilder.CreateShapeStyle(global.PrimaryColor,
                     global.SecondaryColor, global.ShapeEdgeSize);
-                var shape = ShapeFactory.CreateShape(_shapeActionMap[shapeName], size, style);
+                var shape = _shapeActionMap[shapeName].CreateShape(size, style);
                 global.LayerManager.Add(shape);
             }
+            catch (NotImplementedException) { }
             catch (KeyNotFoundException) { }
         }
     }

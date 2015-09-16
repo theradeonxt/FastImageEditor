@@ -6,7 +6,7 @@ namespace VectorImageEdit.Modules.BasicShapes
     [Serializable]
     public class Circle : ShapeBase
     {
-        //public Circle() { }
+        // public Circle() { }
 
         public Circle(Point center, int radius, ShapeStyle style)
             : base(new Rectangle(center.X - radius, center.Y - radius, 2 * radius, 2 * radius), 0, style, "Layer - Circle")

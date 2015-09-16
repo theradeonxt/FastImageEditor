@@ -3,7 +3,7 @@ using VectorImageEdit.Modules.BasicShapes;
 
 namespace VectorImageEdit.Modules.Factories
 {
-    static class ShapeStyleFactory
+    static class ShapeStyleBuilder
     {
         public static ShapeStyle CreateShapeStyle(Color edge, Color fill, float edgeSize)
         {

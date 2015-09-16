@@ -19,9 +19,7 @@ namespace VectorImageEdit.Modules.Layers
         // this is shadowed by a property for validation reasons and serialization hiding
         private Rectangle _region;
 
-        /*protected Layer()
-        {
-        }*/
+        // protected Layer() { }
 
         protected Layer(Rectangle region, int depthLevel, string displayName)
         {

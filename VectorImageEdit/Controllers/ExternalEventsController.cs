@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using VectorImageEdit.Forms;
 using VectorImageEdit.Forms.AppWindow;
 using VectorImageEdit.Models;
+using VectorImageEdit.Modules.Factories;
 
 namespace VectorImageEdit.Controllers
 {
@@ -24,13 +25,10 @@ namespace VectorImageEdit.Controllers
             _appView.AddSaveVectorListener(new SaveVectorListener(this));
             _appView.AddOpenVectorListener(new OpenVectorListener(this));
             _appView.AddExportFileListener(new ExportFileListener(this));
-            _appView.AddOpenFileListener(new OpenFileListener(this));
+            _appView.AddOpenFileListener(new OpenImagesListener(this));
             _appView.AddDragDropFileListener(new DragDropFileListener(this));
             _appView.AddDragEnterListener(new DragEnterListener(this));
         }
-
-        // TODO: Exceptions should be catched and logged in Controller
-        // TODO: Each listener can have its own exception handling for operations and common logging of messages
 
         private class SaveVectorListener : AbstractListener<ExternalEventsController>, IListener
         {
@@ -41,14 +39,19 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                SaveFileDialog dialog = new SaveFileDialog
+                var factory = new SaveFileDialogFactory();
+                factory.CreateDialog(title: @"Save vector data",
+                    filter: string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
+                try
                 {
-                    Title = @"Save vector data",
-                    Filter = string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension)
-                };
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-
-                Controller._model.SaveVectorSerialize(dialog.FileName);
+                    Controller._model.SaveVectorSerialize(factory.DialogData);
+                }
+                catch (Exception ex)
+                {
+                    MessageBoxFactory.Create(caption: "Error",
+                        text: string.Format(@"Unable to save the vector data file. ({0})", ex.Message),
+                        type: MessageType.Error);
+                }
             }
         }
 
@@ -61,24 +64,24 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                OpenFileDialog dialog = new OpenFileDialog
-                {
-                    Title = @"Open vector data",
-                    Filter = string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension)
-                };
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-
+                var factory = new OpenFileDialogFactory();
+                factory.CreateDialog(title: @"Open vector data",
+                    filter: string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
                 try
                 {
-                    Controller._model.OpenVectorDeserialize(dialog.FileName);
+                    Controller._model.OpenVectorDeserialize(factory.DialogData);
                 }
                 catch (InvalidDataException ex)
                 {
-                    MessageBox.Show(string.Format("Unable to open the vector data file. ({0})", ex.Message));
+                    MessageBoxFactory.Create(caption: "Warning",
+                        text: string.Format(@"Unable to open the vector data file. ({0})", ex.Message),
+                        type: MessageType.Warning);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // TODO: ignored for now; is not recoverable - should be logged somewhere
+                    MessageBoxFactory.Create(caption: "Error",
+                        text: string.Format(@"Unable to open the vector data file. ({0})", ex.Message),
+                        type: MessageType.Error);
                 }
             }
         }
@@ -92,50 +95,46 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                // Show the user a dialog to select the file format and name
-                SaveFileDialog dialog = new SaveFileDialog
-                {
-                    Title = @"Export Preview",
-                    Filter = Controller._model.GetExportsFilter(),
-                    FilterIndex = 2  // set the default file type (2 is JPEG)
-                };
-                if (dialog.ShowDialog() != DialogResult.OK) return;
-
+                var factory = new SaveFileDialogFactory();
+                factory.CreateDialog(title: @"Export Preview",
+                    filter: Controller._model.GetExportsFilter(),
+                    filterIndex: 2);
                 try
                 {
-                    // BUG: always shows the message and no save
-                    if (!Controller._model.ExportToFile(dialog.FileName))
+                    // BUG: Always shows the message and won't save
+                    if (!Controller._model.ExportToFile(factory.DialogData))
                     {
-                        MessageBox.Show(@"The selected file type is not a supported image format.");
+                        MessageBoxFactory.Create(caption: "Information", 
+                            text: @"The selected file type is not a supported image format.", 
+                            type: MessageType.Information);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(@"Could not save the workspace image. Detailed Info: " + ex.Message);
+                    MessageBoxFactory.Create(caption: "Error",
+                        text: string.Format(@"Could not save the workspace image. Detailed Info: {0}", ex.Message),
+                        type: MessageType.Error);
                 }
             }
         }
 
-        private class OpenFileListener : AbstractListener<ExternalEventsController>, IListener
+        private class OpenImagesListener : AbstractListener<ExternalEventsController>, IListener
         {
-            public OpenFileListener(ExternalEventsController controller)
+            public OpenImagesListener(ExternalEventsController controller)
                 : base(controller)
             {
             }
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                OpenFileDialog fileDialog = new OpenFileDialog
+                var factory = new OpenMultipleFilesDialogFactory();
+                factory.CreateDialog(title: @"Open Image(s)",
+                    filter: @"Image Files|*.jpg;*.png;*.tiff;*.bmp");
+                try
                 {
-                    Multiselect = true,
-                    Title = @"Open Image(s)",
-                    Filter = @"Image Files|*.jpg;*.png;*.tiff;*.bmp"
-                };
-                if (fileDialog.ShowDialog() != DialogResult.OK) return;
-                string[] fileNames = fileDialog.FileNames;
-
-                // TODO: Validate image files OR implement generic handling (able to drag & drop any supported file format!)
-                Controller.CreateBackgroundFileTask(fileNames);
+                    Controller.CreateBackgroundFileTask(factory.DialogData);
+                }
+                catch (InvalidOperationException) { }
             }
         }
 
@@ -150,9 +149,11 @@ namespace VectorImageEdit.Controllers
             {
                 if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
                 string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                // TODO: Validate image files OR implement generic handling (able to drag & drop any supported file format!)
-                Controller.CreateBackgroundFileTask(fileNames);
+                try
+                {
+                    Controller.CreateBackgroundFileTask(fileNames);
+                }
+                catch (InvalidOperationException) { }
             }
         }
 

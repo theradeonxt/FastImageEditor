@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using VectorImageEdit.Forms.AppWindow;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules;
+using VectorImageEdit.Modules.Factories;
 using VectorImageEdit.Modules.Layers;
 
 namespace VectorImageEdit.Controllers
@@ -10,7 +11,7 @@ namespace VectorImageEdit.Controllers
     /// <summary>
     /// Main Controller for the application
     /// 
-    /// - is the Controller manager for all aplication modules.
+    /// - this is the Controller manager for all aplication modules.
     /// </summary>
     [SuppressMessage("ReSharper", "NotAccessedField.Local")]
     [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable")]
@@ -41,8 +42,10 @@ namespace VectorImageEdit.Controllers
                 InitializeAppGlobalData();
             }
             catch (OutOfMemoryException)
-            { 
-                // TODO: This must be logged and application will forcibly close with user feedback
+            {
+                MessageBoxFactory.Create(caption: "Critical Error", 
+                    text: "Unable to create all application modules: OutOfMemoryException was encountered", 
+                    type: MessageType.Error);
             }
         }
 
