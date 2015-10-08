@@ -1,88 +1,111 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using NLog;
+using VectorImageEdit.Interfaces;
 
 namespace VectorImageEdit.Modules.Factories
 {
-    interface IFormDialogFactory<T>
+    /// <summary>
+    /// Common error handling and logging for every concrete dialog factory
+    /// </summary>
+    internal abstract class DialogFactoryInternal
     {
-        T DialogData { get; }
-    }
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-    abstract class AbstractDialogFactory<T> : IFormDialogFactory<T>
-    {
-        protected AbstractDialogFactory()
-        {
-            DialogData = default(T);
-        }
-
-        public T DialogData { get; protected set; }
-    }
-
-    class SaveFileDialogFactory : AbstractDialogFactory<string>
-    {
-        public void CreateDialog(string title, string filter, int filterIndex = 0)
+        protected void InternalErrorValidation(Action concreteFactoryCallback)
         {
             try
+            {
+                concreteFactoryCallback();
+            }
+            catch (InvalidCastException ex)
+            {
+                Logger.Error(string.Format(@"The FileDialog received invalid parameters. {0}", ex.StackTrace));
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Logger.Error(string.Format(@"The FileDialog received invalid parameters. {0}", ex.StackTrace));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(string.Format(@"Could not create the FileDialog. {0}", ex.StackTrace));
+            }
+        }
+    }
+
+    class SaveFileDialogFactory : DialogFactoryInternal, IFormDialogFactory<string>
+    {
+        public Tuple<string> CreateDialog(params object[] dialogParameters)
+        {
+            string result = string.Empty;
+            InternalErrorValidation(() =>
             {
                 SaveFileDialog dialog = new SaveFileDialog
                 {
-                    Title = title,
-                    Filter = filter,
-                    FilterIndex = filterIndex
+                    Title = (string)dialogParameters[0],
+                    Filter = (string)dialogParameters[1],
+                    FilterIndex = (int)dialogParameters[2]
                 };
-                if (dialog.ShowDialog() == DialogResult.OK) DialogData = dialog.FileName;
-            }
-            catch (ArgumentException) { }
+                if (dialog.ShowDialog() == DialogResult.OK) result = dialog.FileName;
+            });
+            return new Tuple<string>(result);
         }
     }
 
-    class OpenFileDialogFactory : AbstractDialogFactory<string>
+    class OpenFileDialogFactory : DialogFactoryInternal, IFormDialogFactory<string>
     {
-        public void CreateDialog(string title, string filter, int filterIndex = 0)
+        public Tuple<string> CreateDialog(params object[] dialogParameters)
         {
-            try
+            string result = string.Empty;
+            InternalErrorValidation(() =>
             {
                 OpenFileDialog dialog = new OpenFileDialog
                 {
-                    Title = title,
-                    Filter = filter,
-                    FilterIndex = filterIndex
+                    Title = (string)dialogParameters[0],
+                    Filter = (string)dialogParameters[1],
+                    FilterIndex = (int)dialogParameters[2]
                 };
-                if (dialog.ShowDialog() == DialogResult.OK) DialogData = dialog.FileName;
-            }
-            catch (ArgumentException) { }
+                if (dialog.ShowDialog() == DialogResult.OK) result = dialog.FileName;
+            });
+            return new Tuple<string>(result);
         }
     }
 
-    class OpenMultipleFilesDialogFactory : AbstractDialogFactory<string[]>
+    class OpenMultipleFilesDialogFactory : DialogFactoryInternal, IFormDialogFactory<string[]>
     {
-        public void CreateDialog(string title, string filter, int filterIndex = 0)
+        public Tuple<string[]> CreateDialog(params object[] dialogParameters)
         {
-            try
+            string[] result = { "" };
+            InternalErrorValidation(() =>
             {
                 OpenFileDialog dialog = new OpenFileDialog
                 {
-                    Title = title,
-                    Filter = filter,
-                    FilterIndex = filterIndex,
-                    Multiselect = true
+                    Title = (string)dialogParameters[0],
+                    Filter = (string)dialogParameters[1],
+                    FilterIndex = (int)dialogParameters[2],
+                    Multiselect = (bool)dialogParameters[3]
                 };
-                if (dialog.ShowDialog() == DialogResult.OK) DialogData = dialog.FileNames;
-            }
-            catch (ArgumentException) { }
+                if (dialog.ShowDialog() == DialogResult.OK) result = dialog.FileNames;
+            });
+            return new Tuple<string[]>(result);
         }
     }
 
-    class ColorDialogFactory : AbstractDialogFactory<Color>
+    class ColorDialogFactory : DialogFactoryInternal, IFormDialogFactory<Color>
     {
-        public void CreateDialog(bool fullOpen = true)
+        public Tuple<Color> CreateDialog(params object[] dialogParameters)
         {
-            ColorDialog dialog = new ColorDialog
+            Color result = Color.Black;
+            InternalErrorValidation(() =>
             {
-                FullOpen = fullOpen
-            };
-            if (dialog.ShowDialog() == DialogResult.OK) DialogData = dialog.Color;
+                ColorDialog dialog = new ColorDialog
+                {
+                    FullOpen = (bool)dialogParameters[0]
+                };
+                if (dialog.ShowDialog() == DialogResult.OK) result = dialog.Color;
+            });
+            return new Tuple<Color>(result);
         }
     }
 }

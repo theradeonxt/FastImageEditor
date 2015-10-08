@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VectorImageEdit.Interfaces;
 using VectorImageEdit.Modules.Factories;
 
 namespace VectorImageEdit.Models
@@ -8,6 +9,9 @@ namespace VectorImageEdit.Models
 
     class ToolstripItemsModel
     {
+        /// <summary>
+        /// Define the actions at creation of every shape (when triggered from the GUI)
+        /// </summary>
         private readonly Dictionary<string, IShapeFactory> _shapeActionMap;
 
         public ToolstripItemsModel()
@@ -28,7 +32,12 @@ namespace VectorImageEdit.Models
             };
         }
 
+        /// <summary>
+        /// Gets of sets the current active Primary or Secondary Color
+        /// </summary>
         public ColorType ColorMode { get; set; }
+
+        #region The Model Working Methods
 
         public void CreateNewShape(string shapeName)
         {
@@ -44,5 +53,7 @@ namespace VectorImageEdit.Models
             catch (NotImplementedException) { }
             catch (KeyNotFoundException) { }
         }
+
+        #endregion
     }
 }

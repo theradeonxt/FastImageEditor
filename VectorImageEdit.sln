@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.40418.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VectorImageEdit", "VectorImageEdit\VectorImageEdit.csproj", "{AE181555-A63A-45E9-896D-8D5156E49269}"
+	ProjectSection(ProjectDependencies) = postProject
+		{782D1F34-171C-42AF-B948-62E54512B5AE} = {782D1F34-171C-42AF-B948-62E54512B5AE}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageProcessing", "ImageProcessing\ImageProcessing.vcxproj", "{782D1F34-171C-42AF-B948-62E54512B5AE}"
 EndProject

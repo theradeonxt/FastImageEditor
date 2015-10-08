@@ -111,6 +111,7 @@ namespace VectorImageEdit.Modules.Layers
             }
             else
             {
+                UpdateFrame(_activeLayers); // this was not previously here
                 UpdateSelection(objectRegion, mode);
             }
         }

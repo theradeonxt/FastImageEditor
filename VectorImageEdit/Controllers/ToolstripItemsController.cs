@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using VectorImageEdit.Forms;
 using VectorImageEdit.Forms.AppWindow;
+using VectorImageEdit.Interfaces;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules.Factories;
 
@@ -37,20 +38,21 @@ namespace VectorImageEdit.Controllers
             public void ActionPerformed(object sender, EventArgs e)
             {
                 var factory = new ColorDialogFactory();
-                factory.CreateDialog();
+                var result = factory.CreateDialog();
+                var selectedColor = result.Item1;
 
-                ColorType colorMode = Controller._model.ColorMode;
-                if (colorMode == ColorType.PrimaryColor)
+                switch (Controller._model.ColorMode)
                 {
-                    AppGlobalData.Instance.PrimaryColor = factory.DialogData;
-                    Controller._appView.ToolbarPrimaryColor = factory.DialogData;
-                    Controller._appView.SetPrimaryColorActive();
-                }
-                else
-                {
-                    AppGlobalData.Instance.SecondaryColor = factory.DialogData;
-                    Controller._appView.ToolbarSecondaryColor = factory.DialogData;
-                    Controller._appView.SetSecondaryColorActive();
+                    case ColorType.PrimaryColor:
+                        AppGlobalData.Instance.PrimaryColor = selectedColor;
+                        Controller._appView.ToolbarPrimaryColor = selectedColor;
+                        Controller._appView.SetPrimaryColorActive();
+                        break;
+                    default:
+                        AppGlobalData.Instance.SecondaryColor = selectedColor;
+                        Controller._appView.ToolbarSecondaryColor = selectedColor;
+                        Controller._appView.SetSecondaryColorActive();
+                        break;
                 }
             }
         }
@@ -94,6 +96,7 @@ namespace VectorImageEdit.Controllers
                 try
                 {
                     var itemColor = ((ToolStripItem)sender).BackColor;
+
                     if (Controller._model.ColorMode == ColorType.PrimaryColor)
                         Controller._appView.ToolbarPrimaryColor = itemColor;
                     else

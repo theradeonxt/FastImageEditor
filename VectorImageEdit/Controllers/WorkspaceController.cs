@@ -1,6 +1,7 @@
 ﻿using System;
 using VectorImageEdit.Forms;
 using VectorImageEdit.Forms.AppWindow;
+using VectorImageEdit.Interfaces;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules;
 

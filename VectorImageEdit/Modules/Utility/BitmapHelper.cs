@@ -9,16 +9,16 @@ namespace VectorImageEdit.Modules.Utility
         /// <summary>
         /// Creates a helper object to access the bitmap data held by the input image. 
         /// NOTE: this locks the image data for reading/writing,
-        /// the caller must release this resource to unlock the image data.
+        ///       the caller must release this resource to unlock the image data.
         /// </summary>
         /// <param name="img"> Input image </param>
         public BitmapHelper(Bitmap img)
         {
-            var bmd = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),
+            BitmapData bmd = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),
                 ImageLockMode.ReadWrite,
                 img.PixelFormat);
-            Locked = true;
             ImageParameters(bmd, img);
+            Locked = true;
         }
 
         public void Dispose()

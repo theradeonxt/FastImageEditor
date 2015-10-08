@@ -9,9 +9,9 @@ namespace VectorImageEdit.Models
     /// <summary>
     /// AppGlobalData Module
     /// 
-    /// - provides access to unique application data and settings
+    /// - provides access to unique instances of application data and settings.
     /// 
-    /// Uses Sigleton pattern and lazy initialization as described here; is Thread-safe.
+    /// Uses Thread-safe Singleton pattern and lazy initialization as described here:
     /// http://geekswithblogs.net/BlackRabbitCoder/archive/2010/05/19/c-system.lazylttgt-and-the-singleton-design-pattern.aspx
     /// </summary>
     class AppGlobalData
@@ -22,9 +22,10 @@ namespace VectorImageEdit.Models
             SecondaryColor = Color.LightBlue;
             ShapeEdgeSize = 4.0f;
 
-            LayerSelectionPen = new Pen(Brushes.Black, 3) { DashStyle = DashStyle.Dash };
+            LayerSelectionPen = new Pen(Brushes.Blue, 3) { DashStyle = DashStyle.Dash };
 
             VectorFileExtension = ".vdata";
+            DefaultImageFileExtension = ".jpg";
         }
 
         #region Singleton implementation details
@@ -54,6 +55,7 @@ namespace VectorImageEdit.Models
         public Pen LayerSelectionPen { get; private set; }
 
         public string VectorFileExtension { get; private set; }
+        public string DefaultImageFileExtension { get; private set; }
 
         #endregion
     }

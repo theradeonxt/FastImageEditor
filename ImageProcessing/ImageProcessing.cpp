@@ -178,13 +178,14 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
 
     if (AlignCheck(source, destination))
     {
-#pragma omp parallel for
+//#pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
             // load 4 BGRA pixels (source and target)
             __m128i src = _mm_load_si128(reinterpret_cast<const __m128i*>(source + index));
             __m128i tar = _mm_load_si128(reinterpret_cast<const __m128i*>(target + index));
 
+            // TODO: This will be 0 if source alpha = 255, handle this here
             __m128i tara_scaled = _mm_scale_epu8(_mm_sub_epi8(bunch_16x_255, src), tar); // alpha_tar * (255 - alpha_src) / 255            
             __m128i dsta_scaled = _mm_srli_si128(_mm_and_si128(src, alpha_mask), 3);     // Keep the 4 alpha values from tara_scaled
             dsta_scaled         = _mm_slli_si128(dsta_scaled, 8);                        // Multiply by 256
@@ -193,6 +194,7 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
             
             __m128 dsta_scaled_f32 = _mm_cvtepi32_ps(dsta_scaled);          // Convert the 4 alpha values to FP32
             __m128 dsta_f32        = _mm_cvtepi32_ps(dsta);                 // Convert the 4 alpha values to FP32                                                                                                   
+            // BUG: Division by 0 if an image already has alpha = 255
             __m128 scale_fact_f32  = _mm_div_ps(dsta_scaled_f32, dsta_f32); // Perform FP32 divide: (alpha_dst - alpha_src) * 256 / alpha_dst
             __m128i scale_fact     = _mm_cvttps_epi32(scale_fact_f32);      // Truncate result back to INT32   
 

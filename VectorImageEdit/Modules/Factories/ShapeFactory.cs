@@ -1,13 +1,9 @@
 ﻿using System.Drawing;
+using VectorImageEdit.Interfaces;
 using VectorImageEdit.Modules.BasicShapes;
 
 namespace VectorImageEdit.Modules.Factories
 {
-    interface IShapeFactory
-    {
-        ShapeBase CreateShape(Size size, ShapeStyle style);
-    }
-
     class CircleShapeFactory : IShapeFactory
     {
         public ShapeBase CreateShape(Size size, ShapeStyle style)

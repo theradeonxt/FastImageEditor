@@ -19,7 +19,7 @@
 #endif
 
 // Enable/Disable reference implementation
-//#define FORCE_SCALAR_IMPL
+#define FORCE_SCALAR_IMPL
 #define REFERENCE_IMPL(FUNCTION_NAME, ...) FUNCTION_NAME##_ref(__VA_ARGS__)
 #ifdef FORCE_SCALAR_IMPL
     #define WANT_REFERENCE_IMPL(FUNCTION_NAME, ...) { return FUNCTION_NAME##_ref(__VA_ARGS__); }

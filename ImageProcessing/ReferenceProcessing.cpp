@@ -67,7 +67,7 @@ AlphaBlend32bgra_32bgra_ref(READONLY (uint8_t*) source,
 {
     int32_t szb = sizeBytes;
 
-#pragma omp parallel for
+//#pragma omp parallel for
     for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
     {
         // read source & target pixels and get their alpha values

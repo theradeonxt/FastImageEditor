@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using VectorImageEdit.Interfaces;
 
 namespace VectorImageEdit.Forms.AppWindow
 {

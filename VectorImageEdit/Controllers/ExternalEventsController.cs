@@ -6,8 +6,11 @@ using System.IO;
 using System.Windows.Forms;
 using VectorImageEdit.Forms;
 using VectorImageEdit.Forms.AppWindow;
+using VectorImageEdit.Interfaces;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules.Factories;
+using VectorImageEdit.Modules.ImportExports;
+using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Controllers
 {
@@ -21,10 +24,9 @@ namespace VectorImageEdit.Controllers
             _appView = appView;
             _model = model;
 
-            // TODO: have a generic file opener/exporter and handle vector and image formats differently?
             _appView.AddSaveVectorListener(new SaveVectorListener(this));
             _appView.AddOpenVectorListener(new OpenVectorListener(this));
-            _appView.AddExportFileListener(new ExportFileListener(this));
+            _appView.AddExportFileListener(new ExportScenePreviewListener(this));
             _appView.AddOpenFileListener(new OpenImagesListener(this));
             _appView.AddDragDropFileListener(new DragDropFileListener(this));
             _appView.AddDragEnterListener(new DragEnterListener(this));
@@ -39,18 +41,18 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var factory = new SaveFileDialogFactory();
-                factory.CreateDialog(title: @"Save vector data",
-                    filter: string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
-                try
+                IFormDialogFactory<string> factory = new SaveFileDialogFactory();
+
+                Tuple<string> result = factory.CreateDialog("Save Layer Data",
+                    string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
+
+                bool status = Controller._model.TryExportVector(new VectorExporter(result.Item1));
+                if (!status)
                 {
-                    Controller._model.SaveVectorSerialize(factory.DialogData);
-                }
-                catch (Exception ex)
-                {
-                    MessageBoxFactory.Create(caption: "Error",
-                        text: string.Format(@"Unable to save the vector data file. ({0})", ex.Message),
-                        type: MessageType.Error);
+                    MessageBoxFactory.Create("Error",
+                        "Unable to save the vector data file." + Environment.NewLine +
+                        "(You may find out what happened from the Error Log.)",
+                        MessageType.Error);
                 }
             }
         }
@@ -64,12 +66,14 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var factory = new OpenFileDialogFactory();
-                factory.CreateDialog(title: @"Open vector data",
-                    filter: string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
+                IFormDialogFactory<string> factory = new OpenFileDialogFactory();
+
+                Tuple<string> result = factory.CreateDialog(@"Open vector data",
+                    string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
+                
                 try
                 {
-                    Controller._model.OpenVectorDeserialize(factory.DialogData);
+                    Controller._model.OpenVectorDeserialize(result.Item1);
                 }
                 catch (InvalidDataException ex)
                 {
@@ -86,34 +90,28 @@ namespace VectorImageEdit.Controllers
             }
         }
 
-        private class ExportFileListener : AbstractListener<ExternalEventsController>, IListener
+        private class ExportScenePreviewListener : AbstractListener<ExternalEventsController>, IListener
         {
-            public ExportFileListener(ExternalEventsController controller)
+            public ExportScenePreviewListener(ExternalEventsController controller)
                 : base(controller)
             {
             }
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var factory = new SaveFileDialogFactory();
-                factory.CreateDialog(title: @"Export Preview",
-                    filter: Controller._model.GetExportsFilter(),
-                    filterIndex: 2);
-                try
+                SaveFileDialogFactory factory = new SaveFileDialogFactory();
+
+                Tuple<string> result = factory.CreateDialog(@"Export Preview",
+                     ImagingHelpers.GetSupportedImagesFilter(),
+                     2);
+
+                bool status = Controller._model.TryExportScenePreview(new ImageExporter(result.Item1));
+                if (!status)
                 {
-                    // BUG: Always shows the message and won't save
-                    if (!Controller._model.ExportToFile(factory.DialogData))
-                    {
-                        MessageBoxFactory.Create(caption: "Information", 
-                            text: @"The selected file type is not a supported image format.", 
-                            type: MessageType.Information);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBoxFactory.Create(caption: "Error",
-                        text: string.Format(@"Could not save the workspace image. Detailed Info: {0}", ex.Message),
-                        type: MessageType.Error);
+                    MessageBoxFactory.Create("Error",
+                        "Unable to save the Scene Preview." + Environment.NewLine +
+                        "(You may find out what happened from the Error Log.)",
+                        MessageType.Error);
                 }
             }
         }
@@ -127,12 +125,14 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var factory = new OpenMultipleFilesDialogFactory();
-                factory.CreateDialog(title: @"Open Image(s)",
-                    filter: @"Image Files|*.jpg;*.png;*.tiff;*.bmp");
+                IFormDialogFactory<string[]> factory = new OpenMultipleFilesDialogFactory();
+
+                Tuple<string[]> result = factory.CreateDialog(@"Open Image(s)",
+                    ImagingHelpers.GetSupportedImagesFilter());
+                
                 try
                 {
-                    Controller.CreateBackgroundFileTask(factory.DialogData);
+                    Controller.CreateBackgroundFileTask(result.Item1);
                 }
                 catch (InvalidOperationException) { }
             }
@@ -171,6 +171,7 @@ namespace VectorImageEdit.Controllers
         }
 
         // TODO: Verify that it doesn't crash even with invalid files
+        // TODO: Move to Model
         private void CreateBackgroundFileTask(string[] fileNames)
         {
             var bw = new BackgroundWorker { WorkerReportsProgress = true };

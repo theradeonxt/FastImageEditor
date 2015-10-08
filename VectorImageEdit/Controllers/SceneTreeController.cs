@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using VectorImageEdit.Forms;
 using VectorImageEdit.Forms.AppWindow;
+using VectorImageEdit.Interfaces;
 using VectorImageEdit.Models;
 
 namespace VectorImageEdit.Controllers

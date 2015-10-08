@@ -59,6 +59,10 @@
     <Reference Include="MRG.Controls.UI">
       <HintPath>Properties\MRG.Controls.UI.dll</HintPath>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.1.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
@@ -84,6 +88,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\CustomLook.cs" />
+    <Compile Include="Interfaces\IFormDialogFactory.cs" />
+    <Compile Include="Interfaces\IGenericResourceImporter.cs" />
     <Compile Include="Models\AppModel.cs" />
     <Compile Include="Models\AppGlobalData.cs" />
     <Compile Include="Forms\AbstractListener.cs" />
@@ -96,7 +102,7 @@
     <Compile Include="Forms\AppWindow\AppToolstrips.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\IListener.cs" />
+    <Compile Include="Interfaces\IListener.cs" />
     <Compile Include="Models\ExternalEventsModel.cs" />
     <Compile Include="Models\MenuItemsModel.cs" />
     <Compile Include="Models\SceneTreeModel.cs" />
@@ -104,13 +110,20 @@
     <Compile Include="Models\WorkspaceModel.cs" />
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
+    <Compile Include="Interfaces\IShapeFactory.cs" />
+    <Compile Include="Modules\ImportExports\AbstractExporter.cs" />
+    <Compile Include="Modules\ImportExports\GenericResourceImporter.cs" />
+    <Compile Include="Modules\ImportExports\ImageImporter.cs" />
+    <Compile Include="Modules\ImportExports\VectorExporter.cs" />
     <Compile Include="Modules\Factories\MessageBoxFactory.cs" />
     <Compile Include="Modules\Factories\ShapeFactory.cs" />
     <Compile Include="Modules\Factories\ShapeStyleBuilder.cs" />
     <Compile Include="Modules\Factories\FormDialogFactory.cs" />
+    <Compile Include="Interfaces\IDiskResourceExporter.cs" />
+    <Compile Include="Modules\ImportExports\ImageExporter.cs" />
+    <Compile Include="Modules\ImportExports\VectorImporter.cs" />
     <Compile Include="Modules\Utility\BitmapHelper.cs" />
     <Compile Include="Modules\ImportExports\VectorSerializer.cs" />
-    <Compile Include="Modules\ImportExports\ImageOutput.cs" />
     <Compile Include="Forms\AppWindow\AppWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,7 +147,6 @@
     <Compile Include="Modules\BasicShapes\Star.cs" />
     <Compile Include="Modules\BasicShapes\Triangle.cs" />
     <Compile Include="Modules\GraphicsManager.cs" />
-    <Compile Include="Modules\ImportExports\ImageLoader.cs" />
     <Compile Include="Modules\Layers\LayerMetadata.cs" />
     <Compile Include="Modules\Layers\Layer.cs" />
     <Compile Include="Modules\Layers\LayerManager.cs" />
@@ -146,19 +158,9 @@
     <Compile Include="Modules\Utility\SortedContainer.cs" />
     <Compile Include="Modules\Utility\ImagingHelpers.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Forms\ProgressWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ProgressWindow.Designer.cs">
-      <DependentUpon>ProgressWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\AppWindow\AppWindow.resx">
       <DependentUpon>AppWindow.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ProgressWindow.resx">
-      <DependentUpon>ProgressWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PropertiesWindow.resx">
@@ -175,6 +177,15 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

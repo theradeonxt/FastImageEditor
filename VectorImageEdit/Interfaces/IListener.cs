@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace VectorImageEdit.Forms
+namespace VectorImageEdit.Interfaces
 {
     public interface IListener
     {

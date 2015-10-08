@@ -1,4 +1,6 @@
-﻿namespace VectorImageEdit.Forms.AppWindow
+﻿using VectorImageEdit.Interfaces;
+
+namespace VectorImageEdit.Forms.AppWindow
 {
     public partial class AppWindow
     {
