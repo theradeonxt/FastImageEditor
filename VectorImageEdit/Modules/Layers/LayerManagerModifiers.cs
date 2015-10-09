@@ -19,7 +19,7 @@
             if (_activeLayers.Contains(layer))
             {
                 UpdateFrame(_activeLayers);
-                UpdateSelection(layer.Region, ClearMode.NoClear);
+                UpdateSelection(layer.Region);
             }
 
             // the layer remains unchanged
@@ -39,7 +39,7 @@
                 layer.DepthLevel = _activeLayers[0].DepthLevel - 1;
                 _activeLayers.Rebuild();
                 UpdateFrame(_activeLayers);
-                UpdateSelection(layer.Region, ClearMode.NoClear);
+                UpdateSelection(layer.Region);
             }
 
             // the layer remains unchanged
@@ -58,7 +58,7 @@
                 layer.DepthLevel = layer.DepthLevel - 1;
                 _activeLayers.Rebuild();
                 UpdateFrame(_activeLayers);
-                UpdateSelection(layer.Region, ClearMode.NoClear);
+                UpdateSelection(layer.Region);
             }
 
             // the layer remains unchanged

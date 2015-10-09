@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using NLog;
 using VectorImageEdit.Modules.Layers;
 using VectorImageEdit.Modules.Utility;
@@ -55,15 +56,15 @@ namespace VectorImageEdit.Modules
         /// </summary>
         /// <param name="layerId"> The ID of object </param>
         /// <returns> </returns>
-        public Tuple<Bitmap, BitmapData> GetRasterInfo(int layerId)
+        public BitmapData GetRasterInfo(int layerId)
         {
             if (_vectorRasterInfo.ContainsKey(layerId))
             {
-                return _vectorRasterInfo[layerId];
+                return _vectorRasterInfo[layerId].Item2;
             }
             if (_rawImageRasterInfo.ContainsKey(layerId))
             {
-                return _rawImageRasterInfo[layerId];
+                return _rawImageRasterInfo[layerId].Item2;
             }
             throw new KeyNotFoundException();
         }
@@ -71,8 +72,10 @@ namespace VectorImageEdit.Modules
         private void RasterizerHandlePictureObject(Picture pictureObj)
         {
             Tuple<Bitmap, BitmapData> tuple = new Tuple<Bitmap, BitmapData>(pictureObj.Image,
-                            pictureObj.Image.LockBits(new Rectangle(0, 0, pictureObj.Image.Width, pictureObj.Image.Height), ImageLockMode.ReadOnly,
-                                PixelFormat.Format32bppArgb));
+                pictureObj.Image.LockBits(
+                new Rectangle(0, 0, pictureObj.Image.Width, pictureObj.Image.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb));
 
             _rawImageRasterInfo.Add(pictureObj.Metadata.Uid, tuple);
         }
@@ -85,8 +88,11 @@ namespace VectorImageEdit.Modules
                 layerObj.DrawGraphics(gfx);
             }
 
-            Tuple<Bitmap, BitmapData> tuple = new Tuple<Bitmap, BitmapData>(rasterized,
-                rasterized.LockBits(layerObj.Region, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb));
+            Tuple<Bitmap, BitmapData> tuple = new Tuple<Bitmap, BitmapData>(rasterized, 
+                rasterized.LockBits(
+                new Rectangle(0, 0, layerObj.Region.Width, layerObj.Region.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format32bppArgb));
 
             _vectorRasterInfo.Add(layerObj.Metadata.Uid, tuple);
         }
@@ -95,8 +101,6 @@ namespace VectorImageEdit.Modules
             try
             {
                 // Build rasterization information for every layer inside the scene data
-                // Since the objects are rasterized on their own memory allocated regions,
-                // this can be done in parallel
                 foreach (Layer layer in objectCollection)
                 {
                     if (layer is Picture)

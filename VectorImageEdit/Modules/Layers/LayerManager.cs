@@ -9,8 +9,8 @@ namespace VectorImageEdit.Modules.Layers
 {
     public enum InsertionPolicy
     {
-        BringToFront, // Ensure layer is added to the top-most visible level
-        Default       // Layer is added on the level it was explicitly set to
+        BringToFront,   // Ensure layer is added to the top-most visible level
+        KeepAsRequested // Layer is added on the level it was explicitly set to
     };
 
     /// <summary>
@@ -107,12 +107,12 @@ namespace VectorImageEdit.Modules.Layers
             if (mode == ClearMode.FullUpdate)
             {
                 UpdateFrame(_activeLayers);
-                UpdateSelection(objectRegion, ClearMode.NoClear);
+                UpdateSelection(objectRegion);
             }
             else
             {
                 UpdateFrame(_activeLayers); // this was not previously here
-                UpdateSelection(objectRegion, mode);
+                UpdateSelection(objectRegion);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -35,12 +36,9 @@ namespace VectorImageEdit.Modules
         private readonly Control _formControl;   // reference to the form object used to draw on
 
         private Bitmap _frame;                   // buffer for the current frame data
-        private Bitmap _frameBackup;             // buffer with a copy of the frame data
 
         private Graphics _frameGraphics;         // graphics object used to draw directly on the frame
-        private Graphics _frameBackupGraphics;   // graphics object used to draw directly on frame copy
         private Graphics _formGraphics;          // graphics object used to draw directly on the form control
-        private Rectangle _frameBackupRegion;    // the region covered by the selection border
 
         protected GraphicsManager(Control formControl)
         {
@@ -63,13 +61,13 @@ namespace VectorImageEdit.Modules
             {
                 _formGraphics = _formControl.CreateGraphics();
                 _frame = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
-                _frameBackup = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
+                //_frameBackup = ImagingHelpers.Allocate(_formControl.Width + 1, _formControl.Height + 1);
                 _frameGraphics = Graphics.FromImage(_frame);
-                _frameBackupGraphics = Graphics.FromImage(_frameBackup);
+                //_frameBackupGraphics = Graphics.FromImage(_frameBackup);
 
                 ImagingHelpers.GraphicsFastDrawing(_formGraphics);
                 ImagingHelpers.GraphicsFastDrawing(_frameGraphics);
-                ImagingHelpers.GraphicsFastDrawing(_frameBackupGraphics);
+                //ImagingHelpers.GraphicsFastDrawing(_frameBackupGraphics);
             }
             catch (OutOfMemoryException ex)
             {
@@ -106,6 +104,7 @@ namespace VectorImageEdit.Modules
             uint sizeBytes
         );
 
+        [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
         public void UpdateFrame(SortedContainer<Layer> objectCollection)
         {
             _frameGraphics.Clear(_formControl.BackColor);
@@ -124,21 +123,27 @@ namespace VectorImageEdit.Modules
 
                         // Do a Painter's algorithm iteration (back->front) on the layers
                         // to find intersections with the scanline
-                        foreach (Layer layer in objectCollection)
+                        lock (objectCollection.SyncRoot)
                         {
-                            if (y < layer.Region.Top || y > layer.Region.Bottom) continue;
+                            foreach (Layer layer in objectCollection)
+                            {
+                                if (y < layer.Region.Top || y > layer.Region.Bottom) continue;
 
-                            // Find the bounds for the "dirty region" of scanline (clamped inside frame)
-                            int boundLeft = Math.Max(0, Math.Min(layer.Region.Left, layer.Region.Right));
-                            int boundRight = Math.Min(frameWidth - 1, Math.Max(layer.Region.Left, layer.Region.Right));
+                                // Find the bounds for the "dirty region" of scanline (clamped inside frame)
+                                int boundLeft = Math.Max(0, Math.Min(layer.Region.Left, layer.Region.Right));
+                                int boundRight = Math.Min(frameWidth - 1,
+                                    Math.Max(layer.Region.Left, layer.Region.Right));
 
-                            BitmapData layerRaw = rasterizer.GetRasterInfo(layer.Metadata.Uid).Item2;
+                                BitmapData layerRaw = rasterizer.GetRasterInfo(layer.Metadata.Uid);
 
-                            byte* src = (byte*)(layerRaw.Scan0 + (y - layer.Region.Top) * layerRaw.Stride + boundLeft * 4);
-                            byte* dst = currentScanLine + boundLeft * frameData.PixelSize;
-                            int dirtySizeBytes = (boundRight - boundLeft + 1) * 4;
+                                byte* src = (byte*)(layerRaw.Scan0 + 
+                                    (y - layer.Region.Top) * layerRaw.Stride + 
+                                    boundLeft * 4);
+                                byte* dst = currentScanLine + (boundLeft-1) * frameData.PixelSize;
+                                int dirtySizeBytes = (boundRight - boundLeft + 1) * 4;
 
-                            AlphaBlend32bgra_32bgra(src, dst, dst, (uint)dirtySizeBytes);
+                                AlphaBlend32bgra_32bgra(src, dst, dst, (uint)dirtySizeBytes);
+                            }
                         }
                     }
                 });
@@ -147,36 +152,19 @@ namespace VectorImageEdit.Modules
             RefreshFrame();
         }
 
-        protected void UpdateSelection(Rectangle selectionBorder, ClearMode mode)
+        protected void UpdateSelection(Rectangle selectionBorder)
         {
             // This only updates the selection rectangle of objects
-
-            // Restore the previously saved region
-            /*if (mode == ClearMode.UpdateOld)
-            {
-                _formGraphics.DrawImage(_frameBackup, _frameBackupRegion, _frameBackupRegion,
-                    GraphicsUnit.Pixel);
-            }
-
-            // Copy the affected region of the frame to a backup frame
-            _frameBackupGraphics.DrawImage(_frame, selectionBorder, selectionBorder,
-                GraphicsUnit.Pixel);*/
-
             // Draw selection over frame region
             _formGraphics.DrawRectangle(AppGlobalData.Instance.LayerSelectionPen,
                 selectionBorder.Left, selectionBorder.Top, selectionBorder.Width - 1, selectionBorder.Height - 1);
-
-            //_frameBackupRegion = selectionBorder;
-            //_frameBackupRegion.Inflate(1, 1);
         }
 
         private void DisposeGraphicsResources()
         {
             // Resources used by the graphics process (frame buffers, graphics objects) are disposed here
             if (_frame != null) _frame.Dispose();
-            if (_frameBackup != null) _frameBackup.Dispose();
             if (_frameGraphics != null) _frameGraphics.Dispose();
-            if (_frameBackupGraphics != null) _frameBackupGraphics.Dispose();
             if (_formGraphics != null) _formGraphics.Dispose();
         }
     }

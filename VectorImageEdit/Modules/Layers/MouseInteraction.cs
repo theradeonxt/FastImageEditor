@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using VectorImageEdit.Modules.Utility;
 
@@ -9,8 +10,8 @@ namespace VectorImageEdit.Modules.Layers
     /// 
     /// MouseInteraction Module
     /// 
-    /// - implements user interaction functionality with layers
-    /// - provides object selection/deselection 
+    /// - implements user interaction with layers
+    /// - handles object selection/deselection and their movement
     /// 
     /// </summary>
     public class MouseInteraction
@@ -43,10 +44,7 @@ namespace VectorImageEdit.Modules.Layers
 
         public void MouseMovement(object sender, MouseEventArgs e)
         {
-            if (_selectedLayer == null)
-            {
-                return;
-            }
+            if (_selectedLayer == null) return;
 
             switch (_currentState)
             {
@@ -73,8 +71,13 @@ namespace VectorImageEdit.Modules.Layers
 
                         _selectedLayer.Resize(newSize);
                         _onObjectModified(_selectedLayer.Region, ClearMode.UpdateOld);
+
                         break;
                     }
+                case LayerState.Normal:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -85,9 +88,8 @@ namespace VectorImageEdit.Modules.Layers
             // Keep track of initial mouse down
             _pointDown = e.Location;
 
-            // Find layer at mouse location
-            Layer layer;
-            if (!FindLayerAt(e.Location, out layer))
+            Layer layer = FindTopmostLayer(_pointDown);
+            if (layer == null)
             {
                 // No selectable layer, deselect all layers
                 DeselectLayers();
@@ -97,19 +99,19 @@ namespace VectorImageEdit.Modules.Layers
             // The exterior region is 4 pixels inside from the layer edges 
             Rectangle resizeInterior = layer.Region;
             resizeInterior.Inflate(-4, -4);
-            _currentState = (resizeInterior.Contains(e.Location) == false) ? LayerState.Resizing : LayerState.Moving;
-            if (_currentState == LayerState.Resizing)
+            _currentState = resizeInterior.Contains(e.Location) ? LayerState.Moving : LayerState.Resizing;
+            switch (_currentState)
             {
-                // Resize begin
-                Cursor.Current = Cursors.SizeAll;
-            }
-            else
-            {
-                // Movement begin
-                _pointOffset.X = _pointDown.X - layer.Region.Left;
-                _pointOffset.Y = _pointDown.Y - layer.Region.Top;
-
-                Cursor.Current = Cursors.Hand;
+                case LayerState.Resizing:
+                    // Resize begin
+                    Cursor.Current = Cursors.SizeAll;
+                    break;
+                case LayerState.Moving:
+                    // Movement begin
+                    _pointOffset.X = _pointDown.X - layer.Region.Left;
+                    _pointOffset.Y = _pointDown.Y - layer.Region.Top;
+                    Cursor.Current = Cursors.Hand;
+                    break;
             }
 
             // Mark the object as selected
@@ -118,8 +120,7 @@ namespace VectorImageEdit.Modules.Layers
 
         public void MouseUp(object sender, MouseEventArgs e)
         {
-            if (_currentState == LayerState.Moving
-                || _currentState == LayerState.Resizing)
+            if (_currentState == LayerState.Moving || _currentState == LayerState.Resizing)
             {
                 // The layer is finished updating so update the graphics
                 _onObjectModified(_selectedLayer.Region, ClearMode.FullUpdate);
@@ -140,26 +141,25 @@ namespace VectorImageEdit.Modules.Layers
             get { return _selectedLayer; }
             set
             {
+                if (_selectedLayer != null && 
+                    _selectedLayer.Metadata.Uid == value.Metadata.Uid) return;
                 _selectedLayer = value;
                 _onObjectModified(_selectedLayer.Region, ClearMode.UpdateOld);
             }
         }
 
-        private bool FindLayerAt(Point location, out Layer layer)
+        private Layer FindTopmostLayer(Point location)
         {
-            // Finds an object which contains a given location
-            // If an objects is found, it is guaranteed to be the topmost one (using a sorted list)
+            // Finds the first layer (topmost) which contains a given location
             int count = _sortedCollection.Count;
             for (int i = count - 1; i >= 0; i--)
             {
                 if (_sortedCollection[i].Region.Contains(location))
                 {
-                    layer = _sortedCollection[i];
-                    return true;
+                    return _sortedCollection[i];
                 }
             }
-            layer = null;
-            return false;
+            return null;
         }
     }
 }
