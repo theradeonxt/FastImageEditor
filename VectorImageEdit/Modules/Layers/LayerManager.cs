@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using JetBrains.Annotations;
 using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Modules.Layers
@@ -25,13 +26,15 @@ namespace VectorImageEdit.Modules.Layers
         public readonly MouseInteraction MouseHandler;
 
         private readonly SortedContainer<Layer> _activeLayers;
-        private readonly Action _onLayerListChangedCallback;
+        private readonly Action _layerListChangedCallback;
 
-        public LayerManager(Control formControl, Action onLayerListChangedCallback)
-            : base(formControl)
+        public LayerManager(Control formControl, Action layerListChangedCallback, 
+            Action<GraphicsProfiler> graphicsUpdateCallback)
+            : base(formControl, graphicsUpdateCallback)
         {
+            _layerListChangedCallback = layerListChangedCallback;
+
             _activeLayers = new SortedContainer<Layer>();
-            _onLayerListChangedCallback = onLayerListChangedCallback;
             MouseHandler = new MouseInteraction(_activeLayers, ObjectUpdateCallback);
 
             // TODO: move to its own controller
@@ -40,17 +43,14 @@ namespace VectorImageEdit.Modules.Layers
             formControl.MouseUp += MouseHandler.MouseUp;
         }
 
-        #region Objects creation/deletion
-
-        public void Add(Layer newLayer, InsertionPolicy policy = InsertionPolicy.BringToFront)
+        public void Add([NotNull]Layer newLayer, InsertionPolicy policy = InsertionPolicy.BringToFront)
         {
             if (policy == InsertionPolicy.BringToFront) BringToFront(newLayer);
             _activeLayers.Add(newLayer);
-            _onLayerListChangedCallback();
+            _layerListChangedCallback();
             UpdateFrame(_activeLayers);
         }
-
-        public void Add(List<Layer> newLayers, InsertionPolicy policy = InsertionPolicy.BringToFront)
+        public void Add([NotNull]List<Layer> newLayers, InsertionPolicy policy = InsertionPolicy.BringToFront)
         {
             // Does not use Add of one Layer to save a few expensive calls to UpdateFrame
             foreach (Layer layer in newLayers)
@@ -58,21 +58,20 @@ namespace VectorImageEdit.Modules.Layers
                 if (policy == InsertionPolicy.BringToFront) BringToFront(layer);
                 _activeLayers.Add(layer);
             }
-            _onLayerListChangedCallback();
+            _layerListChangedCallback();
             UpdateFrame(_activeLayers);
         }
 
-        public void Remove(Layer existingLayer)
+        public void Remove([NotNull]Layer existingLayer)
         {
-            if (existingLayer == null) return;
+            if (existingLayer == MouseInteraction.DummyLayer) return;
 
             _activeLayers.Remove(existingLayer);
-            _onLayerListChangedCallback();
+            _layerListChangedCallback();
 
             existingLayer.Dispose();
             UpdateFrame(_activeLayers);
         }
-
         public void RemoveAll()
         {
             foreach (Layer layer in _activeLayers)
@@ -80,40 +79,29 @@ namespace VectorImageEdit.Modules.Layers
                 layer.Dispose();
             }
             _activeLayers.Clear();
-            _onLayerListChangedCallback();
+            _layerListChangedCallback();
         }
 
-        #endregion Objects creation/deletion
-
+        [NotNull]
         public SortedContainer<Layer> GetSortedLayers()
         {
             return _activeLayers;
         }
-
+        [NotNull]
         public List<Layer> GetLayers()
         {
             return _activeLayers.ToList();
         }
-
-        // TODO: List<ShapeBase>
+        [NotNull]
         public List<Layer> GetShapesList()
         {
             return _activeLayers.Where(layer => !(layer is Picture)).ToList();
         }
 
-        // TODO: this ClearMode is very ambiguous
-        private void ObjectUpdateCallback(Rectangle objectRegion, ClearMode mode)
+        private void ObjectUpdateCallback(Rectangle objectRegion)
         {
-            if (mode == ClearMode.FullUpdate)
-            {
-                UpdateFrame(_activeLayers);
-                UpdateSelection(objectRegion);
-            }
-            else
-            {
-                UpdateFrame(_activeLayers); // this was not previously here
-                UpdateSelection(objectRegion);
-            }
+            UpdateFrame(_activeLayers);
+            UpdateSelection(objectRegion);
         }
     }
 }

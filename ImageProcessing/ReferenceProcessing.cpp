@@ -48,7 +48,7 @@ OpacityAdjust_32bgra_ref(READONLY (uint8_t*) source,
     int32_t  szb        = sizeBytes;
     uint32_t alphaLevel = uint32_t(percentage * 255.0f) << 24;
 
-#pragma omp parallel for
+//#pragma omp parallel for
     for (int32_t index = 0; index < szb; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
     {
         uint32_t bgra = *reinterpret_cast<const uint32_t*>(source + index);

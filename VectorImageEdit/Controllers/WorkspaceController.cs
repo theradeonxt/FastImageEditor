@@ -27,6 +27,12 @@ namespace VectorImageEdit.Controllers
             _appView.MemoryLabelText = string.Format("Memory Used ({0}%)", BackgroundStatitics.MemoryUsagePercent.ToString());
         }
 
+        public void GraphicsUpdateCallback(GraphicsProfiler profiler)
+        {
+            _appView.GraphicsDebugText = string.Format("ClearFrame: {0}ms{1}RasterizeObjects: {2}ms{1}DrawFrame: {3}ms{1}", 
+                profiler.ClearFrameDuration, Environment.NewLine, profiler.RasterizeObjectsDuration, profiler.DrawFrameDuration);
+        }
+
         private class WorkspaceSizeChangedListener : AbstractListener<WorkspaceController>, IListener
         {
             public WorkspaceSizeChangedListener(WorkspaceController controller)

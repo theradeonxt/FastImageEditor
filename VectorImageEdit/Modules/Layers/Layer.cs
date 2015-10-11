@@ -31,6 +31,7 @@ namespace VectorImageEdit.Modules.Layers
 
             _region = region;
             DepthLevel = depthLevel;
+            Transparency = 100;
 
             Metadata = new LayerMetadata(displayName);
         }
@@ -48,6 +49,7 @@ namespace VectorImageEdit.Modules.Layers
             }
         }
         public int DepthLevel { get; set; }
+        public int Transparency { get; set; }
 
         #endregion
 
@@ -68,7 +70,6 @@ namespace VectorImageEdit.Modules.Layers
         {
             _region.Location = newLocation;
         }
-
         public void Resize(Size newSize)
         {
             //Debug.Assert(newSize.Width >= 0 && newSize.Height >= 0, "Layer resized with invalid properties");

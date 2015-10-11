@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using JetBrains.Annotations;
 using VectorImageEdit.Modules.Utility;
+using System.Linq;
 
 namespace VectorImageEdit.Modules.Layers
 {
@@ -24,27 +26,33 @@ namespace VectorImageEdit.Modules.Layers
         };
 
         private LayerState _currentState;
-        private readonly SortedContainer<Layer> _sortedCollection;
-        private readonly ObjectModifiedEvent _onObjectModified;
-        private Layer _selectedLayer;                    // the single object selected with focus
-        private Point _pointOffset;                      // the mouse offset when used to drag objects
+        private Layer _selectedLayer;       // the single object selected with focus
+
+        private Point _pointOffset;         // the mouse offset when used to drag objects
         private Point _pointDown;
 
-        // Callback method when an object has changed to trigger some update if needed
-        public delegate void ObjectModifiedEvent(Rectangle objectRegion, ClearMode mode);
+        private readonly SortedContainer<Layer> _sortedCollection;
+        private readonly Action<Rectangle> _layerModifiedCallback;
 
-        public MouseInteraction(SortedContainer<Layer> sortedCollection, ObjectModifiedEvent onObjectModified)
+        public static readonly Layer DummyLayer; // marker for an unspecified layer
+        static MouseInteraction()
+        {
+            DummyLayer = new Picture(new Bitmap(1, 1), Rectangle.Empty, 0);
+        }
+
+        public MouseInteraction(SortedContainer<Layer> sortedCollection, Action<Rectangle> layerModifiedCallback)
         {
             _sortedCollection = sortedCollection;
-            _onObjectModified = onObjectModified;
+            _layerModifiedCallback = layerModifiedCallback;
 
-            _selectedLayer = null;
+            _selectedLayer = DummyLayer;
+
             _currentState = LayerState.Normal;
         }
 
         public void MouseMovement(object sender, MouseEventArgs e)
         {
-            if (_selectedLayer == null) return;
+            if (_selectedLayer == DummyLayer) return;
 
             switch (_currentState)
             {
@@ -57,7 +65,7 @@ namespace VectorImageEdit.Modules.Layers
                         };
 
                         _selectedLayer.Move(newPoint);
-                        _onObjectModified(_selectedLayer.Region, ClearMode.UpdateOld);
+                        _layerModifiedCallback(_selectedLayer.Region);
 
                         break;
                     }
@@ -70,14 +78,12 @@ namespace VectorImageEdit.Modules.Layers
                         };
 
                         _selectedLayer.Resize(newSize);
-                        _onObjectModified(_selectedLayer.Region, ClearMode.UpdateOld);
+                        _layerModifiedCallback(_selectedLayer.Region);
 
                         break;
                     }
                 case LayerState.Normal:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -89,7 +95,7 @@ namespace VectorImageEdit.Modules.Layers
             _pointDown = e.Location;
 
             Layer layer = FindTopmostLayer(_pointDown);
-            if (layer == null)
+            if (layer == DummyLayer)
             {
                 // No selectable layer, deselect all layers
                 DeselectLayers();
@@ -120,46 +126,48 @@ namespace VectorImageEdit.Modules.Layers
 
         public void MouseUp(object sender, MouseEventArgs e)
         {
-            if (_currentState == LayerState.Moving || _currentState == LayerState.Resizing)
+            if (_currentState == LayerState.Moving || 
+                _currentState == LayerState.Resizing)
             {
                 // The layer is finished updating so update the graphics
-                _onObjectModified(_selectedLayer.Region, ClearMode.FullUpdate);
+                _layerModifiedCallback(_selectedLayer.Region);
 
                 Cursor.Current = Cursors.Default;
             }
             _currentState = LayerState.Normal;
         }
 
-        private void DeselectLayers()
-        {
-            //onObjectModified(null, ClearMode.FullUpdate);
-            _selectedLayer = null;
-        }
-
+        [NotNull]
         public Layer SelectedLayer
         {
             get { return _selectedLayer; }
             set
             {
-                if (_selectedLayer != null && 
+                if (_selectedLayer != DummyLayer &&
                     _selectedLayer.Metadata.Uid == value.Metadata.Uid) return;
+
                 _selectedLayer = value;
-                _onObjectModified(_selectedLayer.Region, ClearMode.UpdateOld);
+                _layerModifiedCallback(_selectedLayer.Region);
             }
         }
 
+        [NotNull]
         private Layer FindTopmostLayer(Point location)
         {
             // Finds the first layer (topmost) which contains a given location
-            int count = _sortedCollection.Count;
-            for (int i = count - 1; i >= 0; i--)
+            try
             {
-                if (_sortedCollection[i].Region.Contains(location))
-                {
-                    return _sortedCollection[i];
-                }
+                return _sortedCollection.Last(item => item.Region.Contains(location));
             }
-            return null;
+            catch (InvalidOperationException)
+            {
+                return DummyLayer;
+            }
+        }
+        private void DeselectLayers()
+        {
+            //onObjectModified(null, ClearMode.FullUpdate);
+            _selectedLayer = DummyLayer;
         }
     }
 }

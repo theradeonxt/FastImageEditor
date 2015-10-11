@@ -20,9 +20,12 @@ namespace VectorImageEdit.Controllers
             _appView.AddTreeSelectionChangedListener(new LayerListSelectedChangedListener(this));
         }
 
+        /// <summary>
+        /// 
+        /// This will be run on the UI thread, but can be invoked from other threads safely
+        /// </summary>
         public void OnListboxItemsChangedCallback()
         {
-            // This will be run on the UI thread, but can be invoked from other threads safely
             var layers = AppGlobalData.Instance.LayerManager.GetLayers().ToArray();
             MethodInvoker del = delegate { _appView.SceneTreeItems = layers; };
             _appView.Invoke(del);

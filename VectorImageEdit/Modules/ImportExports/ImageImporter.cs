@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using JetBrains.Annotations;
+using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Modules.ImportExports
 {
@@ -8,9 +10,10 @@ namespace VectorImageEdit.Modules.ImportExports
 
     class ImageImporter : GenericResourceImporter<Tuple<Size, ScalingMode>, Bitmap>
     {
+        [NotNull]
         public override Bitmap Acquire(string resourcePath)
         {
-            Bitmap resultImage = null;
+            Bitmap resultImage = Properties.Resources.placeholder;
             bool status = InternalErrorValidation(() =>
             {
                 switch (ImportParameters.Item2)
@@ -23,6 +26,13 @@ namespace VectorImageEdit.Modules.ImportExports
                         break;
                 }
             });
+
+            /*using (BitmapHelper bh = new BitmapHelper(resultImage))
+                unsafe
+                {
+                    ImageProcessingApi.OpacityAdjust_32bgra(bh.Start, bh.Start, bh.SizeBytes, 0.5f);
+                }*/
+
             return resultImage;
         }
 
@@ -72,7 +82,7 @@ namespace VectorImageEdit.Modules.ImportExports
         }
         private static Bitmap OpenImage(string fileName)
         {
-            Bitmap loadedBitmap = (Bitmap) Image.FromFile(fileName);
+            Bitmap loadedBitmap = (Bitmap)Image.FromFile(fileName);
             return loadedBitmap.Clone(new Rectangle(0, 0, loadedBitmap.Width, loadedBitmap.Height), PixelFormat.Format32bppArgb);
         }
     }

@@ -51,7 +51,8 @@ namespace VectorImageEdit.Controllers
 
         private void InitializeAppGlobalData()
         {
-            AppGlobalData.Instance.LayerManager = new LayerManager(_appView.WorkspaceArea, _sceneTreeController.OnListboxItemsChangedCallback);
+            AppGlobalData.Instance.LayerManager = new LayerManager(_appView.WorkspaceArea, 
+                _sceneTreeController.OnListboxItemsChangedCallback, _workspaceController.GraphicsUpdateCallback);
             AppGlobalData.Instance.Layout = new Layout(_appView.Size);
         }
     }

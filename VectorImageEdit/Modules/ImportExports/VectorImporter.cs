@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VectorImageEdit.Modules.ImportExports
 {
-    interface VectorImporter
+    class VectorImporter
     {
     }
 }

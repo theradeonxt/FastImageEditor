@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using JetBrains.Annotations;
 using VectorImageEdit.Properties;
 
 namespace VectorImageEdit.Modules.Layers
@@ -13,12 +14,13 @@ namespace VectorImageEdit.Modules.Layers
     [Serializable]
     public class Picture : Layer
     {
+        [NotNull]
         private Bitmap _image;
 
-        public Picture(Bitmap image, Rectangle region, int depthLevel)
+        public Picture([NotNull]Bitmap image, Rectangle region, int depthLevel)
             : base(region, depthLevel, "Layer - Picture")
         {
-            _image = image ?? Resources.placeholder;
+            _image = image;
         }
 
         ~Picture()
@@ -26,13 +28,14 @@ namespace VectorImageEdit.Modules.Layers
             Dispose();
         }
 
+        [NotNull]
         public Bitmap Image
         {
             get { return _image; }
             set
             {
                 Dispose();
-                _image = value ?? Resources.placeholder;
+                _image = value;
             }
         }
 
@@ -42,11 +45,9 @@ namespace VectorImageEdit.Modules.Layers
         {
             destination.DrawImage(_image, Region);
         }
-
         public override void Dispose()
         {
-            // TODO: Should dispose the bitmap if it's the placeholder?
-            if (_image != null && _image != Resources.placeholder)
+            if (_image != Resources.placeholder)
             {
                 _image.Dispose();
             }

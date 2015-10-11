@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using JetBrains.Annotations;
 
 namespace VectorImageEdit.Modules.Utility
 {
@@ -40,30 +41,26 @@ namespace VectorImageEdit.Modules.Utility
             ImagesFilter = filter;
         }
 
-        public static void GraphicsFastDrawing(Graphics g)
+        public static void GraphicsFastDrawing([NotNull]Graphics g)
         {
-            if (g == null) return;
             g.CompositingQuality = CompositingQuality.HighSpeed;
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
             g.SmoothingMode = SmoothingMode.None;
             g.CompositingMode = CompositingMode.SourceCopy;
         }
-        public static void GraphicsFastDrawingWithBlending(Graphics g)
+        public static void GraphicsFastDrawingWithBlending([NotNull]Graphics g)
         {
-            if (g == null) return;
             g.CompositingQuality = CompositingQuality.HighSpeed;
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
             g.SmoothingMode = SmoothingMode.None;
             g.CompositingMode = CompositingMode.SourceOver;
         }
-        public static void GraphicsFastResizePixelated(Graphics g)
+        public static void GraphicsFastResizePixelated([NotNull]Graphics g)
         {
-            if (g == null) return;
             GraphicsFastDrawing(g);
         }
-        public static void GraphicsFastResizeBilinear(Graphics g)
+        public static void GraphicsFastResizeBilinear([NotNull]Graphics g)
         {
-            if (g == null) return;
             g.CompositingQuality = CompositingQuality.HighSpeed;
             g.InterpolationMode = InterpolationMode.Bilinear;
             g.SmoothingMode = SmoothingMode.None;
@@ -76,6 +73,7 @@ namespace VectorImageEdit.Modules.Utility
         /// <param name="width"> Input width </param>
         /// <param name="height"> Input height </param>
         /// <returns> Output Bitmap </returns>
+        [CanBeNull]
         public static Bitmap Allocate(int width, int height)
         {
             try
@@ -103,7 +101,8 @@ namespace VectorImageEdit.Modules.Utility
         /// Gets the associated ImageFormat for the given file extension
         /// </summary>
         /// <param name="fileExtension"> Input file extension </param>
-        /// <returns> The ImageFormat associated, or ImageFormat.Jpeg if none exists </returns>
+        /// <returns> The ImageFormat associated </returns>
+        [CanBeNull]
         public static ImageFormat GetImageFormat(string fileExtension)
         {
             if (fileExtension != null && MapExtToFormat.ContainsKey(fileExtension))

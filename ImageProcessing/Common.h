@@ -1,24 +1,32 @@
 
 #pragma once
 
-// Use C-style functions
-#if defined __cplusplus
+//
+// C-Style Calling Convention
+//
+#ifdef __cplusplus
     #define IMAGEPROCESSING_CDECL extern "C"
 #else
     #define IMAGEPROCESSING_CDECL
 #endif // __cplusplus
 
+//
 // Dll exporting/importing
-#if defined(IMAGEPROCESSING_EXPORTS) && defined(_MSC_VER)
-    #define IMAGEPROCESSING_API __declspec(dllexport)
-#else
-    #define IMAGEPROCESSING_API __declspec(dllimport)
-#endif // IMAGEPROCESSING_EXPORTS
+//
+#ifdef _MSC_VER
+    #ifdef IMAGEPROCESSING_EXPORTS
+        #define IMAGEPROCESSING_API __declspec(dllexport)
+    #else
+        #define IMAGEPROCESSING_API __declspec(dllimport)
+    #endif // IMAGEPROCESSING_EXPORTS
+#endif // _MSC_VER
 #ifndef IMAGEPROCESSING_API
     #define IMAGEPROCESSING_API
 #endif
 
-// Enable/Disable reference implementation
+//
+// Enable/Disable reference implementation (Scalar)
+//
 //#define FORCE_SCALAR_IMPL
 #define REFERENCE_IMPL(FUNCTION_NAME, ...) FUNCTION_NAME##_ref(__VA_ARGS__)
 #ifdef FORCE_SCALAR_IMPL

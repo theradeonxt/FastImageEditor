@@ -1,4 +1,26 @@
 
+/*
+ ==================== KNOWN ISSUES ========================
+
+ [TODO]:
+
+ - Use of _mm_shuffle_epi8 in AlphaBlend32bgra_32bgra
+   requires Suplemmental SSE3 which is not supported
+   on AMD K10 "Stars" (AthlonII, PhenomII...) prior to 2011
+   found on the "Bulldozer", "Bobcat", "Piledriver".
+   This should be SSE2 if possible for better portability.
+
+ - Ability to configure Multi-Threading support when
+   the library functions are called from external code;
+   OR implement methods marked explicitly as MT.
+
+ [BUG]: 
+
+ - ConvFilter_32bgra/(ref) crashes for values near the edges
+   of filter window: Implement wrap-around or discard edge pixels.
+
+*/
+
 // local include
 #include "ImageProcessing.h"
 #include "ReferenceProcessing.h"
@@ -9,8 +31,8 @@
 #include <stdint.h>
 
 #ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4309) // disable truncation of constant value warning
+    #pragma warning(push)
+    #pragma warning(disable: 4309) // disable truncation of constant value warning
 #endif
 
 // ====================================================
@@ -116,28 +138,29 @@ OpacityAdjust_32bgra(READONLY (uint8_t*) source,
     int32_t szb = sizeBytes;
 
     uint8_t a = uint8_t(percentage * 255.0f);
-    __m128i alphaMask  = _mm_set_epi8(0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80);
-    __m128i alphaLevel = _mm_set_epi8(a, 0, 0, 0, a, 0, 0, 0, a, 0, 0, 0, a, 0, 0, 0);
+    __m128i alphaLevel        = _mm_set_epi8(a, 0, 0, 0, a, 0, 0, 0, a, 0, 0, 0, a, 0, 0, 0);
+    __m128i alphaMask         = _mm_set_epi8(0, 0xFF, 0xFF, 0xFF, 0, 0xFF, 0xFF, 0xFF, 0, 0xFF, 0xFF, 0xFF, 0, 0xFF, 0xFF, 0xFF);
+//  __m128i alphaMask_SSE_4_1 = _mm_set_epi8(0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80, 0, 0x80, 0x80, 0x80);
     
     if (AlignCheck(source, destination))
     {
-#pragma omp parallel for
+//#pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src   = _mm_load_si128(reinterpret_cast<const __m128i*>(source + index));
-            __m128i dst   = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
-            //__m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask); // NOTE: SSE4.1 instruction!
+            __m128i src = _mm_load_si128(reinterpret_cast<const __m128i*>(source + index));
+            __m128i dst = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
+//          __m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask_SSE_4_1); // NOTE: SSE4.1 instruction!
             _mm_stream_si128(reinterpret_cast<__m128i*>(destination + index), dst);
         }
     }
     else
     {
-#pragma omp parallel for
+//#pragma omp parallel for
         for (int32_t index = 0; index <= szb - SIMD_SIZE; index += SIMD_SIZE)
         {
-            __m128i src   = _mm_loadu_si128(reinterpret_cast<const __m128i*>(source + index));
-            __m128i dst   = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
-            //__m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask); // NOTE: SSE4.1 instruction!
+            __m128i src = _mm_loadu_si128(reinterpret_cast<const __m128i*>(source + index));
+            __m128i dst = _mm_or_si128(_mm_and_si128(src, alphaMask), alphaLevel);
+//          __m128i dst = _mm_blendv_epi8(alphaLevel, src, alphaMask_SSE_4_1); // NOTE: SSE4.1 instruction!
             _mm_storeu_si128(reinterpret_cast<__m128i*>(destination + index), dst);
         }
     }
@@ -190,10 +213,7 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
             __m128i dsta_scaled = _mm_srli_si128(_mm_and_si128(src, alpha_mask), 3);     // Keep the 4 alpha values from tara_scaled
             dsta_scaled         = _mm_slli_si128(dsta_scaled, 8);                        // Multiply by 256
             __m128i dsta        = _mm_add_epi8(tara_scaled, src);                        // Output alpha [000A 000A 000A 000A]
-
-            //_mm_cmpeq_epi8(dsta)
-
-            dsta                = _mm_srli_si128(_mm_and_si128(dsta, alpha_mask), 3);    // Keep the 4 alpha values from dsta
+                    dsta        = _mm_srli_si128(_mm_and_si128(dsta, alpha_mask), 3);    // Keep the 4 alpha values from dsta
             
             __m128 dsta_scaled_f32 = _mm_cvtepi32_ps(dsta_scaled);          // Convert the 4 alpha values to FP32
             __m128 dsta_f32        = _mm_cvtepi32_ps(dsta);                 // Convert the 4 alpha values to FP32                                                                                                   
@@ -215,8 +235,8 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
 
             __m128i dstlo = _mm_srli_epi16(_mm_add_epi16(       // Output color channel calculation (16bit precision):
                 _mm_mullo_epi16(srclo, scale_fact_lo_offset),   // ((256 - scale_factor) * source + scale_factor * target) / 256
-                _mm_mullo_epi16(tarlo, scale_fact_lo)), 8);     // Note: only BGR outputs matter, the 4th alpha
-            __m128i dsthi = _mm_srli_epi16(_mm_add_epi16(       // component in every pixel is not usable here
+                _mm_mullo_epi16(tarlo, scale_fact_lo)), 8);     // Note: only BGR outputs matter, the 4th alpha is discarded here
+            __m128i dsthi = _mm_srli_epi16(_mm_add_epi16( 
                 _mm_mullo_epi16(srchi, scale_fact_hi_offset),
                 _mm_mullo_epi16(tarhi, scale_fact_hi)), 8);
 
@@ -314,5 +334,5 @@ ConvFilter_32bgra(READONLY (uint8_t*) source,
 }
 
 #ifdef _MSC_VER
-#pragma warning(pop)
+    #pragma warning(pop)
 #endif

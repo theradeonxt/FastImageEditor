@@ -102,6 +102,6 @@ NextAlignedAddress(READWRITE(T*) start, uint32_t by = SIMD_SIZE)
     //       and needs write access
 
     T* address = start;
-    while (AlignCheck1(address++, by) == false){}
+    while (AlignCheck1(address++, by) == false){ ; }
     return address;
 }

@@ -113,6 +113,8 @@
     <Compile Include="Modules\BackgroundStatistics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
     <Compile Include="Interfaces\IShapeFactory.cs" />
+    <Compile Include="Modules\GraphicsProfiler.cs" />
+    <Compile Include="Modules\ImageProcessingAPI.cs" />
     <Compile Include="Modules\ImportExports\AbstractExporter.cs" />
     <Compile Include="Modules\ImportExports\GenericResourceImporter.cs" />
     <Compile Include="Modules\ImportExports\ImageImporter.cs" />

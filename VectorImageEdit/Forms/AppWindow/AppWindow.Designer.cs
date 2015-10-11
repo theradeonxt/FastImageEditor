@@ -32,12 +32,12 @@ namespace VectorImageEdit.Forms.AppWindow
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node1");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node2");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2});
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Node3");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Node1");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Node2");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
+            treeNode13,
+            treeNode14});
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Node3");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AppWindow));
             this.lBoxActiveLayers = new System.Windows.Forms.ListBox();
             this.cmsRightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -64,6 +64,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panWorkRegion = new System.Windows.Forms.Panel();
+            this.labelGraphicsDebug = new System.Windows.Forms.Label();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.leftToolStrip = new System.Windows.Forms.ToolStrip();
             this.toolstripCircleShape = new System.Windows.Forms.ToolStripButton();
@@ -339,11 +340,22 @@ namespace VectorImageEdit.Forms.AppWindow
             this.panWorkRegion.BackColor = System.Drawing.Color.Silver;
             this.panWorkRegion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panWorkRegion.ContextMenuStrip = this.cmsRightClickMenu;
+            this.panWorkRegion.Controls.Add(this.labelGraphicsDebug);
             this.panWorkRegion.Controls.Add(this.treeView1);
             this.panWorkRegion.Location = new System.Drawing.Point(29, 106);
             this.panWorkRegion.Name = "panWorkRegion";
             this.panWorkRegion.Size = new System.Drawing.Size(787, 335);
             this.panWorkRegion.TabIndex = 6;
+            // 
+            // labelGraphicsDebug
+            // 
+            this.labelGraphicsDebug.AutoSize = true;
+            this.labelGraphicsDebug.ForeColor = System.Drawing.SystemColors.Info;
+            this.labelGraphicsDebug.Location = new System.Drawing.Point(3, 0);
+            this.labelGraphicsDebug.Name = "labelGraphicsDebug";
+            this.labelGraphicsDebug.Size = new System.Drawing.Size(81, 13);
+            this.labelGraphicsDebug.TabIndex = 12;
+            this.labelGraphicsDebug.Text = "GraphicsDebug";
             // 
             // treeView1
             // 
@@ -353,19 +365,19 @@ namespace VectorImageEdit.Forms.AppWindow
             this.treeView1.LabelEdit = true;
             this.treeView1.Location = new System.Drawing.Point(624, 163);
             this.treeView1.Name = "treeView1";
-            treeNode1.Name = "Node1";
-            treeNode1.Text = "Node1";
-            treeNode2.Name = "Node2";
-            treeNode2.Text = "Node2";
-            treeNode3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            treeNode3.Name = "Node0";
-            treeNode3.Text = "Node0";
-            treeNode4.BackColor = System.Drawing.Color.Aqua;
-            treeNode4.Name = "Node3";
-            treeNode4.Text = "Node3";
+            treeNode13.Name = "Node1";
+            treeNode13.Text = "Node1";
+            treeNode14.Name = "Node2";
+            treeNode14.Text = "Node2";
+            treeNode15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            treeNode15.Name = "Node0";
+            treeNode15.Text = "Node0";
+            treeNode16.BackColor = System.Drawing.Color.Aqua;
+            treeNode16.Name = "Node3";
+            treeNode16.Text = "Node3";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4});
+            treeNode15,
+            treeNode16});
             this.treeView1.ShowLines = false;
             this.treeView1.ShowNodeToolTips = true;
             this.treeView1.Size = new System.Drawing.Size(129, 141);
@@ -959,7 +971,6 @@ namespace VectorImageEdit.Forms.AppWindow
             this.BackColor = System.Drawing.Color.SlateGray;
             this.ClientSize = new System.Drawing.Size(985, 480);
             this.Controls.Add(this.panel1);
-            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MainMenuStrip = this.menuBarTop;
             this.MinimumSize = new System.Drawing.Size(640, 480);
@@ -971,6 +982,7 @@ namespace VectorImageEdit.Forms.AppWindow
             this.menuBarTop.ResumeLayout(false);
             this.menuBarTop.PerformLayout();
             this.panWorkRegion.ResumeLayout(false);
+            this.panWorkRegion.PerformLayout();
             this.leftToolStrip.ResumeLayout(false);
             this.leftToolStrip.PerformLayout();
             this.topToolStrip.ResumeLayout(false);
@@ -1063,6 +1075,7 @@ namespace VectorImageEdit.Forms.AppWindow
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripStatusLabel toolStripStatusLabel1;
+        private Label labelGraphicsDebug;
     }
 }
 

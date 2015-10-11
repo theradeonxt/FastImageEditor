@@ -74,6 +74,11 @@ namespace VectorImageEdit.Forms.AppWindow
             set { memoryUsedLabel.Text = value; }
         }
 
+        public string GraphicsDebugText
+        {
+            set { labelGraphicsDebug.Text = value; }
+        }
+
         #endregion
     }
 }
