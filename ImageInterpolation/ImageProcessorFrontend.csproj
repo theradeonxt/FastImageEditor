@@ -77,7 +77,7 @@
     </Compile>
     <Compile Include="BitmapHelper.cs" />
     <Compile Include="IActionListener.cs" />
-    <Compile Include="InterpolationFramework.cs" />
+    <Compile Include="ImageProcessingFramework.cs" />
     <Compile Include="ModuleFilter\BuiltinFilters.cs" />
     <Compile Include="ModuleFilter\Filter.cs" />
     <Compile Include="ModuleFilter\FilterBuilder.cs" />

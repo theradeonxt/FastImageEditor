@@ -71,19 +71,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)\bin\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)Externals\Build\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)\bin\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)Externals\Build\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)\bin\$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
+    <LibraryPath>$(SolutionDir)Externals\Build\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)\bin\$(Platform)\$(Configuration)\</OutDir>
+    <LibraryPath>$(SolutionDir)Externals\Build\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,17 +98,17 @@
       <SDLCheck>true</SDLCheck>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <CompileAsManaged>false</CompileAsManaged>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
       <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Externals\libcpuid-master\libcpuid</AdditionalIncludeDirectories>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if "$(ConfigurationName)" == "Debug" (
@@ -116,7 +120,12 @@ if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y )</Command>
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\obj\Release" /Y )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -128,18 +137,17 @@ if "$(ConfigurationName)" == "Release" (
       <SDLCheck>true</SDLCheck>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <CompileAsManaged>false</CompileAsManaged>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Externals\libcpuid-master\libcpuid</AdditionalIncludeDirectories>
       <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
       <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if "$(ConfigurationName)" == "Debug" (
@@ -151,7 +159,12 @@ if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y )</Command>
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\obj\Release" /Y )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -163,13 +176,12 @@ if "$(ConfigurationName)" == "Release" (
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IMAGEPROCESSING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Precise</FloatingPointModel>
       <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Externals\libcpuid-master\libcpuid</AdditionalIncludeDirectories>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -177,6 +189,7 @@ if "$(ConfigurationName)" == "Release" (
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <Profile>true</Profile>
+      <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if "$(ConfigurationName)" == "Debug" (
@@ -188,7 +201,12 @@ if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y )</Command>
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\obj\Release" /Y )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -199,15 +217,17 @@ if "$(ConfigurationName)" == "Release" (
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IMAGEPROCESSING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <SDLCheck>false</SDLCheck>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <FloatingPointModel>Precise</FloatingPointModel>
+      <FloatingPointModel>Fast</FloatingPointModel>
       <EnableParallelCodeGeneration>false</EnableParallelCodeGeneration>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Externals\libcpuid-master\libcpuid</AdditionalIncludeDirectories>
       <OpenMPSupport>true</OpenMPSupport>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <OmitFramePointers>true</OmitFramePointers>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -215,6 +235,7 @@ if "$(ConfigurationName)" == "Release" (
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <Profile>true</Profile>
+      <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if "$(ConfigurationName)" == "Debug" (
@@ -226,28 +247,105 @@ if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y )</Command>
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
+  xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\obj\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\obj\Release" /Y )</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Common.h" />
-    <ClInclude Include="Helpers.cpp" />
-    <ClCompile Include="HelpersSIMD.cpp" />
-    <ClInclude Include="ImageProcessing.h" />
+    <ClCompile Include="ImageProcessing_AVX.cpp">
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</OpenMPSupport>
+      <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NoListing</AssemblerOutput>
+    </ClCompile>
+    <ClCompile Include="SingleConfig.cpp" />
+    <ClInclude Include="ImageProcessing_AVX.h" />
+    <ClCompile Include="ImageProcessing_FMA3.cpp">
+      <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Fast</FloatingPointModel>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</OpenMPSupport>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClInclude Include="ImageProcessing_FMA3.h" />
+    <ClCompile Include="ImageProcessing_SSE2.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</OpenMPSupport>
+    </ClCompile>
+    <ClInclude Include="ImageProcessing_SSE2.h">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClInclude>
+    <ClCompile Include="ImageProcessing_SSSE3.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Fast</FloatingPointModel>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</OpenMPSupport>
+    </ClCompile>
+    <ClCompile Include="ReferenceProcessing.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</OpenMPSupport>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</OpenMPSupport>
+      <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Fast</FloatingPointModel>
+    </ClCompile>
     <ClInclude Include="ReferenceProcessing.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="GlobalConfig.h" />
+    <ClInclude Include="CpuDispatcher.h" />
+    <ClInclude Include="ProfileTools.h" />
+    <ClInclude Include="Helpers.hpp" />
+    <ClCompile Include="GlobalConfig.cpp">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClInclude Include="HelpersSIMD.hpp" />
+    <ClInclude Include="ImageProcessing.h" />
+    <ClInclude Include="CpuRdtsc.hpp" />
+    <ClInclude Include="SingleConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageProcessing.cpp">
       <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AssemblyAndSourceCode</AssemblerOutput>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Full</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Full</Optimization>
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Precise</FloatingPointModel>
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions</EnableEnhancedInstructionSet>
     </ClCompile>
-    <ClCompile Include="ReferenceProcessing.cpp" />
+    <ClInclude Include="ImageProcessing_SSSE3.h">
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -23,6 +23,7 @@ namespace ImageInterpolation
 
         private Bitmap _sourceImage;
         private Bitmap _targetImage;
+        private Bitmap _destImage;
 
         // Trick to enable flicker-free images and fast resize
         protected override CreateParams CreateParams
@@ -114,11 +115,25 @@ namespace ImageInterpolation
             try
             {
                 image = (Bitmap)Image.FromFile(fileName);
+                if (_destImage != null)
+                {
+                    if (image.Width != _destImage.Width || image.Height != _destImage.Height)
+                    {
+                        _destImage.Dispose();
+                        _destImage = new Bitmap(image.Width, image.Height, PixelFormat.Format32bppArgb);
+                    }
+                }
+                else
+                {
+                    _destImage = new Bitmap(image.Width, image.Height, PixelFormat.Format32bppArgb);
+                }
+                
             }
             catch (FileNotFoundException) { }
             catch (ArgumentException) { }
 
             image = BitmapUtility.ConvertToFormat(image, PixelFormat.Format32bppArgb);
+            image = ImageProcessingFramework.ImageOpacity(image, 0.5f);
 
             var scaled = BitmapUtility.Resize(
                 image,
@@ -183,14 +198,14 @@ namespace ImageInterpolation
             avgRefresh = 0;
             ticks = 0;
             _iterationCount = 0;
-            btnGenerate.Text = @"Stop";
+            //btnGenerate.Text = @"Stop";
             timer1.Enabled = true;
             //progressBar.Value = 0;
         }
 
         private void PostProcessing()
         {
-            btnGenerate.Text = @"Generate";
+            //btnGenerate.Text = @"Generate";
             timer1.Enabled = false;
             //progressBar.Value = 0;
 
@@ -202,10 +217,10 @@ namespace ImageInterpolation
         {
             if (_sourceImage == null || _targetImage == null) return;
 
-            if (btnGenerate.Text == @"Generate")
+            /*if (btnGenerate.Text == @"Generate")
                 PreProcessing();
             else
-                PostProcessing();
+                PostProcessing();*/
         }
 
         private void ProcessingDone(Bitmap dst)
@@ -219,7 +234,7 @@ namespace ImageInterpolation
             }
             if (pictureBoxIntermediate.BackgroundImage != null)
             {
-                pictureBoxIntermediate.BackgroundImage.Dispose();
+                //pictureBoxIntermediate.BackgroundImage.Dispose();
             }
             pictureBoxIntermediate.BackgroundImage = dst;
         }
@@ -232,13 +247,13 @@ namespace ImageInterpolation
         {
             ticks++;
 
-            var result = InterpolationFramework.ImageInterpolate(
+            var result = ImageProcessingFramework.ImageInterpolate(
                 _sourceImage,
                 _targetImage,
                 ProgressIncrement * _iterationCount);
 
-            labelProcessTime.Text = @"Processing[ms] : " + InterpolationFramework.LastOperationDuration;
-            avgProcessing += InterpolationFramework.LastOperationDuration;
+            labelProcessTime.Text = @"Processing[ms] : " + ImageProcessingFramework.LastOperationDuration;
+            avgProcessing += ImageProcessingFramework.LastOperationDuration;
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -260,24 +275,18 @@ namespace ImageInterpolation
 
             labelBlendingPercentage.Text = ((float)trackBar1.Value / trackBar1.Maximum).ToString();
 
-            /*var result = InterpolationFramework.ImageInterpolate(
-                _sourceImage,
-                _targetImage,
-                (float)trackBar1.Value / trackBar1.Maximum);*/
-            /*var result = InterpolationFramework.ImageOpacity(_sourceImage,
-                (float)trackBar1.Value / trackBar1.Maximum);*/
-            var result = InterpolationFramework.ImageAlphaBlend(_sourceImage, _targetImage);
+            ImageProcessingFramework.ImageAlphaBlend(_sourceImage, _targetImage, _destImage);
 
-            labelProcessTime.Text = @"Processing[ms] : " + InterpolationFramework.LastOperationDuration;
+            labelProcessTime.Text = @"Processing[ms] : " + ImageProcessingFramework.LastOperationDuration;
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            DisplayParameters(result, pictureBoxIntermediate);
+            DisplayParameters(_destImage, pictureBoxIntermediate);
             ProcessingDone(BitmapUtility.Resize(
-                result,
+                _destImage,
                 pictureBoxIntermediate.Size,
                 ConversionQuality.LowQuality,
-                ConversionType.Overwrite));
+                ConversionType.Copy));
             sw.Stop();
 
             labelPostTime.Text = @"Refresh[ms] : " + sw.ElapsedMilliseconds;

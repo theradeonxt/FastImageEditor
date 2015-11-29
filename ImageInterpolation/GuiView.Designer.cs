@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnGenerate = new System.Windows.Forms.Button();
             this.btnLoadSource = new System.Windows.Forms.Button();
             this.btnLoadTarget = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
@@ -113,17 +112,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFilterOutput)).BeginInit();
             this.SuspendLayout();
             // 
-            // btnGenerate
-            // 
-            this.btnGenerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGenerate.Location = new System.Drawing.Point(6, 11);
-            this.btnGenerate.Name = "btnGenerate";
-            this.btnGenerate.Size = new System.Drawing.Size(117, 23);
-            this.btnGenerate.TabIndex = 0;
-            this.btnGenerate.Text = "Generate";
-            this.btnGenerate.UseVisualStyleBackColor = true;
-            this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
-            // 
             // btnLoadSource
             // 
             this.btnLoadSource.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -201,31 +189,31 @@
             this.groupBox1.Controls.Add(this.trackBar1);
             this.groupBox1.Controls.Add(this.labelPostTime);
             this.groupBox1.Controls.Add(this.labelProcessTime);
-            this.groupBox1.Controls.Add(this.btnGenerate);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Location = new System.Drawing.Point(3, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(480, 99);
+            this.groupBox1.Size = new System.Drawing.Size(474, 99);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             // 
             // labelBlendingPercentage
             // 
+            this.labelBlendingPercentage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelBlendingPercentage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelBlendingPercentage.Location = new System.Drawing.Point(6, 72);
+            this.labelBlendingPercentage.Location = new System.Drawing.Point(350, 55);
             this.labelBlendingPercentage.Name = "labelBlendingPercentage";
-            this.labelBlendingPercentage.Size = new System.Drawing.Size(117, 22);
+            this.labelBlendingPercentage.Size = new System.Drawing.Size(50, 15);
             this.labelBlendingPercentage.TabIndex = 4;
             this.labelBlendingPercentage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // trackBar1
             // 
+            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBar1.AutoSize = false;
             this.trackBar1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.trackBar1.Location = new System.Drawing.Point(6, 40);
+            this.trackBar1.Location = new System.Drawing.Point(319, 40);
             this.trackBar1.Maximum = 100;
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(468, 30);
+            this.trackBar1.Size = new System.Drawing.Size(149, 30);
             this.trackBar1.TabIndex = 0;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
@@ -233,24 +221,26 @@
             // labelPostTime
             // 
             this.labelPostTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelPostTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelPostTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelPostTime.ForeColor = System.Drawing.Color.Brown;
-            this.labelPostTime.Location = new System.Drawing.Point(299, 73);
+            this.labelPostTime.Location = new System.Drawing.Point(319, 73);
             this.labelPostTime.Name = "labelPostTime";
-            this.labelPostTime.Size = new System.Drawing.Size(175, 21);
+            this.labelPostTime.Size = new System.Drawing.Size(149, 21);
             this.labelPostTime.TabIndex = 3;
-            this.labelPostTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelPostTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelProcessTime
             // 
             this.labelProcessTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelProcessTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelProcessTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelProcessTime.ForeColor = System.Drawing.Color.Brown;
-            this.labelProcessTime.Location = new System.Drawing.Point(299, 11);
+            this.labelProcessTime.Location = new System.Drawing.Point(319, 11);
             this.labelProcessTime.Name = "labelProcessTime";
-            this.labelProcessTime.Size = new System.Drawing.Size(175, 21);
+            this.labelProcessTime.Size = new System.Drawing.Size(149, 21);
             this.labelProcessTime.TabIndex = 3;
-            this.labelProcessTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelProcessTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // splitContainer2
             // 
@@ -739,7 +729,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.Button btnLoadSource;
         private System.Windows.Forms.Button btnLoadTarget;
         private System.Windows.Forms.Timer timer1;

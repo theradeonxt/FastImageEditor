@@ -6,7 +6,7 @@ namespace VectorImageEdit.Modules.BasicShapes
     [Serializable]
     public class Line : ShapeBase
     {
-        //public Line() { }
+        // public Line() { }
 
         public Line(Point begin, Point end, ShapeStyle style)
             : base(new Rectangle(

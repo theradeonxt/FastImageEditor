@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Windows.Forms;
-using VectorImageEdit.Forms;
-using VectorImageEdit.Forms.AppWindow;
-using VectorImageEdit.Interfaces;
 using VectorImageEdit.Models;
+using VectorImageEdit.Views.Main;
+using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
@@ -20,15 +18,10 @@ namespace VectorImageEdit.Controllers
             _appView.AddTreeSelectionChangedListener(new LayerListSelectedChangedListener(this));
         }
 
-        /// <summary>
-        /// 
-        /// This will be run on the UI thread, but can be invoked from other threads safely
-        /// </summary>
         public void OnListboxItemsChangedCallback()
         {
-            var layers = AppGlobalData.Instance.LayerManager.GetLayers().ToArray();
-            MethodInvoker del = delegate { _appView.SceneTreeItems = layers; };
-            _appView.Invoke(del);
+            var layers = AppModel.Instance.LayerManager.GetLayers().ToArray();
+            MyMethodInvoker.Invoke(() => _appView.Items = layers);
         }
 
         private class LayerListSelectedChangedListener : AbstractListener<SceneTreeController>, IListener
@@ -40,8 +33,10 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
+                //Controller._appView.SelectedItem = 
+
                 // TODO: Fix this - trigger selection throws InvalidOperationException
-                Controller._model.SelectSceneTreeItem(Controller._appView.SceneTreeSelectedItem);
+                //Controller._model.SelectedItemChanged(Controller._appView.SelectedItem);
             }
         }
     }

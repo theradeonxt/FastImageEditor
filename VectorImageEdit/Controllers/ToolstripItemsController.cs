@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Windows.Forms;
-using VectorImageEdit.Forms;
-using VectorImageEdit.Forms.AppWindow;
-using VectorImageEdit.Interfaces;
+using NLog;
 using VectorImageEdit.Models;
-using VectorImageEdit.Modules.Factories;
+using VectorImageEdit.Views.Main;
+using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
@@ -12,14 +10,15 @@ namespace VectorImageEdit.Controllers
     {
         private readonly AppWindow _appView;
         private readonly ToolstripItemsModel _model;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ToolstripItemsController(AppWindow appView, ToolstripItemsModel model)
         {
             _appView = appView;
             _model = model;
 
-            _appView.ToolbarPrimaryColor = AppGlobalData.Instance.PrimaryColor;
-            _appView.ToolbarSecondaryColor = AppGlobalData.Instance.SecondaryColor;
+            _appView.ToolbarPrimaryColor = AppModel.Instance.PrimaryColor;
+            _appView.ToolbarSecondaryColor = AppModel.Instance.SecondaryColor;
             _appView.SetPrimaryColorActive();
 
             _appView.AddSwitchColorClickListener(new SwitchColorClickListener(this));
@@ -38,25 +37,24 @@ namespace VectorImageEdit.Controllers
             public void ActionPerformed(object sender, EventArgs e)
             {
                 var factory = new ColorDialogFactory();
-                var result = factory.CreateDialog();
-                var selectedColor = result.Item1;
+                var result = factory.CreateDialog(true);
+                var selectedColor = result;
 
                 switch (Controller._model.ColorMode)
                 {
                     case ColorType.PrimaryColor:
-                        AppGlobalData.Instance.PrimaryColor = selectedColor;
+                        AppModel.Instance.PrimaryColor = selectedColor;
                         Controller._appView.ToolbarPrimaryColor = selectedColor;
                         Controller._appView.SetPrimaryColorActive();
                         break;
                     default:
-                        AppGlobalData.Instance.SecondaryColor = selectedColor;
+                        AppModel.Instance.SecondaryColor = selectedColor;
                         Controller._appView.ToolbarSecondaryColor = selectedColor;
                         Controller._appView.SetSecondaryColorActive();
                         break;
                 }
             }
         }
-
         private class SwitchColorClickListener : AbstractListener<ToolstripItemsController>, IListener
         {
             public SwitchColorClickListener(ToolstripItemsController controller)
@@ -66,24 +64,19 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                try
+                string itemName = Controller._appView.GetToolstripItemName(sender);
+                if (itemName.ToLower().Contains("primary"))
                 {
-                    var stripButton = (ToolStripItem)sender;
-                    if (stripButton.Name.ToLower().Contains("primary"))
-                    {
-                        Controller._model.ColorMode = ColorType.PrimaryColor;
-                        Controller._appView.SetPrimaryColorActive();
-                    }
-                    else
-                    {
-                        Controller._model.ColorMode = ColorType.SecondaryColor;
-                        Controller._appView.SetSecondaryColorActive();
-                    }
+                    Controller._model.ColorMode = ColorType.PrimaryColor;
+                    Controller._appView.SetPrimaryColorActive();
                 }
-                catch (InvalidCastException) { }
+                else
+                {
+                    Controller._model.ColorMode = ColorType.SecondaryColor;
+                    Controller._appView.SetSecondaryColorActive();
+                }
             }
         }
-
         private class PresetColorClickListener : AbstractListener<ToolstripItemsController>, IListener
         {
             public PresetColorClickListener(ToolstripItemsController controller)
@@ -93,19 +86,19 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                try
+                var itemColor = Controller._appView.GetToolstripItemBackground(sender);
+                if (Controller._model.ColorMode == ColorType.PrimaryColor)
                 {
-                    var itemColor = ((ToolStripItem)sender).BackColor;
-
-                    if (Controller._model.ColorMode == ColorType.PrimaryColor)
-                        Controller._appView.ToolbarPrimaryColor = itemColor;
-                    else
-                        Controller._appView.ToolbarSecondaryColor = itemColor;
+                    Controller._appView.ToolbarPrimaryColor = itemColor;
+                    AppModel.Instance.PrimaryColor = itemColor;
                 }
-                catch (InvalidCastException) { }
+                else
+                {
+                    Controller._appView.ToolbarSecondaryColor = itemColor;
+                    AppModel.Instance.SecondaryColor = itemColor;
+                }
             }
         }
-
         private class ShapeItemClickListener : AbstractListener<ToolstripItemsController>, IListener
         {
             public ShapeItemClickListener(ToolstripItemsController controller)
@@ -117,16 +110,22 @@ namespace VectorImageEdit.Controllers
             {
                 try
                 {
-                    var stripItem = (ToolStripItem)sender;
-                    string key = stripItem.Name.ToLower()
+                    string itemName = Controller._appView.GetToolstripItemName(sender);
+                    string shapeName = itemName.ToLower()
                         .Replace("toolstrip", "")
                         .Replace("shape", "")
                         .ToLower();
-                    Controller._model.CreateNewShape(key);
+                    
+                    Controller._model.CreateNewShape(shapeName);
                 }
-                catch (ArgumentException) { }
-                catch (InvalidCastException) { }
-                catch (OutOfMemoryException) { }
+                catch (Exception ex)
+                {
+                    MessageBoxFactory.Create(caption: "Information",
+                        text: string.Format("The shape requested could not be created.{0}Detailed information may be available in the LogFile.", Environment.NewLine),
+                        boxType: MessageBoxType.Information);
+
+                    Logger.Warn(ex.ToString());
+                }
             }
         }
     }

@@ -2,22 +2,23 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
-using VectorImageEdit.Forms;
-using VectorImageEdit.Forms.AppWindow;
-using VectorImageEdit.Interfaces;
+using NLog;
 using VectorImageEdit.Models;
-using VectorImageEdit.Modules.Factories;
 using VectorImageEdit.Modules.ImportExports;
 using VectorImageEdit.Modules.Utility;
+using VectorImageEdit.Views.Main;
+using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
+    ///// <summary>
+    /// Handles events realating to external data
+    ///// </summary>
     class ExternalEventsController
     {
         private readonly AppWindow _appView;
         private readonly ExternalEventsModel _model;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ExternalEventsController(AppWindow appView, ExternalEventsModel model)
         {
@@ -43,20 +44,19 @@ namespace VectorImageEdit.Controllers
             {
                 IFormDialogFactory<string> factory = new SaveFileDialogFactory();
 
-                Tuple<string> result = factory.CreateDialog("Save Layer Data",
-                    string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
+                string result = factory.CreateDialog("Save Layer Data",
+                    string.Format("Vector data|*{0}", AppModel.Instance.VectorFileExtension));
 
-                bool status = Controller._model.TryExportVector(new VectorExporter(result.Item1));
+                bool status = Controller._model.TryExportVector(new VectorExporter(result));
                 if (!status)
                 {
                     MessageBoxFactory.Create("Error",
                         "Unable to save the vector data file." + Environment.NewLine +
                         "(You may find out what happened from the Error Log.)",
-                        MessageType.Error);
+                        MessageBoxType.Error);
                 }
             }
         }
-
         private class OpenVectorListener : AbstractListener<ExternalEventsController>, IListener
         {
             public OpenVectorListener(ExternalEventsController controller)
@@ -68,28 +68,24 @@ namespace VectorImageEdit.Controllers
             {
                 IFormDialogFactory<string> factory = new OpenFileDialogFactory();
 
-                Tuple<string> result = factory.CreateDialog(@"Open vector data",
-                    string.Format("Vector data|*{0}", AppGlobalData.Instance.VectorFileExtension));
+                string result = factory.CreateDialog(@"Open vector data",
+                    string.Format("Vector data|*{0}", AppModel.Instance.VectorFileExtension));
                 
                 try
                 {
-                    Controller._model.OpenVectorDeserialize(result.Item1);
-                }
-                catch (InvalidDataException ex)
-                {
-                    MessageBoxFactory.Create(caption: "Warning",
-                        text: string.Format(@"Unable to open the vector data file. ({0})", ex.Message),
-                        type: MessageType.Warning);
+                    Controller._model.OpenVectorDeserialize(result);
                 }
                 catch (Exception ex)
                 {
-                    MessageBoxFactory.Create(caption: "Error",
-                        text: string.Format(@"Unable to open the vector data file. ({0})", ex.Message),
-                        type: MessageType.Error);
+                    MessageBoxFactory.Create("Error",
+                        "Unable to open the vector data file." + Environment.NewLine +
+                        "(You may find out what happened from the Error Log.)",
+                        MessageBoxType.Error);
+
+                    Logger.Error(ex.ToString());
                 }
             }
         }
-
         private class ExportScenePreviewListener : AbstractListener<ExternalEventsController>, IListener
         {
             public ExportScenePreviewListener(ExternalEventsController controller)
@@ -101,21 +97,20 @@ namespace VectorImageEdit.Controllers
             {
                 SaveFileDialogFactory factory = new SaveFileDialogFactory();
 
-                Tuple<string> result = factory.CreateDialog(@"Export Preview",
+                string result = factory.CreateDialog(@"Export Preview",
                      ImagingHelpers.GetSupportedImagesFilter(),
                      2);
 
-                bool status = Controller._model.TryExportScenePreview(new ImageExporter(result.Item1));
+                bool status = Controller._model.TryExportScenePreview(new ImageExporter(result));
                 if (!status)
                 {
                     MessageBoxFactory.Create("Error",
                         "Unable to save the Scene Preview." + Environment.NewLine +
                         "(You may find out what happened from the Error Log.)",
-                        MessageType.Error);
+                        MessageBoxType.Error);
                 }
             }
         }
-
         private class OpenImagesListener : AbstractListener<ExternalEventsController>, IListener
         {
             public OpenImagesListener(ExternalEventsController controller)
@@ -127,28 +122,36 @@ namespace VectorImageEdit.Controllers
             {
                 IFormDialogFactory<string[]> factory = new OpenMultipleFilesDialogFactory();
 
-                Tuple<string[]> result = factory.CreateDialog(@"Open Image(s)",
+                string[] result = factory.CreateDialog(@"Open Image(s)",
                     ImagingHelpers.GetSupportedImagesFilter());
-                
+
                 try
                 {
-                    Controller.CreateBackgroundFileTask(result.Item1);
+                    Controller.CreateBackgroundFileTask(result);
                 }
-                catch (InvalidOperationException) { }
+                catch (Exception ex)
+                {
+                    MessageBoxFactory.Create("Error",
+                        "Unable to open image(s)." + Environment.NewLine +
+                        "(You may find out what happened from the Error Log.)",
+                        MessageBoxType.Error);
+
+                    Logger.Error(ex.ToString());
+                }
             }
         }
-
-        private class DragDropFileListener : AbstractListener<ExternalEventsController>, IDragListener
+        private class DragDropFileListener : AbstractDragListener<ExternalEventsController>, IDragListener
         {
             public DragDropFileListener(ExternalEventsController controller)
                 : base(controller)
             {
+                Handler = ActionPerformed;
             }
 
-            public void ActionPerformed(object sender, DragEventArgs e)
+            public void ActionPerformed(object sender, MyDragEventArgs e)
             {
-                if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-                string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (!e.IsDataAvailable(MyDragEventArgs.FileDrop)) return;
+                string[] fileNames = (string[])e.GetData();
                 try
                 {
                     Controller.CreateBackgroundFileTask(fileNames);
@@ -156,42 +159,44 @@ namespace VectorImageEdit.Controllers
                 catch (InvalidOperationException) { }
             }
         }
-
-        private class DragEnterListener : AbstractListener<ExternalEventsController>, IDragListener
+        private class DragEnterListener : AbstractDragListener<ExternalEventsController>, IDragListener
         {
             public DragEnterListener(ExternalEventsController controller)
                 : base(controller)
             {
+                Handler = ActionPerformed;
             }
 
-            public void ActionPerformed(object sender, DragEventArgs e)
+            public void ActionPerformed(object sender, MyDragEventArgs e)
             {
-                e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+                e.Effect = e.IsDataAvailable(MyDragEventArgs.FileDrop) 
+                    ? MyDragEventArgs.MyDragDropEffects.Copy : MyDragEventArgs.MyDragDropEffects.None;
             }
         }
 
         // TODO: Verify that it doesn't crash even with invalid files
-        // TODO: Move to Model
         private void CreateBackgroundFileTask(string[] fileNames)
         {
-            var bw = new BackgroundWorker { WorkerReportsProgress = true };
-            bw.DoWork += (obj, workEvent) =>
+            using (var bw = new BackgroundWorker {WorkerReportsProgress = true})
             {
-                workEvent.Result = _model.LoadImageFiles((string[])workEvent.Argument, bw.ReportProgress);
-            };
-            bw.ProgressChanged += (obj, progressEvent) =>
-            {
-                int percentage = progressEvent.ProgressPercentage;
-                _appView.StatusProgressbarPercentage = percentage;
-                _appView.StatusLabelText = @"Loading " + percentage + @"/" + fileNames.Length + @" images...";
-            };
-            bw.RunWorkerCompleted += (obj, completeEvent) =>
-            {
-                _model.LoadImageLayers((List<Bitmap>)completeEvent.Result);
-                _appView.StatusProgressbarPercentage = 0;
-                _appView.StatusLabelText = @"No action";
-            };
-            bw.RunWorkerAsync(fileNames);
+                bw.DoWork += (obj, workEvent) =>
+                {
+                    workEvent.Result = _model.LoadImageFiles((string[]) workEvent.Argument, bw.ReportProgress);
+                };
+                bw.ProgressChanged += (obj, progressEvent) =>
+                {
+                    int percentage = progressEvent.ProgressPercentage;
+                    _appView.StatusProgressbarPercentage = percentage;
+                    _appView.StatusLabelText = @"Loading " + percentage + @"/" + fileNames.Length + @" images...";
+                };
+                bw.RunWorkerCompleted += (obj, completeEvent) =>
+                {
+                    _model.LoadImageLayers((List<Bitmap>) completeEvent.Result);
+                    _appView.StatusProgressbarPercentage = 0;
+                    _appView.StatusLabelText = @"No action";
+                };
+                bw.RunWorkerAsync(fileNames);
+            }
         }
     }
 }

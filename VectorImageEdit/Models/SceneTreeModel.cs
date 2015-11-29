@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Linq;
-using VectorImageEdit.Modules.Layers;
+using JetBrains.Annotations;
+using VectorImageEdit.Modules.LayerManagement;
 
 namespace VectorImageEdit.Models
 {
     class SceneTreeModel
     {
-        public void SelectSceneTreeItem(string itemName)
+        public void SelectedItemChanged([CanBeNull]string itemName)
         {
             if (string.IsNullOrEmpty(itemName) ||
                 string.IsNullOrWhiteSpace(itemName)) return;
             try
             {
-                LayerManager manager = AppGlobalData.Instance.LayerManager;
-                Layer layer = manager.GetSortedLayers()
+                var manager = AppModel.Instance.LayerManager;
+                Layer layer = manager.WorkspaceLayers
                     .First(item => item.Metadata.DisplayName == itemName);
-                manager.MouseHandler.SelectedLayer = layer;
+
+
             }
             catch (InvalidOperationException) { }
             catch (NullReferenceException) { }
+
+            // FIXME
+            // manager.MouseHandler.SelectedLayer = layer;
         }
     }
 }

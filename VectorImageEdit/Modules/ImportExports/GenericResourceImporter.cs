@@ -1,6 +1,6 @@
 ﻿using System;
 using NLog;
-using VectorImageEdit.Interfaces;
+using VectorImageEdit.Modules.Interfaces;
 
 namespace VectorImageEdit.Modules.ImportExports
 {
@@ -12,7 +12,7 @@ namespace VectorImageEdit.Modules.ImportExports
     internal abstract class GenericResourceImporter<TParams, TOutData>
         : IGenericResourceImporter<TParams, TOutData>
     {
-        // ReSharper disable once StaticMemberInGenericType
+        //  ReSharper disable once StaticMemberInGenericType
         protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         protected bool InternalErrorValidation(Action concreteImporterCallback)

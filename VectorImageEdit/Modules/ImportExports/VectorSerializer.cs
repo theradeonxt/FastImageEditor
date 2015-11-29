@@ -6,10 +6,10 @@ namespace VectorImageEdit.Modules.ImportExports
 {
     class VectorSerializer
     {
-        /// <summary>
-        /// Deserializes the workspace layers from a given file
-        /// </summary>
-        /// <param name="fileName"> Input file </param>
+         /// <summary>
+         /// Deserializes the workspace layers from a given file
+         /// </summary>
+         ///// <param name="fileName"> Input file </param>
         public IList Deserialize(string fileName)
         {
             IList layers;

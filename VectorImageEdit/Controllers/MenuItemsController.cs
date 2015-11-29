@@ -1,8 +1,7 @@
 ﻿using System;
-using VectorImageEdit.Forms;
-using VectorImageEdit.Forms.AppWindow;
-using VectorImageEdit.Interfaces;
 using VectorImageEdit.Models;
+using VectorImageEdit.Views.Main;
+using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
@@ -32,12 +31,11 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
-                PropertiesWindow layerProperties = new PropertiesWindow(selected);
-                layerProperties.ShowDialog();
+                //var selected = AppModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+                //PropertiesWindow layerProperties = new PropertiesWindow(selected);
+                //layerProperties.ShowDialog();
             }
         }
-
         private class ContextMenuDeleteListener : AbstractListener<MenuItemsController>, IListener
         {
             public ContextMenuDeleteListener(MenuItemsController controller)
@@ -47,11 +45,10 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
-                AppGlobalData.Instance.LayerManager.Remove(selected);
+                //var selected = AppModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+                //AppModel.Instance.LayerManager.Remove(selected);
             }
         }
-
         private class ContextMenuBringFrontListener : AbstractListener<MenuItemsController>, IListener
         {
             public ContextMenuBringFrontListener(MenuItemsController controller)
@@ -61,11 +58,10 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
-                AppGlobalData.Instance.LayerManager.BringToFront(selected);
+                //var selected = AppModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+                //AppModel.Instance.LayerManager.ApplyModifier("BringToFront", selected);
             }
         }
-
         private class ContextMenuSendBackListener : AbstractListener<MenuItemsController>, IListener
         {
             public ContextMenuSendBackListener(MenuItemsController controller)
@@ -75,11 +71,10 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
-                AppGlobalData.Instance.LayerManager.SendToBack(selected);
+                //var selected = AppModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+                //AppModel.Instance.LayerManager.ApplyModifier("SendToBack", selected);
             }
         }
-
         private class ContextMenuSendBackwardsListener : AbstractListener<MenuItemsController>, IListener
         {
             public ContextMenuSendBackwardsListener(MenuItemsController controller)
@@ -89,8 +84,8 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var selected = AppGlobalData.Instance.LayerManager.MouseHandler.SelectedLayer;
-                AppGlobalData.Instance.LayerManager.SendBackwards(selected);
+                //var selected = AppModel.Instance.LayerManager.MouseHandler.SelectedLayer;
+                //AppModel.Instance.LayerManager.ApplyModifier("SendBackward", selected);
             }
         }
     }

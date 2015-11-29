@@ -15,7 +15,7 @@ namespace VectorImageEdit.Modules.Utility
         /// Note2: Warning! Use this only in a thread that created the Bitmap.
         /// 
         /// </summary>
-        /// <param name="img"> Input image </param>
+        ///// <param name="img"> Input image </param>
         public BitmapHelper([NotNull]Bitmap img)
         {
             BitmapData bmd = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),

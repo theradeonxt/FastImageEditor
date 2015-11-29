@@ -1,15 +1,15 @@
 ﻿using System;
-using VectorImageEdit.Forms;
-using VectorImageEdit.Forms.AppWindow;
-using VectorImageEdit.Interfaces;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules;
+using VectorImageEdit.Modules.GraphicsCompositing;
+using VectorImageEdit.Views.Main;
+using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
-    /// <summary>
+    ///// <summary>
     /// Handles user-actions related to the workspace region
-    /// </summary>
+    ///// </summary>
     class WorkspaceController
     {
         private readonly AppWindow _appView;
@@ -20,42 +20,59 @@ namespace VectorImageEdit.Controllers
             _appView = appView;
             _model = model;
 
-            _appView.AddWorkspaceSizeChangedListener(new WorkspaceSizeChangedListener(this));
-            _appView.AddWindowMovedListener(new AppWindowMovedListener(this));
+            _appView.AddWorkspaceMouseDownListener(new WorkspaceMouseDownListener(this));
+            _appView.AddWorkspaceMouseMoveListener(new WorkspaceMouseMoveListener(this));
+            _appView.AddWorkspaceMouseUpListener(new WorkspaceMouseUpListener(this));
 
+            // TODO: These don't belong here
             _appView.MemoryProgressbarPercentage = BackgroundStatitics.MemoryUsagePercent;
-            _appView.MemoryLabelText = string.Format("Memory Used ({0}%)", BackgroundStatitics.MemoryUsagePercent.ToString());
+            _appView.MemoryLabelText = string.Format("Memory Used ({0}%)", BackgroundStatitics.MemoryUsagePercent);
         }
 
         public void GraphicsUpdateCallback(GraphicsProfiler profiler)
         {
-            _appView.GraphicsDebugText = string.Format("ClearFrame: {0}ms{1}RasterizeObjects: {2}ms{1}DrawFrame: {3}ms{1}", 
+            // TODO: Ensure this is called on the GUI thread
+            _appView.GraphicsDebugText = string.Format("ClearFrame: {0}ms{1}RasterizeObjects: {2}ms{1}DrawFrame: {3}ms{1}",
                 profiler.ClearFrameDuration, Environment.NewLine, profiler.RasterizeObjectsDuration, profiler.DrawFrameDuration);
         }
 
-        private class WorkspaceSizeChangedListener : AbstractListener<WorkspaceController>, IListener
+        private class WorkspaceMouseDownListener : AbstractMouseListener<WorkspaceController>, IMouseListener
         {
-            public WorkspaceSizeChangedListener(WorkspaceController controller)
+            public WorkspaceMouseDownListener(WorkspaceController controller)
                 : base(controller)
             {
+                Handler = ActionPerformed;
             }
 
-            public void ActionPerformed(object sender, EventArgs e)
+            public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._model.WorkspaceResize();
+                Controller._model.MouseDown(sender, e);
             }
         }
-
-        private class AppWindowMovedListener : AbstractListener<WorkspaceController>, IListener
+        private class WorkspaceMouseMoveListener : AbstractMouseListener<WorkspaceController>, IMouseListener
         {
-            public AppWindowMovedListener(WorkspaceController controller)
+            public WorkspaceMouseMoveListener(WorkspaceController controller)
                 : base(controller)
             {
+                Handler = ActionPerformed;
             }
 
-            public void ActionPerformed(object sender, EventArgs e)
+            public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._model.AppWindowMove();
+                Controller._model.MouseMovement(sender, e);
+            }
+        }
+        private class WorkspaceMouseUpListener : AbstractMouseListener<WorkspaceController>, IMouseListener
+        {
+            public WorkspaceMouseUpListener(WorkspaceController controller)
+                : base(controller)
+            {
+                Handler = ActionPerformed;
+            }
+
+            public void ActionPerformed(object sender, MyMouseEventArgs e)
+            {
+                Controller._model.MouseUp(sender, e);
             }
         }
     }

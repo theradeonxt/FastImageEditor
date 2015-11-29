@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using NLog;
-using VectorImageEdit.Interfaces;
+using VectorImageEdit.Modules.Interfaces;
 
 namespace VectorImageEdit.Modules.ImportExports
 {
@@ -12,7 +12,7 @@ namespace VectorImageEdit.Modules.ImportExports
     /// <typeparam name="TData"> Type of data source </typeparam>
     internal abstract class AbstractExporter<TParam, TData> : IDiskResourceExporter<TParam, TData>
     {
-        // ReSharper disable once StaticMemberInGenericType
+        //  ReSharper disable once StaticMemberInGenericType
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private TParam _exportParameter;
         private TData _dataSource;

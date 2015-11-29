@@ -1,59 +1,60 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using VectorImageEdit.Forms.AppWindow;
+using NLog;
 using VectorImageEdit.Models;
-using VectorImageEdit.Modules;
-using VectorImageEdit.Modules.Factories;
-using VectorImageEdit.Modules.Layers;
+using VectorImageEdit.Views.Main;
+using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
-    /// <summary>
+    ///// <summary> 
     /// Main Controller for the application
     /// 
-    /// - this is the Controller manager for all aplication modules.
-    /// </summary>
-    [SuppressMessage("ReSharper", "NotAccessedField.Local")]
-    [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable")]
+    /// - manages the controllers for all application modules
+    /// 
+    ///// </summary>
     class AppController
     {
         private readonly AppWindow _appView;
-        private readonly AppModel _appModel;
 
         private readonly WorkspaceController _workspaceController;
         private readonly ExternalEventsController _externalController;
         private readonly MenuItemsController _menuController;
         private readonly SceneTreeController _sceneTreeController;
         private readonly ToolstripItemsController _toolbarController;
+        private readonly WindowController _windowController;
+
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public AppController(AppWindow appView)
         {
             try
             {
                 _appView = appView;
-                _appModel = new AppModel();
+                var appModel = AppModel.Instance;
 
-                _externalController = new ExternalEventsController(_appView, _appModel.ExternalModel);
-                _workspaceController = new WorkspaceController(_appView, _appModel.WorkspaceModel);
-                _menuController = new MenuItemsController(_appView, _appModel.MenuModel);
-                _sceneTreeController = new SceneTreeController(_appView, _appModel.SceneTreeModel);
-                _toolbarController = new ToolstripItemsController(_appView, _appModel.ToolbarsModel);
+                // Create application modules
+                _externalController = new ExternalEventsController(_appView, appModel.ExternalModel);
+                _workspaceController = new WorkspaceController(_appView, appModel.WorkspaceModel);
+                _menuController = new MenuItemsController(_appView, appModel.MenuModel);
+                _sceneTreeController = new SceneTreeController(_appView, appModel.SceneTreeModel);
+                _toolbarController = new ToolstripItemsController(_appView, appModel.ToolbarsModel);
+                _windowController = new WindowController(_appView, appModel.AppWindowModel);
 
-                InitializeAppGlobalData();
+                // Create application configuration
+                appModel.InitializeSettings(_workspaceController.GraphicsUpdateCallback,
+                    _appView.WorkspaceArea, _appView.Size);
+
+                // Redirect UI invocations to the main form control
+                MyMethodInvoker.SetInvocationTarget(appView);
             }
-            catch (OutOfMemoryException)
+            catch (OutOfMemoryException ex)
             {
-                MessageBoxFactory.Create(caption: "Critical Error", 
-                    text: "Unable to create all application modules: OutOfMemoryException was encountered", 
-                    type: MessageType.Error);
-            }
-        }
+                MessageBoxFactory.Create(caption: "Critical Error",
+                    text: string.Format("Unable to create all application modules{0}Detailed information may be available in the LogFile.", Environment.NewLine),
+                    boxType: MessageBoxType.Error);
 
-        private void InitializeAppGlobalData()
-        {
-            AppGlobalData.Instance.LayerManager = new LayerManager(_appView.WorkspaceArea, 
-                _sceneTreeController.OnListboxItemsChangedCallback, _workspaceController.GraphicsUpdateCallback);
-            AppGlobalData.Instance.Layout = new Layout(_appView.Size);
+                Logger.Error(ex.ToString());
+            }
         }
     }
 }

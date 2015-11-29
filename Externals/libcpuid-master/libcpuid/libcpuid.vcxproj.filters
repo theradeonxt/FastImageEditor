@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{c9773bd1-c940-49a7-b74f-eb1ccf6ca81c}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{5ab2d5c9-4aee-45fe-9836-fcd9cf3d0a06}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="asm-bits.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cpuid_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libcpuid_util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="msrdriver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rdmsr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rdtsc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="recog_amd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="recog_intel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="asm-bits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libcpuid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libcpuid_constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libcpuid_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libcpuid_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rdtsc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="recog_amd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="recog_intel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="masm-x64.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
+  </ItemGroup>
+</Project>

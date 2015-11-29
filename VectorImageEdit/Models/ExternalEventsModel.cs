@@ -6,10 +6,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using VectorImageEdit.Interfaces;
 using VectorImageEdit.Modules;
 using VectorImageEdit.Modules.ImportExports;
-using VectorImageEdit.Modules.Layers;
+using VectorImageEdit.Modules.Interfaces;
+using VectorImageEdit.Modules.LayerManagement;
 using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Models
@@ -18,15 +18,15 @@ namespace VectorImageEdit.Models
     {
         public bool TryExportVector(IDiskResourceExporter<int, IList> exporter)
         {
-            exporter.DataSource = AppGlobalData.Instance.LayerManager.GetLayers();
+            exporter.DataSource = AppModel.Instance.LayerManager.GetLayers();
             return exporter.ExportData();
         }
 
         public bool TryExportScenePreview(IDiskResourceExporter<ImageFormat, Bitmap> exporter)
         {
-            exporter.DataSource = AppGlobalData.Instance.LayerManager.GetImagePreview();
-            string extension = Path.GetExtension(exporter.FileName) ?? AppGlobalData.Instance.DefaultImageFileExtension;
-            exporter.ExportParameter = ImagingHelpers.GetImageFormat(extension);
+            exporter.DataSource = AppModel.Instance.LayerManager.GetImagePreview();
+            string extension = Path.GetExtension(exporter.FileName) ?? AppModel.Instance.DefaultImageFileExtension;
+            exporter.ExportParameter = ImagingHelpers.GetImageFormatAssociated(extension);
             return exporter.ExportData();
         }
 
@@ -34,10 +34,10 @@ namespace VectorImageEdit.Models
         {
             VectorSerializer serializer = new VectorSerializer();
             var layers = serializer.Deserialize(fileName);
-            AppGlobalData.Instance.LayerManager.RemoveAll();
+            AppModel.Instance.LayerManager.RemoveAll();
             foreach (Layer layer in layers)
             {
-                AppGlobalData.Instance.LayerManager.Add(layer);
+                AppModel.Instance.LayerManager.Add(layer);
             }
         }
 
@@ -48,7 +48,7 @@ namespace VectorImageEdit.Models
             Parallel.ForEach(fileNames, fileName =>
             {
                 IGenericResourceImporter<Tuple<Size, ScalingMode>, Bitmap> importer = new ImageImporter();
-                importer.ImportParameters = new Tuple<Size, ScalingMode>(AppGlobalData.Instance.Layout.MaximumSize(), ScalingMode.CustomSize);
+                importer.ImportParameters = new Tuple<Size, ScalingMode>(AppModel.Instance.Layout.MaximumSize(), ScalingMode.CustomSize);
                 Bitmap image = importer.Acquire(fileName);
                 images.Add(image);
                 onProgressChangedCallback(Interlocked.Increment(ref progress));
@@ -65,10 +65,10 @@ namespace VectorImageEdit.Models
                 {
                     BackgroundStatitics.CommitImageMemory(helper.SizeBytes);
                 }
-                Rectangle region = AppGlobalData.Instance.Layout.NewLayerMetrics(image.Size);
+                Rectangle region = AppModel.Instance.Layout.NewLayerMetrics(image.Size);
                 layers.Add(new Picture(image, region, 0));
             }
-            AppGlobalData.Instance.LayerManager.Add(layers);
+            AppModel.Instance.LayerManager.AddRange(layers);
         }
     }
 }

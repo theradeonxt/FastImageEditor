@@ -20,8 +20,9 @@ namespace VectorImageEdit.Modules.BasicShapes
         {
             return new HatchBrush(HatchStyle.Cross, FillColor, FillColor);
         }
+        
         /// <summary>
-        /// Obtains a new Pen from this ShapeStyle instance
+        // Obtains a new Pen from this ShapeStyle instance
         /// Note: use this in a using construct to auto-dispose!
         /// </summary>
         /// <returns> The new Pen </returns>

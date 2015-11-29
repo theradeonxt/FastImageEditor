@@ -54,16 +54,23 @@
   <PropertyGroup>
     <StartupObject>VectorImageEdit.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations">
       <HintPath>..\..\..\..\AppData\Local\JetBrains\Installations\ReSharperPlatformVs12\JetBrains.Annotations.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MRG.Controls.UI">
       <HintPath>Properties\MRG.Controls.UI.dll</HintPath>
     </Reference>
-    <Reference Include="NLog">
-      <HintPath>..\packages\NLog.4.1.2\lib\net45\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.1.2\lib\net40\NLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -78,66 +85,84 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="Controllers\WindowController.cs" />
     <Compile Include="Controllers\ExternalEventsController.cs" />
     <Compile Include="Controllers\MenuItemsController.cs" />
     <Compile Include="Controllers\SceneTreeController.cs" />
     <Compile Include="Controllers\ToolstripItemsController.cs" />
     <Compile Include="Controllers\WorkspaceController.cs" />
-    <Compile Include="Forms\AppWindow\AppMenuItems.cs">
+    <Compile Include="Models\AppModelPrivate.cs" />
+    <Compile Include="Models\WindowModel.cs" />
+    <Compile Include="Views\Main\AppMenuItems.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AppWindow\AppSceneTree.cs">
+    <Compile Include="Views\Main\AppSceneTreeView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CustomLook.cs" />
-    <Compile Include="Interfaces\IFormDialogFactory.cs" />
-    <Compile Include="Interfaces\IGenericResourceImporter.cs" />
+    <Compile Include="Views\Main\AppWorkspaceView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CustomLook.cs" />
+    <Compile Include="WindowsFormsBridge\CursorManager.cs" />
+    <Compile Include="WindowsFormsBridge\MyMethodInvoker.cs" />
+    <Compile Include="WindowsFormsBridge\IFormDialogFactory.cs" />
+    <Compile Include="Models\WorkspaceModelPrivate.cs" />
+    <Compile Include="Modules\Interfaces\IGenericResourceImporter.cs" />
     <Compile Include="Models\AppModel.cs" />
-    <Compile Include="Models\AppGlobalData.cs" />
-    <Compile Include="Forms\AbstractListener.cs" />
-    <Compile Include="Forms\AppWindow\AppBorderlessForm.cs">
+    <Compile Include="WindowsFormsBridge\AbstractListeners.cs" />
+    <Compile Include="Views\Main\AppBorderlessForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AppWindow\AppExternalEvents.cs">
+    <Compile Include="Views\Main\AppExternalEvents.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AppWindow\AppToolstrips.cs">
+    <Compile Include="Views\Main\AppToolstrips.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interfaces\IListener.cs" />
+    <Compile Include="WindowsFormsBridge\IListeners.cs" />
     <Compile Include="Models\ExternalEventsModel.cs" />
     <Compile Include="Models\MenuItemsModel.cs" />
     <Compile Include="Models\SceneTreeModel.cs" />
     <Compile Include="Models\ToolstripItemsModel.cs" />
     <Compile Include="Models\WorkspaceModel.cs" />
-    <Compile Include="Modules\BackgroundStatistics.cs" />
+    <Compile Include="Modules\BackgroundStatitics.cs" />
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
-    <Compile Include="Interfaces\IShapeFactory.cs" />
-    <Compile Include="Modules\GraphicsProfiler.cs" />
-    <Compile Include="Modules\ImageProcessingAPI.cs" />
+    <Compile Include="Modules\GraphicsCompositing\GraphicsProfiler.cs" />
+    <Compile Include="Modules\GraphicsCompositing\ImageProcessingAPI.cs" />
+    <Compile Include="Modules\Interfaces\IRenderingPolicy.cs" />
     <Compile Include="Modules\ImportExports\AbstractExporter.cs" />
     <Compile Include="Modules\ImportExports\GenericResourceImporter.cs" />
     <Compile Include="Modules\ImportExports\ImageImporter.cs" />
     <Compile Include="Modules\ImportExports\VectorExporter.cs" />
-    <Compile Include="Modules\Factories\MessageBoxFactory.cs" />
+    <Compile Include="WindowsFormsBridge\MessageBoxFactory.cs" />
     <Compile Include="Modules\Factories\ShapeFactory.cs" />
     <Compile Include="Modules\Factories\ShapeStyleBuilder.cs" />
-    <Compile Include="Modules\Factories\FormDialogFactory.cs" />
-    <Compile Include="Interfaces\IDiskResourceExporter.cs" />
+    <Compile Include="WindowsFormsBridge\FormDialogFactory.cs" />
+    <Compile Include="Modules\Interfaces\IDiskResourceExporter.cs" />
     <Compile Include="Modules\ImportExports\ImageExporter.cs" />
     <Compile Include="Modules\ImportExports\VectorImporter.cs" />
+    <Compile Include="Modules\GraphicsCompositing\RenderingPolicy.cs" />
+    <Compile Include="Modules\Interfaces\IGraphicsHandler.cs" />
+    <Compile Include="Modules\Interfaces\ILayerHandler.cs" />
+    <Compile Include="Modules\LayerManagement\LayerModifiers\BringToFrontModifier.cs" />
+    <Compile Include="Modules\LayerManagement\LayerModifiers\GenericModifier.cs" />
+    <Compile Include="Modules\LayerManagement\LayerModifiers\ILayerModifier.cs" />
+    <Compile Include="Modules\LayerManagement\LayerModifiers\LayerModifierBase.cs" />
+    <Compile Include="Modules\LayerManagement\LayerModifiers\ModifierType.cs" />
+    <Compile Include="Modules\LayerManagement\LayerModifiers\SendBackwardModifier.cs" />
+    <Compile Include="Modules\LayerManagement\LayerModifiers\SendToBackModifier.cs" />
     <Compile Include="Modules\Utility\BitmapHelper.cs" />
     <Compile Include="Modules\ImportExports\VectorSerializer.cs" />
-    <Compile Include="Forms\AppWindow\AppWindow.cs">
+    <Compile Include="Views\Main\AppWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AppWindow\AppWindow.Designer.cs">
+    <Compile Include="Views\Main\AppWindow.Designer.cs">
       <DependentUpon>AppWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\PropertiesWindow.cs">
+    <Compile Include="Views\PropertiesWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\PropertiesWindow.Designer.cs">
+    <Compile Include="Views\PropertiesWindow.Designer.cs">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\BasicShapes\Circle.cs" />
@@ -150,24 +175,24 @@
     <Compile Include="Modules\BasicShapes\Square.cs" />
     <Compile Include="Modules\BasicShapes\Star.cs" />
     <Compile Include="Modules\BasicShapes\Triangle.cs" />
-    <Compile Include="Modules\GraphicsManager.cs" />
-    <Compile Include="Modules\Layers\LayerMetadata.cs" />
-    <Compile Include="Modules\Layers\Layer.cs" />
-    <Compile Include="Modules\Layers\LayerManager.cs" />
-    <Compile Include="Modules\Layers\LayerManagerModifiers.cs" />
-    <Compile Include="Modules\Layers\MouseInteraction.cs" />
+    <Compile Include="Modules\GraphicsCompositing\GraphicsManager.cs" />
+    <Compile Include="Modules\LayerManagement\LayerMetadata.cs" />
+    <Compile Include="Modules\LayerManagement\Layer.cs" />
+    <Compile Include="Modules\LayerManagement\LayerManager.cs" />
     <Compile Include="Modules\Layout.cs" />
-    <Compile Include="Modules\Layers\Picture.cs" />
-    <Compile Include="Modules\RasterizerStage.cs" />
+    <Compile Include="Modules\LayerManagement\Picture.cs" />
+    <Compile Include="Modules\GraphicsCompositing\RasterizerStage.cs" />
+    <Compile Include="Modules\Utility\BoundingRectangle.cs" />
     <Compile Include="Modules\Utility\SortedContainer.cs" />
     <Compile Include="Modules\Utility\ImagingHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\AppWindow\AppWindow.resx">
+    <None Include="Resources\Layer 0.png" />
+    <EmbeddedResource Include="Views\Main\AppWindow.resx">
       <DependentUpon>AppWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\PropertiesWindow.resx">
+    <EmbeddedResource Include="Views\PropertiesWindow.resx">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -184,9 +209,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -288,6 +310,7 @@
   <ItemGroup>
     <None Include="Resources\Memory Slot-50.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

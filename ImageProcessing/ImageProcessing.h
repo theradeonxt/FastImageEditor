@@ -1,16 +1,17 @@
 
-#pragma once
+// =============================================================================
+//              Image Processing Library Interface
+//
+// These functions define the interface of the library.
+// This is the list of exported symbols that can be accessed from external code.
+//
+// =============================================================================
 
-// local include
+#ifndef IMAGEPROCESSINGAPI_H
+#define IMAGEPROCESSINGAPI_H
+
 #include "Common.h"
-
-// system include
-#include <stdint.h>
-
-// ====================================================
-// Note: these define the interface of the .dll module
-//       we need to have them visible to the outside.
-// ====================================================
+#include <cstdint>
 
 // ====================================================
 // 24bpp Image Operations
@@ -46,3 +47,5 @@ ConvFilter_32bgra(READONLY (uint8_t*) source,
                   READONLY (float*)   kernel,
                   uint32_t            width,
                   uint32_t            height);
+
+#endif /* IMAGEPROCESSINGAPI_H */

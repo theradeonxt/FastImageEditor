@@ -6,7 +6,7 @@ namespace VectorImageEdit.Modules.BasicShapes
     [Serializable]
     public class SRectangle : ShapeBase
     {
-        //public SRectangle() { }
+        // public SRectangle() { }
 
         public SRectangle(Rectangle region, ShapeStyle style)
             : base(region, 0, style, "Layer - Rectangle")

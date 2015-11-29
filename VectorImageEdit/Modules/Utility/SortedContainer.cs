@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace VectorImageEdit.Modules.Utility
 {
+    // TODO: Investigate thread safety for iteration and lock overhead
+
     /// <summary>
     /// 
     /// SortedContainer Module
@@ -21,8 +24,14 @@ namespace VectorImageEdit.Modules.Utility
         /// <param name="item"> The item to add </param>
         public new void Add(TItem item)
         {
-            //TODO wrap the operation to make it atomic
-            //lock (SyncRoot)
+            /* TODO: wrap the operation to make it atomic?
+             * The underlying container "Add" is thread-safe, 
+             * but the overall behavior here is not
+             * 
+             * Note: Locking here sometimes deadlocks...
+             * */
+
+            lock (SyncRoot)
             {
                 // if there are no elements, add it to the beginning
                 if (Count == 0)
@@ -46,10 +55,11 @@ namespace VectorImageEdit.Modules.Utility
 
         /// <summary>
         /// Ensure item (re)ordering after external modifications;
-        /// it's up to caller to handle this
+        /// the caller is responsible for handling this
         /// </summary>
         public void Rebuild()
         {
+            // TODO: This looks ugly
             var copy = new TItem[Count];
             CopyTo(copy, 0);
             Clear();
@@ -57,6 +67,24 @@ namespace VectorImageEdit.Modules.Utility
             {
                 Add(layer);
             }
+        }
+
+        /// <summary>
+        /// Gets the Last item in the collection, 
+        /// based on the item relative ordering rules.
+        /// If no item exists an ArgumentOutOfRangeException is thrown.
+        /// </summary>
+        [NotNull]
+        public TItem Last
+        {
+            // TODO: This restricts the underlying container to use List
+            get { return base[Count - 1]; }
+        }
+
+        [NotNull]
+        public TItem First
+        {
+            get { return base[0]; }
         }
     }
 }

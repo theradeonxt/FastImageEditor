@@ -59,7 +59,7 @@ namespace ImageInterpolation
             using (var g = Graphics.FromImage(bmp))
             {
                 SetConversionQuality(g, quality);
-                g.DrawImageUnscaled(img, new Rectangle(0, 0, img.Width, img.Height));
+                g.DrawImage(img, new Rectangle(0, 0, img.Width, img.Height));
             }
             SetConversionType(ref img, bmp, type);
             return bmp;

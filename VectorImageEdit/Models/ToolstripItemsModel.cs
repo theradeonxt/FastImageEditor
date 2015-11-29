@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using VectorImageEdit.Interfaces;
 using VectorImageEdit.Modules.Factories;
 
 namespace VectorImageEdit.Models
@@ -12,23 +11,23 @@ namespace VectorImageEdit.Models
         /// <summary>
         /// Define the actions at creation of every shape (when triggered from the GUI)
         /// </summary>
-        private readonly Dictionary<string, IShapeFactory> _shapeActionMap;
+        private readonly Dictionary<string, DefaultShapeFactory.ShapeCreator> _shapeActionMap;
 
         public ToolstripItemsModel()
         {
             ColorMode = ColorType.PrimaryColor;
 
-            _shapeActionMap = new Dictionary<string, IShapeFactory>
+            _shapeActionMap = new Dictionary<string, DefaultShapeFactory.ShapeCreator>
             {
-                {"circle", new CircleShapeFactory()},
-                {"square", new SquareShapeFactory()},
-                {"rectangle", new RectangleShapeFactory()},
-                {"ellipse", new EllipseShapeFactory()},
-                {"star", new StarShapeFactory()},
-                {"line", new LineShapeFactory()},
-                {"hexagon", new HexagonShapeFactory()},
-                {"diamond", new DiamondShapeFactory()},
-                {"triangle", new TriangleShapeFactory()}
+                {"circle", DefaultShapeFactory.CreateCircle},
+                {"square",  DefaultShapeFactory.CreateSquare},
+                {"rectangle", DefaultShapeFactory.CreateRectangle},
+                {"ellipse", DefaultShapeFactory.CreateEllipse},
+                {"star", DefaultShapeFactory.CreateStar},
+                {"line", DefaultShapeFactory.CreateLine},
+                {"hexagon", DefaultShapeFactory.CreateHexagon},
+                {"diamond", DefaultShapeFactory.CreateDiamond},
+                {"triangle", DefaultShapeFactory.CreateTriangle}
             };
         }
 
@@ -37,23 +36,21 @@ namespace VectorImageEdit.Models
         /// </summary>
         public ColorType ColorMode { get; set; }
 
-        #region The Model Working Methods
-
         public void CreateNewShape(string shapeName)
         {
             try
             {
-                var global = AppGlobalData.Instance;
+                var global = AppModel.Instance;
                 var size = global.Layout.MaximumSize();
+
                 var style = ShapeStyleBuilder.CreateShapeStyle(global.PrimaryColor,
                     global.SecondaryColor, global.ShapeEdgeSize);
-                var shape = _shapeActionMap[shapeName].CreateShape(size, style);
+
+                var shape = _shapeActionMap[shapeName](size, style);
                 global.LayerManager.Add(shape);
             }
             catch (NotImplementedException) { }
             catch (KeyNotFoundException) { }
         }
-
-        #endregion
     }
 }

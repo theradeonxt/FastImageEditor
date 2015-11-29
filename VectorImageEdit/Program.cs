@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using VectorImageEdit.Controllers;
+using VectorImageEdit.Views.Main;
 
 namespace VectorImageEdit
 {
@@ -15,11 +16,12 @@ namespace VectorImageEdit
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var appWnd = new Forms.AppWindow.AppWindow();
-            // ReSharper disable once UnusedVariable
-            AppController appCtrl = new AppController(appWnd);
+            var appView = new AppWindow();
 
-            Application.Run(appWnd);
+            // ReSharper disable once UnusedVariable
+            var appController = new AppController(appView);
+
+            Application.Run(appView);
         }
     }
 }

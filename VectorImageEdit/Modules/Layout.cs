@@ -59,7 +59,8 @@ namespace VectorImageEdit.Modules
                 width = _random.Next(
                     Math.Abs(_maximumSize.Width - 3 * Padding),
                     Math.Abs(_maximumSize.Width - Padding));
-                float heightf = width / aspectRatio; // TODO: not enough to keep aspect ratio: this height can be > workspace height
+                // TODO: not enough to keep aspect ratio: this height can be > workspace height
+                float heightf = width / aspectRatio;
                 height = (int)heightf;
             }
             else

@@ -6,7 +6,7 @@ namespace VectorImageEdit.Modules.BasicShapes
     [Serializable]
     public class Ellipse : ShapeBase
     {
-        //public Ellipse() { }
+        // public Ellipse() { }
 
         public Ellipse(Rectangle region, ShapeStyle style)
             : base(region, 0, style, "Layer - Ellipse")
