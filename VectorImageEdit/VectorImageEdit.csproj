@@ -59,8 +59,9 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JetBrains.Annotations">
-      <HintPath>..\..\..\..\AppData\Local\JetBrains\Installations\ReSharperPlatformVs12\JetBrains.Annotations.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=9.0.0.0, Culture=neutral, PublicKeyToken=dee44e73c0c62b04, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twia.ReSharper.9.0.0\lib\net40\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualBasic">
       <Private>True</Private>
@@ -103,7 +104,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\CustomLook.cs" />
-    <Compile Include="WindowsFormsBridge\CursorManager.cs" />
     <Compile Include="WindowsFormsBridge\MyMethodInvoker.cs" />
     <Compile Include="WindowsFormsBridge\IFormDialogFactory.cs" />
     <Compile Include="Models\WorkspaceModelPrivate.cs" />

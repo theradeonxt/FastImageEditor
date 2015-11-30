@@ -20,11 +20,6 @@ namespace VectorImageEdit.Modules.LayerManagement
             DisplayName = displayName + " [" + Uid + "]";
         }
 
-        /*public override string ToString()
-        {
-            return DisplayName;
-        }*/
-
         [NotNull]
         public string DisplayName { get; set; }
         public int Uid { get; private set; }

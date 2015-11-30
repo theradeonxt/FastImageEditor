@@ -5,7 +5,7 @@ using NLog;
 namespace VectorImageEdit.WindowsFormsBridge
 {
     /// <summary>
-    // Windows Forms dependent method invocation ensuring a 
+    /// Windows Forms dependent method invocation ensuring a 
     /// specified action is executed on the correct thread
     /// </summary>
     static class MyMethodInvoker

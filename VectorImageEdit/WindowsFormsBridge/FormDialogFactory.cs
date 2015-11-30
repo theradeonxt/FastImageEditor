@@ -6,7 +6,7 @@ using NLog;
 namespace VectorImageEdit.WindowsFormsBridge
 {
     /// <summary>
-    // Common error handling and logging for every concrete dialog factory
+    /// Common error handling and logging for every concrete dialog factory
     /// </summary>
     internal abstract class DialogFactoryInternal
     {

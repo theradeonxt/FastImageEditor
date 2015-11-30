@@ -7,9 +7,9 @@ using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
-    ///// <summary>
+    /// <summary>
     /// Handles user-actions related to the workspace region
-    ///// </summary>
+    /// </summary>
     class WorkspaceController
     {
         private readonly AppWindow _appView;
@@ -46,7 +46,17 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._model.MouseDown(sender, e);
+                Controller._model.MouseDown(e);
+
+                switch (Controller._model.SelectedLayerState)
+                {
+                    case WorkspaceModel.LayerState.Resizing:
+                        Controller._appView.SetLayerResizeCursor();
+                        break;
+                    case WorkspaceModel.LayerState.Moving:
+                        Controller._appView.SetLayerMoveCursor();
+                        break;
+                }
             }
         }
         private class WorkspaceMouseMoveListener : AbstractMouseListener<WorkspaceController>, IMouseListener
@@ -59,7 +69,7 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._model.MouseMovement(sender, e);
+                Controller._model.MouseMovement(e);
             }
         }
         private class WorkspaceMouseUpListener : AbstractMouseListener<WorkspaceController>, IMouseListener
@@ -72,7 +82,8 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._model.MouseUp(sender, e);
+                Controller._appView.SetDefaultCursor();
+                Controller._model.MouseUp(e);
             }
         }
     }

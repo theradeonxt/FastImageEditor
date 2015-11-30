@@ -50,8 +50,8 @@ namespace VectorImageEdit.Modules.ImportExports
             throw new NotImplementedException();
         }
 
-       //  TODO: Fix Overscaling bigger than actual window bounds
-       //  TODO: Implement cache for downscaled images
+        // TODO: Fix Overscaling bigger than actual window bounds
+        // TODO: Implement cache for downscaled images
         private static Bitmap ScaledSize(string fileName, Size maximumSize)
         {
             Bitmap original = OpenImage(fileName);

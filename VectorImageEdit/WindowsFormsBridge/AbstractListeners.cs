@@ -5,12 +5,12 @@ using System.Windows.Forms;
 
 namespace VectorImageEdit.WindowsFormsBridge
 {
-    ///// <summary>
+    /// <summary>
     /// Common Base Listener class
     /// 
     /// - contains a reference to parent controller that manages this listener
-    ///// </summary>
-    ///// <typeparam name="TController"> Controller typename </typeparam>
+    /// </summary>
+    /// <typeparam name="TController"> Controller typename </typeparam>
     internal abstract class AbstractListener<TController>
     {
         protected readonly TController Controller;
@@ -21,10 +21,10 @@ namespace VectorImageEdit.WindowsFormsBridge
         }
     }
 
-    ///// <summary>
+    /// <summary>
     /// Special mouse eistener, extends the base listener and abstracts the mouse events
-    ///// </summary>
-    ///// <typeparam name="TController"></typeparam>
+    /// </summary>
+    /// <typeparam name="TController"></typeparam>
     internal abstract class AbstractMouseListener<TController> : AbstractListener<TController>
     {
         protected delegate void HandlerDelegate(object sender, MyMouseEventArgs e);
@@ -43,10 +43,10 @@ namespace VectorImageEdit.WindowsFormsBridge
         }
     }
 
-    ///// <summary>
+    /// <summary>
     /// Special drag & drop event listener, extends the base listener and abstracts the drag & drop events
-    ///// </summary>
-    ///// <typeparam name="TController"></typeparam>
+    /// </summary>
+    /// <typeparam name="TController"></typeparam>
     internal abstract class AbstractDragListener<TController> : AbstractListener<TController>
     {
         protected delegate void HandlerDelegate(object sender, MyDragEventArgs e);
@@ -69,9 +69,9 @@ namespace VectorImageEdit.WindowsFormsBridge
         }
     }
 
-    ///// <summary>
+    /// <summary>
     /// Helper to convert betweeen mouse event argument classes
-    ///// </summary>
+    /// </summary>
     internal static class MouseEventTranslator
     {
         private static readonly Dictionary<MouseButtons, MyMouseEventArgs.MyMouseButton> Map
@@ -91,9 +91,9 @@ namespace VectorImageEdit.WindowsFormsBridge
         }
     }
 
-    ///// <summary>
+    /// <summary>
     /// Helper to convert betweeen drag & drop event argument classes
-    ///// </summary>
+    /// </summary>
     internal static class DragEventTranslator
     {
         public static MyDragEventArgs FromWinForms(DragEventArgs e)
@@ -106,9 +106,9 @@ namespace VectorImageEdit.WindowsFormsBridge
         }
     }
 
-    ///// <summary>
+    /// <summary>
     /// Wrapper for mouse event arguments
-    ///// </summary>
+    /// </summary>
     public class MyMouseEventArgs
     {
         public enum MyMouseButton
@@ -133,9 +133,9 @@ namespace VectorImageEdit.WindowsFormsBridge
         public MyMouseButton Button { get; private set; }
     }
 
-    ///// <summary>
+    /// <summary>
     /// Wrapper for drag & drop event arguments
-    ///// </summary>
+    /// </summary>
     public class MyDragEventArgs
     {
         private readonly object _data;

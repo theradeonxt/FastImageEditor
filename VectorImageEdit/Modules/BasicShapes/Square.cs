@@ -6,8 +6,6 @@ namespace VectorImageEdit.Modules.BasicShapes
     [Serializable]
     public class Square : ShapeBase
     {
-        // public Square() { }
-
         public Square(Point location, int side, ShapeStyle style)
             : base(new Rectangle(location.X, location.Y, side, side), 0, style, "Layer - Square")
         {

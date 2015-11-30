@@ -5,9 +5,9 @@ using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
-    ///// <summary>
+    /// <summary>
     /// Main application window related actions
-    ///// </summary>
+    /// </summary>
     class WindowController
     {
         private readonly AppWindow _appView;

@@ -12,14 +12,14 @@ using VectorImageEdit.Modules.Utility;
 
 namespace VectorImageEdit.Modules.GraphicsCompositing
 {
-    ///// <summary>
+    /// <summary>
     /// Graphics Module
     ///
     /// - controls the graphics rendering process
     /// - redraws a frame using all objects
     /// - handles the frame resizing
     /// 
-    ///// </summary>
+    /// </summary>
     public class GraphicsManager : IDisposable, IGraphicsHandler
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -78,9 +78,9 @@ namespace VectorImageEdit.Modules.GraphicsCompositing
             _formGraphics.DrawImageUnscaledAndClipped(_frame, renderPolicy.DirtyRegion);
         }
 
-        ///// <summary>
+        /// <summary>
         /// Gets a bitmap representation of the workspace at the current moment.
-        ///// </summary>
+        /// </summary>
         [NotNull]
         public Bitmap GetImagePreview()
         {

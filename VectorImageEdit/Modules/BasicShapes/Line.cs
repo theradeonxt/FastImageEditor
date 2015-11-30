@@ -6,8 +6,6 @@ namespace VectorImageEdit.Modules.BasicShapes
     [Serializable]
     public class Line : ShapeBase
     {
-        // public Line() { }
-
         public Line(Point begin, Point end, ShapeStyle style)
             : base(new Rectangle(
                 Math.Min(begin.X, end.X),

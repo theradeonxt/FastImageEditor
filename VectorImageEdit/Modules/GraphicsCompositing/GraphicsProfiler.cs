@@ -3,13 +3,13 @@ using System.Diagnostics;
 
 namespace VectorImageEdit.Modules.GraphicsCompositing
 {
-     /// <summary> 
-     /// Sequential profiling class for the Graphics pipeline
-     /// 
-     /// This will record the main stages in the frame rendering code. 
-     /// Note: Use this only in single-threaded code (uses a shared timer object)
+    /// <summary> 
+    /// Sequential profiling class for the Graphics pipeline
     /// 
-     /// </summary>
+    /// This will record the main stages in the frame rendering code. 
+    /// Note: Use this only in single-threaded code (uses a shared timer object)
+    /// 
+    /// </summary>
     public class GraphicsProfiler
     {
         private readonly Stopwatch _timer;

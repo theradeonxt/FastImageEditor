@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Windows.Forms; // TODO: Fix
 using VectorImageEdit.Modules.Interfaces;
 using VectorImageEdit.Modules.LayerManagement;
 using VectorImageEdit.WindowsFormsBridge;
@@ -8,14 +7,22 @@ namespace VectorImageEdit.Models
 {
     partial class WorkspaceModel
     {
+        public enum LayerState
+        {
+            Moving,     // specifies if an object will be moving
+            Resizing,   // specifies if an object will be resizing
+            Normal      // no special considerations
+        };
+
         public WorkspaceModel()
         {
             _noLayer = new Picture(new Bitmap(1, 1), Rectangle.Empty, 0);
 
             _selectedLayer = _noLayer;
-            _currentState = LayerState.Normal;
+            SelectedLayerState = LayerState.Normal;
         }
 
+        public LayerState SelectedLayerState;
         public Layer SelectedLayer
         {
             get { return _selectedLayer; }
@@ -32,11 +39,11 @@ namespace VectorImageEdit.Models
             }
         }
 
-        public void MouseMovement(object sender, MyMouseEventArgs e)
+        public void MouseMovement(MyMouseEventArgs e)
         {
             if (_selectedLayer == _noLayer) return;
 
-            switch (_currentState)
+            switch (SelectedLayerState)
             {
                 case LayerState.Moving:
                     {
@@ -66,7 +73,7 @@ namespace VectorImageEdit.Models
                     break;
             }
         }
-        public void MouseDown(object sender, MyMouseEventArgs e)
+        public void MouseDown(MyMouseEventArgs e)
         {
             if (e.Button != MyMouseEventArgs.MyMouseButton.Left) return;
             if (CanSelectLayer(e.Location) == false)
@@ -83,34 +90,25 @@ namespace VectorImageEdit.Models
             // The exterior region is 4 pixels inside from the layer edges 
             Rectangle resizeInterior = layer.Region;
             resizeInterior.Inflate(-4, -4);
-            _currentState = resizeInterior.Contains(e.Location) ? LayerState.Moving : LayerState.Resizing;
+            SelectedLayerState = resizeInterior.Contains(e.Location) ? LayerState.Moving : LayerState.Resizing;
             
-            // Logic to respond to the state 
-            switch (_currentState)
+            // Logic to respond to the state change
+            if (SelectedLayerState == LayerState.Moving)
             {
-                case LayerState.Resizing:
-                    // Resize begin
-                    // TODO: Remove direct dependency; move Cursor to Controller
-                    Cursor.Current = Cursors.SizeAll;
-                    break;
-                case LayerState.Moving:
-                    // Movement begin
-                    _pointOffset.X = _pointDown.X - layer.Region.Left;
-                    _pointOffset.Y = _pointDown.Y - layer.Region.Top;
-                    Cursor.Current = Cursors.Hand;
-                    break;
+                // Movement begin
+                _pointOffset.X = _pointDown.X - layer.Region.Left;
+                _pointOffset.Y = _pointDown.Y - layer.Region.Top;
             }
+
             SelectedLayer = layer;
         }
-        public void MouseUp(object sender, MyMouseEventArgs e)
+        public void MouseUp(MyMouseEventArgs e)
         {
-            if (_currentState != LayerState.Normal)
+            if (SelectedLayerState != LayerState.Normal)
             {
-                Cursor.Current = Cursors.Default;
-
                 NotifyGraphicsHandler(RenderingPolicyFactory.MinimalUpdatePolicy(_selectedLayer.Region));
+                SelectedLayerState = LayerState.Normal;
             }
-            _currentState = LayerState.Normal;
         }
     }
 }

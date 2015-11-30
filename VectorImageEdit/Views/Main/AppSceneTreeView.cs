@@ -11,10 +11,10 @@ namespace VectorImageEdit.Views.Main
             lBoxActiveLayers.SelectedIndexChanged += listener.ActionPerformed;
         }
 
-         /// <summary>
-         /// Gets or sets the currently selected item in the scene tree.
-         /// For multiple items selected it will return only one of them.
-         /// </summary>
+        /// <summary>
+        /// Gets or sets the currently selected item in the scene tree.
+        /// For multiple items selected it will return only one of them.
+        /// </summary>
         public string SelectedItem
         {
             get { return (lBoxActiveLayers.SelectedItem ?? "").ToString(); }
@@ -30,9 +30,9 @@ namespace VectorImageEdit.Views.Main
             }
         }
 
-         /// <summary>
-         /// Gets or sets the currently selected items in the scene tree.
-         /// </summary>
+        /// <summary>
+        /// Gets or sets the currently selected items in the scene tree.
+        /// </summary>
         public IEnumerable SelectedItems
         {
             get { return lBoxActiveLayers.SelectedItems; }
@@ -59,10 +59,10 @@ namespace VectorImageEdit.Views.Main
             }
         }
 
-         /// <summary>
-         /// Gets or sets the items displayed in the scene tree.
+        /// <summary>
+        /// Gets or sets the items displayed in the scene tree.
         /// Note: This will clear the items not present in the given collection! 
-         /// </summary>
+        /// </summary>
         public IEnumerable Items
         {
             get { return lBoxActiveLayers.Items; }

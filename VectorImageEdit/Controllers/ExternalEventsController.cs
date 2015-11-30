@@ -11,9 +11,9 @@ using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
-    ///// <summary>
+    /// <summary>
     /// Handles events realating to external data
-    ///// </summary>
+    /// </summary>
     class ExternalEventsController
     {
         private readonly AppWindow _appView;

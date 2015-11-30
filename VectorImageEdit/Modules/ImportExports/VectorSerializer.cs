@@ -9,7 +9,7 @@ namespace VectorImageEdit.Modules.ImportExports
          /// <summary>
          /// Deserializes the workspace layers from a given file
          /// </summary>
-         ///// <param name="fileName"> Input file </param>
+         // <param name="fileName"> Input file </param>
         public IList Deserialize(string fileName)
         {
             IList layers;

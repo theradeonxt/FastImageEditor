@@ -6,12 +6,12 @@ using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Controllers
 {
-    ///// <summary> 
+    /// <summary> 
     /// Main Controller for the application
     /// 
     /// - manages the controllers for all application modules
     /// 
-    ///// </summary>
+    /// </summary>
     class AppController
     {
         private readonly AppWindow _appView;

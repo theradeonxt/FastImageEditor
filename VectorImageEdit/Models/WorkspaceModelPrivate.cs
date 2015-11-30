@@ -8,14 +8,6 @@ namespace VectorImageEdit.Models
 {
     partial class WorkspaceModel
     {
-        private enum LayerState
-        {
-            Moving,     // specifies if an object will be moving
-            Resizing,   // specifies if an object will be resizing
-            Normal      // no special considerations
-        };
-
-        private LayerState _currentState;
         private Layer _selectedLayer;      // the single object selected with focus
         private readonly Layer _noLayer;   // marker for an unspecified layer
         private Point _pointOffset;        // the mouse offset when used to drag objects

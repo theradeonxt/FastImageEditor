@@ -7,14 +7,14 @@ using VectorImageEdit.Modules.LayerManagement;
 
 namespace VectorImageEdit.Models
 {
-    ///// <summary>
+    /// <summary>
     /// Main Model for the aplication
     /// 
     /// - manages the models for all application modules
     /// - contains application settings
     /// 
     /// Implements the lazy singleton pattern
-    ///// </summary>
+    /// </summary>
     partial class AppModel
     {
         public WorkspaceModel WorkspaceModel     { get; private set; }

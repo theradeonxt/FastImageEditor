@@ -5,7 +5,7 @@ using VectorImageEdit.Modules.Interfaces;
 namespace VectorImageEdit.Modules.GraphicsCompositing
 {
     /// <summary>
-    // Encapsulates parameters for an optimized frame update
+    /// Encapsulates parameters for an optimized frame update
     /// 
     /// This works by updating the invalidated region of the frame
     /// </summary>

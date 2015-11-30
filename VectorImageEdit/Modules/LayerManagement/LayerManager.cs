@@ -19,13 +19,13 @@ namespace VectorImageEdit.Modules.LayerManagement
 
     // TODO: Separate LayerManager and GraphicsManager
 
-    ///// <summary>
+    /// <summary>
     /// LayerManager Module
     ///
     /// - add & remove objects
     /// - object query functions
     /// 
-    ///// </summary>
+    /// </summary>
     public class LayerManager : GraphicsManager, ILayerHandler
     {
         private readonly SortedContainer<Layer> _activeLayers;

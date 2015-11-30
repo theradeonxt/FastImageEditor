@@ -3,7 +3,7 @@ using Microsoft.VisualBasic.Devices;
 
 namespace VectorImageEdit.Modules
 {
-   //  TODO: Can this be moved to a Model?
+    // TODO: Can this be moved to a Model?
     static class BackgroundStatitics
     {
         static BackgroundStatitics()
