@@ -1,6 +1,6 @@
 # FastImageEditor
 
-Basically a light-weight Image Processor App... for Windows Forms
+Basically a light-weight Image Processor App... for ~~Windows Forms~~ (the goal is to not be tied to a particular framework)
 
 This aims to be a high-performance Imaging app put to daily use for image-related tasks.
 Written in C# and linked against custom-tuned C++ libraries.
