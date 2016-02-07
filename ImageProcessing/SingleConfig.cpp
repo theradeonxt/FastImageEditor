@@ -14,10 +14,10 @@
 
 #ifdef FORCE_REFERENCE_IMPL
 #define IS_FORCED_REFERENCE 1
-#define IMPL_LEVEL None
+#define IMPL_LEVEL SIMDLevel::None
 #else 
 #define IS_FORCED_REFERENCE 0
-#define IMPL_LEVEL SSE2
+#define IMPL_LEVEL SIMDLevel::SSE2
 #endif
 
 namespace Config
@@ -73,7 +73,11 @@ namespace Config
 
     int32_t SingleConfig::queryAvailableImplementation(SIMDLevel level) const
     {
-        return std::find(m_availableImpls.begin(), m_availableImpls.end(), level)
-            != m_availableImpls.end();
+        if (find(m_availableImpls.begin(), m_availableImpls.end(), level)
+            != m_availableImpls.end())
+        {
+            return OperationSuccess;
+        }
+        return OperationFailed;
     }
 }

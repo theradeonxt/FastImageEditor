@@ -32,6 +32,8 @@ namespace ImageProcessingTests
     public ref class LibraryInterfaceTests
     {
     public:
+        // Tests changing Multicore implementation between two states:
+        // enabled & disabled
         [TestMethod]
         void MulticoreStatusChange()
         {
@@ -39,6 +41,8 @@ namespace ImageProcessingTests
             for (auto& module : moduleList)
             {
                 auto statusMT = GetMultiThreadingStatus(module.c_str());
+                Assert::IsTrue(statusMT != StatusCode::OperationFailed);
+
                 auto newStatusMT = !statusMT;
 
                 auto result = SetMultiThreadingStatus(module.c_str(), newStatusMT);
@@ -47,9 +51,12 @@ namespace ImageProcessingTests
 
                 auto statusMTAfter = GetMultiThreadingStatus(module.c_str());
                 Assert::IsTrue(statusMT != statusMTAfter);
+                Assert::IsTrue(statusMTAfter != StatusCode::OperationFailed);
             }
         }
 
+        // Tests for availability of Reference and SSE2 implementations
+        // These are considered the baseline for every module
         [TestMethod]
         void BaselineImplementationQuery()
         {
@@ -57,12 +64,46 @@ namespace ImageProcessingTests
             for (auto& module : moduleList)
             {
                 auto status = QueryAvailableImplementation(module.c_str(), SIMDLevel::None);
-                Assert::IsTrue(status != StatusCode::OperationFailed);
-                Assert::IsTrue(status == 1);
+                Assert::IsTrue(status == OperationSuccess);
 
                 status = QueryAvailableImplementation(module.c_str(), SIMDLevel::SSE2);
-                Assert::IsTrue(status != StatusCode::OperationFailed);
-                Assert::IsTrue(status == 1);
+                Assert::IsTrue(status == OperationSuccess);
+            }
+        }
+
+        // Tests changing the optimization level of modules 
+        // This cycles the different levels a module has and changes them, then reverts back
+        [TestMethod]
+        void SIMDLevelChange()
+        {
+            auto queryLevels = { None, SSE2, SSSE3, AVX, FMA3 };
+
+            auto& moduleList = TestSetup::GetModuleList();
+            for (auto& module : moduleList)
+            {
+                // get all available implementation levels for this module
+                std::vector<SIMDLevel> levelsList;
+                for (auto level : queryLevels)
+                {
+                    auto status = QueryAvailableImplementation(module.c_str(), level);
+                    if (status == OperationSuccess)
+                    {
+                        levelsList.push_back(level);
+                    }
+                }
+
+                // try to cycle through each level
+                for (auto level : levelsList)
+                {
+                    if (level != None)
+                    {
+                        auto statusToNone = SetImplementationLevel(module.c_str(), None);
+                        Assert::IsTrue(statusToNone == OperationSuccess);
+
+                        auto statusRevert = SetImplementationLevel(module.c_str(), level);
+                        Assert::IsTrue(statusRevert == OperationSuccess);
+                    }
+                }
             }
         }
     };

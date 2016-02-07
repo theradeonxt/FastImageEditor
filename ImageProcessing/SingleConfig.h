@@ -19,8 +19,11 @@ namespace Config
     class SingleConfig
     {
         friend class GlobalConfig;
+        friend class GlobalConfigPIMPL;
+
     public:
         SingleConfig(const std::string& name);
+        ~SingleConfig(){}
 
         const std::string& getName()              const;
         SIMDLevel          getSIMDLevel()         const;

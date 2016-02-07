@@ -272,6 +272,7 @@ if "$(ConfigurationName)" == "Release" (
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GlobalConfigPIMPL.cpp" />
     <ClCompile Include="ImageProcessing_AVX.cpp">
       <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</OpenMPSupport>
       <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</OpenMPSupport>
@@ -284,6 +285,7 @@ if "$(ConfigurationName)" == "Release" (
       <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NoListing</AssemblerOutput>
     </ClCompile>
     <ClCompile Include="SingleConfig.cpp" />
+    <ClInclude Include="GlobalConfigPIMPL.h" />
     <ClInclude Include="ImageProcessing_AVX.h" />
     <ClCompile Include="ImageProcessing_FMA3.cpp">
       <FloatingPointModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Fast</FloatingPointModel>

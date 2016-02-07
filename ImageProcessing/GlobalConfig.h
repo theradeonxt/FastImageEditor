@@ -6,13 +6,12 @@
 
 #include <string>
 #include <cstdint>
-#include <map>
 
 // Forward declarations
 enum SIMDLevel;
-
 namespace Config {
     class SingleConfig;
+    class GlobalConfigPIMPL;
 }
 
 namespace Config
@@ -25,27 +24,18 @@ namespace Config
     {
     public:
         GlobalConfig();
+        ~GlobalConfig();
 
         bool getSingleConfig(std::string configName, SingleConfig*& config) const;
+        int32_t queryCPUFeature(SIMDLevel level);
 
     private:
-        void createDefaultConfig    (std::string name, std::initializer_list<SIMDLevel> availableImpls);
-        void setBestImplementation  (READWRITE(SingleConfig*) config);
-        bool queryCPUFeature        (SIMDLevel level);
-        void identifyCPUFeatures    ();
-
         // Make instances non-copyable
         GlobalConfig(const GlobalConfig& other);
         GlobalConfig& operator=(const GlobalConfig& other);
 
-        // The dictionary of single config elements
-        std::map<std::string, SingleConfig*> m_ConfigList;
-
-        // Cpu details
-        int32_t m_CPUCoreCount;
-        int32_t m_CPUFlags[CPU_FLAGS];
-
-        typedef std::map<std::string, SingleConfig*>::const_iterator cfgIterator_t;
+        // Private class implementation
+        GlobalConfigPIMPL *pimpl;
     };
 
     //
@@ -66,5 +56,8 @@ extern int32_t GetMultiThreadingStatus(READONLY(char*) moduleName);
 
 IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
 extern int32_t QueryAvailableImplementation(READONLY(char*) moduleName, int32_t level);
+
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
+extern int32_t SetImplementationLevel(READONLY(char*) moduleName, int32_t level);
 
 #endif /* IMAGEPROCESSING_GLOBALCONFIG_H */
