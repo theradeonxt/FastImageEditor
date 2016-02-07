@@ -26,6 +26,7 @@ namespace Config
             createDefaultConfig("Blend24bgr_24bgr",         { None, SSE2 });
             createDefaultConfig("OpacityAdjust_32bgra",     { None, SSE2 });
             createDefaultConfig("ConvFilter_32bgra",        { None, SSE2 });
+            createDefaultConfig("Convert_32bgra_24hsv",     { None, SSE2 });
         }
         catch (...)
         {
@@ -135,11 +136,11 @@ int32_t SetMultiThreadingStatus(READONLY(char*) moduleName, int32_t status)
     if (Config::g_ModulesConfig.getSingleConfig(module, config))
     {
         config->setMultiThreadStatus(status);
-        return true;
+        return OperationSuccess;
     }
 
     TRACE_MESSAGE(L"Module does not exist.");
-    return false;
+    return OperationFailed;
 }
 
 IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
@@ -154,7 +155,7 @@ int32_t GetMultiThreadingStatus(READONLY(char*) moduleName)
     }
 
     TRACE_MESSAGE(L"Module does not exist.");
-    return false;
+    return OperationFailed;
 }
 
 IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
@@ -169,5 +170,5 @@ int32_t QueryAvailableImplementation(READONLY(char*) moduleName, int32_t level)
     }
 
     TRACE_MESSAGE(L"Module does not exist.");
-    return false;
+    return OperationFailed;
 }

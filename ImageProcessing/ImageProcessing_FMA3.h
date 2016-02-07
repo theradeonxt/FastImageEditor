@@ -18,6 +18,9 @@
 #define ConvFilter_32bgra_FMA3(...) NotAvailable
 #define ConvFilter_32bgra_FMA3_MT(...) NotAvailable
 
+#define Convert_32bgra_24hsv_FMA3(...) NotAvailable
+#define Convert_32bgra_24hsv_FMA3_MT(...) NotAvailable
+
 IMAGEPROCESSING_CDECL int32_t
 AlphaBlend32bgra_32bgra_FMA3(READONLY (uint8_t*) source,
                              READONLY (uint8_t*) target,

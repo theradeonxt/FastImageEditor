@@ -70,6 +70,71 @@ Blend24bgr_24bgr_ref_MT(READONLY (uint8_t*) source,
 // 32bpp Image Operations
 // ====================================================
 
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+Convert_32bgra_24hsv_ref(READONLY(uint8_t*)  source,
+                         READWRITE(uint8_t*) destinationHueChannel,
+                         READWRITE(uint8_t*) destinationSaturationChannel,
+                         READWRITE(uint8_t*) destinationValueChannel,
+                         uint32_t            sizeBytes)
+{
+    // Note: the planar channels are 1/4th of the full BGRA image buffer
+    int32_t nSizeBytes = int32_t(sizeBytes) / 4;
+
+    REGISTER_TIMED_BLOCK(Convert_32bgra_24hsv);
+    for (int p = 0; p < nSizeBytes; p++)
+    {
+        BEGIN_TIMED_BLOCK();
+
+        READONLY(uint8_t*)bgra = const_cast<uint8_t*>(source + 4 * p);
+        RgbColor rgbCol;
+        rgbCol.r = bgra[2];
+        rgbCol.g = bgra[1];
+        rgbCol.b = bgra[0];
+        HsvColor hsvCol = RgbToHsv(rgbCol);
+        *(destinationHueChannel + p) = hsvCol.h;
+        *(destinationSaturationChannel + p) = hsvCol.s;
+        *(destinationValueChannel + p) = hsvCol.v;
+
+        END_TIMED_BLOCK();
+    }
+    PROFILE_TRACE_BLOCK(L" - Cycles/Pixel: ");
+
+    return OperationSuccess;
+}
+
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+Convert_32bgra_24hsv_ref_MT(READONLY(uint8_t*)  source,
+                            READWRITE(uint8_t*) destinationHueChannel,
+                            READWRITE(uint8_t*) destinationSaturationChannel,
+                            READWRITE(uint8_t*) destinationValueChannel,
+                            uint32_t            sizeBytes)
+{
+    // Note: the planar channels are 1/4th of the full BGRA image buffer
+    int32_t nSizeBytes = int32_t(sizeBytes) / 4;
+
+    REGISTER_TIMED_BLOCK(Convert_32bgra_24hsv_ref_MT);
+#pragma omp parallel for
+    for (int p = 0; p < nSizeBytes; p++)
+    {
+        BEGIN_TIMED_BLOCK();
+
+        READONLY(uint8_t*)bgra = const_cast<uint8_t*>(source + 4 * p);
+        RgbColor rgbCol;
+        rgbCol.r = bgra[2];
+        rgbCol.g = bgra[1];
+        rgbCol.b = bgra[0];
+        HsvColor hsvCol = RgbToHsv(rgbCol);
+        *(destinationHueChannel + p) = hsvCol.h;
+        *(destinationSaturationChannel + p) = hsvCol.s;
+        *(destinationValueChannel + p) = hsvCol.v;
+
+        END_TIMED_BLOCK();
+    }
+    PROFILE_TRACE_BLOCK(L" - Cycles/Pixel: ");
+
+    return OperationSuccess;
+}
+
 IMAGEPROCESSING_CDECL int32_t
 OpacityAdjust_32bgra_ref(READONLY (uint8_t*) source,
                          READWRITE(uint8_t*) destination,

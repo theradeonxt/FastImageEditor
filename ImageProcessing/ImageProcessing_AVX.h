@@ -19,6 +19,9 @@
 #define OpacityAdjust_32bgra_AVX(...) NotAvailable
 #define OpacityAdjust_32bgra_AVX_MT(...) NotAvailable
 
+#define Convert_32bgra_24hsv_AVX(...) NotAvailable
+#define Convert_32bgra_24hsv_AVX_MT(...) NotAvailable
+
 IMAGEPROCESSING_CDECL int32_t
 AlphaBlend32bgra_32bgra_AVX(READONLY(uint8_t*)  source,
                             READONLY (uint8_t*) target,

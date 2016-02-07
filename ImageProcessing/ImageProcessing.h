@@ -29,6 +29,13 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
 // ====================================================
 
 IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+Convert_32bgra_24hsv(READONLY (uint8_t*) source,
+                     READWRITE(uint8_t*) destinationHueChannel,
+                     READWRITE(uint8_t*) destinationSaturationChannel,
+                     READWRITE(uint8_t*) destinationValueChannel,
+                     uint32_t            sizeBytes);
+
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
 OpacityAdjust_32bgra(READONLY (uint8_t*) source,
                      READWRITE(uint8_t*) destination,
                      uint32_t            sizeBytes,

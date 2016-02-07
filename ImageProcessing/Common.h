@@ -32,7 +32,7 @@
 
 #endif /* _MSC_VER || __GNUC__ */
 
-/* Oter environments get the fallback version */
+/* Other environments get the fallback version */
 #ifndef IMAGEPROCESSING_API
 #define IMAGEPROCESSING_API
 #endif
@@ -42,13 +42,13 @@
 //
 enum StatusCode
 {
-    OutOfMemory = -1,       /* Failure because the operation required additional
-                               memory which could not be allocated */
-    OperationSuccess = 0,   /* Everything is ok */
-    OperationFailed = 1,    /* Generic failure */
-    NotAvailable            /* Module was explicitly invoked with an invalid config
+    OperationFailed = -64,  /* Generic failure */
+    NotAvailable,           /* Module was explicitly invoked with an invalid config
                                Possible reasons: 1. No implementation available.
                                                  2. No hardware support available. */
+    OutOfMemory,            /* Failure because the operation required additional
+                               memory which could not be allocated */
+    OperationSuccess = 0    /* Everything is ok */
 };
 
 //
@@ -73,12 +73,12 @@ enum SIMDLevel
 
 static const int SIMD_SIZE       = 16;  /* Default SSE chunk size (bytes processed in one step) */
 static const int SIMD_SIZE_AVX   = 32;  /* Default AVX chunk size (bytes processed in one step) */
-static const int CPU_FLAGS = 5;         /* How many CPU features we are interested to know */
+static const int CPU_FLAGS       = 5;   /* How many CPU features we are interested to know */
 
 //
 // Enable/Disable reference implementation (Scalar)
 //
-//#define FORCE_REFERENCE_IMPL
+#define FORCE_REFERENCE_IMPL
 
 //
 // Parallelize computations

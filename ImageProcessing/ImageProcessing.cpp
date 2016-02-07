@@ -57,6 +57,28 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
 // ====================================================
 
 IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+Convert_32bgra_24hsv(READONLY (uint8_t*) source,
+                     READWRITE(uint8_t*) destinationHueChannel,
+                     READWRITE(uint8_t*) destinationSaturationChannel,
+                     READWRITE(uint8_t*) destinationValueChannel,
+                     uint32_t            sizeBytes)
+{
+    CPU_DISPATCH_LOGIC(Convert_32bgra_24hsv, source, destinationHueChannel, destinationSaturationChannel, destinationValueChannel, sizeBytes);
+
+    if (READ_DISPATCH_RESULT() == OperationSuccess)
+    {
+        // Handle non-multiple of SIMD size images using reference implementation
+        if (uint32_t mod = sizeBytes % SIMD_SIZE) // if this is not 0
+        {
+            return REFERENCE_IMPL(Convert_32bgra_24hsv,
+                source + (sizeBytes - mod), destinationHueChannel + (sizeBytes - mod), destinationSaturationChannel + (sizeBytes - mod), destinationValueChannel + (sizeBytes - mod), mod);
+        }
+        return OperationSuccess;
+    }
+    return READ_DISPATCH_RESULT();
+}
+
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
 OpacityAdjust_32bgra(READONLY (uint8_t*) source,
                      READWRITE(uint8_t*) destination,
                      uint32_t            sizeBytes,

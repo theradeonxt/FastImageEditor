@@ -187,6 +187,143 @@ Blend24bgr_24bgr_SSE2_MT(READONLY (uint8_t*) source,
 // 32bpp Image Operations
 // ====================================================
 
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+Convert_32bgra_24hsv_SSE2(READONLY(uint8_t*)  source,
+                          READWRITE(uint8_t*) destinationHueChannel,
+                          READWRITE(uint8_t*) destinationSaturationChannel,
+                          READWRITE(uint8_t*) destinationValueChannel,
+                          uint32_t            sizeBytes)
+{
+    __m128i xmmMaskB = _mm_set1_epi32(0x000000ff);
+    __m128i xmmMaskG = _mm_set1_epi32(0x0000ff00);
+    __m128i xmmMaskR = _mm_set1_epi32(0x00ff0000);
+    __m128 xmmZeroconst = _mm_set1_ps(0.0f);
+    __m128 xmm255const = _mm_set1_ps(255.0f);
+    __m128 xmm43const = _mm_set1_ps(43.0f);
+    __m128 xmm171const = _mm_set1_ps(171.0f);
+    __m128 xmm85const = _mm_set1_ps(85.0f);
+
+    int32_t nSizeBytes = int32_t(sizeBytes);
+
+    int ih = 0, is = 0, iv = 0;
+    for (int32_t index = 0; index <= nSizeBytes - SIMD_SIZE; index += SIMD_SIZE, ih += 4, is += 4, iv += 4)
+    {
+        // read from input data, format: BGRA BGRA BGRA BGRA
+        __m128i xmmBGRA = _mm_loadu_si128(reinterpret_cast<const __m128i*>(source + index));
+
+        // extract the individual channels and expand them to floating point
+        // 000B 000B 000B 000B (FP32)
+        __m128 xmmBBBB = _mm_cvtepi32_ps(_mm_and_si128(xmmBGRA, xmmMaskB));
+        __m128 xmmGGGG = _mm_cvtepi32_ps(_mm_srli_epi32(_mm_and_si128(xmmBGRA, xmmMaskG), 8));
+        __m128 xmmRRRR = _mm_cvtepi32_ps(_mm_srli_epi32(_mm_and_si128(xmmBGRA, xmmMaskR), 16));
+
+        // 000m 000m 000m 000m (FP32) (m = min(r, g, b))
+        // 000M 000M 000M 000M (FP32) (M = max(r, g, b))
+        __m128 xmmRgbMin = _mm_min_ps(xmmBBBB, _mm_min_ps(xmmGGGG, xmmRRRR));
+        __m128 xmmRgbMax = _mm_max_ps(xmmBBBB, _mm_max_ps(xmmGGGG, xmmRRRR));
+
+        // value component
+        __m128 xmmVVVV = xmmRgbMax;
+
+        // difference rgbMax - rgbMin
+        __m128 xmmDiff = _mm_sub_ps(xmmRgbMax, xmmRgbMin);
+        // precompute 1.0f / difference to save divisions later
+        __m128 xmmInvDiff = _mm_rcp_ps(xmmDiff);
+
+        // saturation component
+        __m128 xmmSSSS = _mm_mul_ps(xmmDiff, xmm255const);
+        xmmSSSS = _mm_mul_ps(xmmSSSS, xmmInvDiff);
+
+        __m128 xmmCmpVZero = _mm_cmpeq_ps(xmmVVVV, xmmZeroconst);  // check if v == 0
+        __m128 xmmCmpSZero = _mm_cmpeq_ps(xmmSSSS, xmmZeroconst);  // check if s == 0
+        __m128 xmmCmpMaxR = _mm_cmpeq_ps(xmmRgbMax, xmmRRRR);      // check if rgbMax == r (CASE 1)
+        __m128 xmmCmpMaxG = _mm_cmpeq_ps(xmmRgbMax, xmmGGGG);      // check if rgbMax == g (CASE 2)
+        __m128 xmmElse = _mm_or_ps(xmmCmpMaxR, xmmCmpMaxG);        // check if (rgbMax != r && rgbMax != g) (CASE 3)
+
+        // calculate hue component in CASE 1
+        __m128 xmmHTemp1 = _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmGGGG, xmmBBBB)), xmmInvDiff);
+        xmmHTemp1 = _mm_and_ps(xmmHTemp1, xmmCmpMaxR);
+        // calculate hue component in CASE 2
+        __m128 xmmHTemp2 = _mm_add_ps(xmm85const, _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmBBBB, xmmRRRR)), xmmInvDiff));
+        xmmHTemp2 = _mm_and_ps(xmmHTemp2, xmmCmpMaxG);
+        // calculate hue component in CASE 3
+        __m128 xmmHTemp3 = _mm_add_ps(xmm171const, _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmRRRR, xmmGGGG)), xmmInvDiff));
+        xmmHTemp3 = _mm_andnot_ps(xmmElse, xmmHTemp3);
+
+        // the final hue value is mask-selected from the temporary ones
+        // based on the result of comparisons
+        __m128 xmmHHHH = _mm_or_ps(xmmHTemp1, _mm_or_ps(xmmHTemp2, xmmHTemp3));
+        xmmHHHH = _mm_andnot_ps(xmmHHHH, xmmCmpSZero);
+        xmmHHHH = _mm_andnot_ps(xmmHHHH, xmmCmpVZero);
+        xmmSSSS = _mm_andnot_ps(xmmSSSS, xmmCmpVZero);
+
+        // cast the values to integer domain
+        __m128i xmmHHHHi = _mm_cvtps_epi32(xmmHHHH);
+
+        _mm_store_ss(reinterpret_cast<float*>(destinationHueChannel + ih), xmmHHHH);
+        _mm_store_ss(reinterpret_cast<float*>(destinationSaturationChannel + is), xmmSSSS);
+        _mm_store_ss(reinterpret_cast<float*>(destinationValueChannel + iv), xmmVVVV);
+    }
+
+    return OperationSuccess;
+}
+
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API int32_t
+Convert_32bgra_24hsv_SSE2_MT(READONLY(uint8_t*)  source,
+                             READWRITE(uint8_t*) destinationHueChannel,
+                             READWRITE(uint8_t*) destinationSaturationChannel,
+                             READWRITE(uint8_t*) destinationValueChannel,
+                             uint32_t            sizeBytes)
+{
+    __m128i xmmMaskB = _mm_set1_epi32(0x000000ff);
+    __m128i xmmMaskG = _mm_set1_epi32(0x0000ff00);
+    __m128i xmmMaskR = _mm_set1_epi32(0x00ff0000);
+    __m128 xmmZeroconst = _mm_set1_ps(0.0f);
+    __m128 xmm255const = _mm_set1_ps(255.0f);
+    __m128 xmm43const = _mm_set1_ps(43.0f);
+    __m128 xmm171const = _mm_set1_ps(171.0f);
+    __m128 xmm85const = _mm_set1_ps(85.0f);
+
+    int32_t nSizeBytes = int32_t(sizeBytes);
+
+#pragma omp parallel for
+    for (int32_t index = 0; index <= nSizeBytes - SIMD_SIZE; index += SIMD_SIZE)
+    {
+        __m128i xmmBGRA = _mm_loadu_si128(reinterpret_cast<const __m128i*>(source + index));
+        __m128 xmmBBBB = _mm_cvtepi32_ps(_mm_and_si128(xmmBGRA, xmmMaskB));
+        __m128 xmmGGGG = _mm_cvtepi32_ps(_mm_srli_epi32(_mm_and_si128(xmmBGRA, xmmMaskG), 8));
+        __m128 xmmRRRR = _mm_cvtepi32_ps(_mm_srli_epi32(_mm_and_si128(xmmBGRA, xmmMaskR), 16));
+        __m128 xmmRgbMin = _mm_min_ps(xmmBBBB, _mm_min_ps(xmmGGGG, xmmRRRR));
+        __m128 xmmRgbMax = _mm_max_ps(xmmBBBB, _mm_max_ps(xmmGGGG, xmmRRRR));
+        __m128 xmmVVVV = xmmRgbMax;
+        __m128 xmmDiff = _mm_sub_ps(xmmRgbMax, xmmRgbMin);
+        __m128 xmmInvDiff = _mm_rcp_ps(xmmDiff);
+        __m128 xmmSSSS = _mm_mul_ps(xmmDiff, xmm255const);
+        xmmSSSS = _mm_mul_ps(xmmSSSS, xmmInvDiff);
+        __m128 xmmCmpVZero = _mm_cmpeq_ps(xmmVVVV, xmmZeroconst);
+        __m128 xmmCmpSZero = _mm_cmpeq_ps(xmmSSSS, xmmZeroconst); 
+        __m128 xmmCmpMaxR = _mm_cmpeq_ps(xmmRgbMax, xmmRRRR);      
+        __m128 xmmCmpMaxG = _mm_cmpeq_ps(xmmRgbMax, xmmGGGG);      
+        __m128 xmmElse = _mm_or_ps(xmmCmpMaxR, xmmCmpMaxG);       
+        __m128 xmmHTemp1 = _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmGGGG, xmmBBBB)), xmmInvDiff);
+        xmmHTemp1 = _mm_and_ps(xmmHTemp1, xmmCmpMaxR);
+        __m128 xmmHTemp2 = _mm_add_ps(xmm85const, _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmBBBB, xmmRRRR)), xmmInvDiff));
+        xmmHTemp2 = _mm_and_ps(xmmHTemp2, xmmCmpMaxG);
+        __m128 xmmHTemp3 = _mm_add_ps(xmm171const, _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmRRRR, xmmGGGG)), xmmInvDiff));
+        xmmHTemp3 = _mm_andnot_ps(xmmElse, xmmHTemp3);
+        __m128 xmmHHHH = _mm_or_ps(xmmHTemp1, _mm_or_ps(xmmHTemp2, xmmHTemp3));
+        xmmHHHH = _mm_andnot_ps(xmmHHHH, xmmCmpSZero);
+        xmmHHHH = _mm_andnot_ps(xmmHHHH, xmmCmpVZero);
+        xmmSSSS = _mm_andnot_ps(xmmSSSS, xmmCmpVZero);
+        __m128i xmmHHHHi = _mm_cvtps_epi32(xmmHHHH);
+        _mm_store_ss(reinterpret_cast<float*>(destinationHueChannel + index / 4), xmmHHHH);
+        _mm_store_ss(reinterpret_cast<float*>(destinationSaturationChannel + index / 4), xmmSSSS);
+        _mm_store_ss(reinterpret_cast<float*>(destinationValueChannel + index / 4), xmmVVVV);
+    }
+
+    return OperationSuccess;
+}
+
 IMAGEPROCESSING_CDECL int32_t
 OpacityAdjust_32bgra_SSE2(READONLY (uint8_t*) source,
                           READWRITE(uint8_t*) destination,

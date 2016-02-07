@@ -111,16 +111,20 @@
       <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if "$(ConfigurationName)" == "Debug" (
+      <Command>xcopy "$(TargetDir)*.dll" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+
+if "$(ConfigurationName)" == "Debug" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y )
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y ) 
+
 if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y 
 
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
@@ -150,16 +154,20 @@ if "$(ConfigurationName)" == "Release" (
       <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if "$(ConfigurationName)" == "Debug" (
+      <Command>xcopy "$(TargetDir)*.dll" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+
+if "$(ConfigurationName)" == "Debug" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y )
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y ) 
+
 if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y 
 
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
@@ -192,16 +200,20 @@ if "$(ConfigurationName)" == "Release" (
       <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if "$(ConfigurationName)" == "Debug" (
+      <Command>xcopy "$(TargetDir)*.dll" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+
+if "$(ConfigurationName)" == "Debug" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y )
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y ) 
+
 if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y 
 
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
@@ -238,16 +250,20 @@ if "$(ConfigurationName)" == "Release" (
       <AdditionalDependencies>libcpuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if "$(ConfigurationName)" == "Debug" (
+      <Command>xcopy "$(TargetDir)*.dll" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+xcopy "$(TargetDir)*.pdb" "$(SolutionDir)Tests\$(Platform)\$(Configuration)" /Y
+
+if "$(ConfigurationName)" == "Debug" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Debug" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y )
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Debug" /Y ) 
+
 if "$(ConfigurationName)" == "Release" (
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\bin\Release" /Y
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
-  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y
+  xcopy "$(TargetDir)*.pdb" "$(SolutionDir)VectorImageEdit\bin\Release" /Y 
 
   xcopy "$(TargetDir)*.dll" "$(SolutionDir)ImageInterpolation\obj\Release" /Y
   xcopy "$(TargetDir)*.pdb" "$(SolutionDir)ImageInterpolation\obj\Release" /Y

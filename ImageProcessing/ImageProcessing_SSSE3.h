@@ -22,6 +22,9 @@
 #define ConvFilter_32bgra_SSSE3(...) NotAvailable
 #define ConvFilter_32bgra_SSSE3_MT(...) NotAvailable
 
+#define Convert_32bgra_24hsv_SSSE3(...) NotAvailable
+#define Convert_32bgra_24hsv_SSSE3_MT(...) NotAvailable
+
 IMAGEPROCESSING_CDECL int32_t
 AlphaBlend32bgra_32bgra_SSSE3(READONLY (uint8_t*) source,
                               READONLY (uint8_t*) target,
