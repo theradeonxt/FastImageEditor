@@ -1,9 +1,8 @@
 
 #include "stdafx.h"
-#include "..\ImageProcessing\GlobalConfig.h"
 
-#include <vector>
-#include <string>
+#include "GlobalConfig.h"
+#include "ConfigTestAdaptor.h"
 
 using namespace System;
 using namespace System::Text;
@@ -12,28 +11,13 @@ using namespace	Microsoft::VisualStudio::TestTools::UnitTesting;
 
 namespace ImageProcessingTests
 {
-    class TestSetup
-    {
-    public:
-        static std::vector<std::string> GetModuleList()
-        {
-            std::vector<std::string> moduleList = {
-                "Blend24bgr_24bgr",
-                "Convert_32bgra_24hsv",
-                "OpacityAdjust_32bgra",
-                "AlphaBlend32bgra_32bgra",
-                "ConvFilter_32bgra"
-            };
-            return moduleList;
-        }
-    };
-
     [TestClass]
     public ref class LibraryInterfaceTests
     {
     public:
-        // Tests changing Multicore implementation between two states:
-        // enabled & disabled
+        //
+        // Tests changing Multicore implementation between two states: enabled & disabled
+        //
         [TestMethod]
         void MulticoreStatusChange()
         {
@@ -47,7 +31,6 @@ namespace ImageProcessingTests
 
                 auto result = SetMultiThreadingStatus(module.c_str(), newStatusMT);
                 Assert::IsTrue(result == StatusCode::OperationSuccess);
-                Assert::IsTrue(result != StatusCode::OperationFailed);
 
                 auto statusMTAfter = GetMultiThreadingStatus(module.c_str());
                 Assert::IsTrue(statusMT != statusMTAfter);
@@ -55,8 +38,10 @@ namespace ImageProcessingTests
             }
         }
 
+        //
         // Tests for availability of Reference and SSE2 implementations
         // These are considered the baseline for every module
+        //
         [TestMethod]
         void BaselineImplementationQuery()
         {
@@ -76,33 +61,27 @@ namespace ImageProcessingTests
         [TestMethod]
         void SIMDLevelChange()
         {
-            auto queryLevels = { None, SSE2, SSSE3, AVX, FMA3 };
-
             auto& moduleList = TestSetup::GetModuleList();
             for (auto& module : moduleList)
             {
-                // get all available implementation levels for this module
-                std::vector<SIMDLevel> levelsList;
-                for (auto level : queryLevels)
-                {
-                    auto status = QueryAvailableImplementation(module.c_str(), level);
-                    if (status == OperationSuccess)
-                    {
-                        levelsList.push_back(level);
-                    }
-                }
+                auto& levelsList = TestSetup::GetAllAvailableLevels(module);
 
                 // try to cycle through each level
                 for (auto level : levelsList)
                 {
-                    if (level != None)
-                    {
-                        auto statusToNone = SetImplementationLevel(module.c_str(), None);
-                        Assert::IsTrue(statusToNone == OperationSuccess);
+                    // set to None and expect to get back None
+                    auto statusSet = SetImplementationLevel(module.c_str(), None);
+                    Assert::IsTrue(statusSet == OperationSuccess);
+                    auto statusGet = GetImplementationLevel(module.c_str());
+                    Assert::IsTrue(statusGet != OperationFailed);
+                    Assert::IsTrue(statusGet == None);
 
-                        auto statusRevert = SetImplementationLevel(module.c_str(), level);
-                        Assert::IsTrue(statusRevert == OperationSuccess);
-                    }
+                    // set to level and expect to get back level
+                    statusSet = SetImplementationLevel(module.c_str(), level);
+                    Assert::IsTrue(statusSet == OperationSuccess);
+                    statusGet = GetImplementationLevel(module.c_str());
+                    Assert::IsTrue(statusGet != OperationFailed);
+                    Assert::IsTrue(statusGet == level);
                 }
             }
         }

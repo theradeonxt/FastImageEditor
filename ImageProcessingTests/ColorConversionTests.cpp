@@ -1,9 +1,9 @@
 
 #include "stdafx.h"
-#include "..\ImageProcessing\ImageProcessing.h"
-#include "..\ImageProcessing\GlobalConfig.h"
 
-#include <stdlib.h>
+#include "ImageProcessing.h"
+#include "GlobalConfig.h"
+#include "ConfigTestAdaptor.h"
 
 using namespace System;
 using namespace System::Text;
@@ -12,66 +12,133 @@ using namespace	Microsoft::VisualStudio::TestTools::UnitTesting;
 
 namespace ImageProcessingTests
 {
-    private class TestSetup
-    {
-    public:
-        template<typename T>
-        static T* GetRandomBuffer(size_t size)
-        {
-            T* buffer = new T[size];
-            for (size_t i = 0; i < size; i++)
-            {
-                buffer[i] = rand() % 32767;
-            }
-            return buffer;
-        }
-        template<typename T>
-        static T* GetZeroedBuffer(size_t size)
-        {
-            T* buffer = new T[size];
-            for (size_t i = 0; i < size; i++)
-            {
-                buffer[i] = 0;
-            }
-            return buffer;
-        }
-    };
-
+    //
+    // Tests conversion of a 32bpp BGRA image into 3 HSV channels
+    //
     [TestClass]
-    public ref class ColorConversionTests
+    public ref class RGBToHSVTests
     {
-    public:
-        [TestMethod]
-        void RgbToHsv()
+    private:
+        static uint8_t *bgra;
+        static uint8_t *h, *s, *v, *hM, *sM, *vM;
+        static const int32_t imageBGRASize = 640 * 480;
+        static const int32_t imageBGRABufferSize = 640 * 480 * 4;
+        static const int32_t outputBufferSize = imageBGRASize;
+        static const char *THIS_MODULE = "Convert_32bgra_24hsv";
+
+        static void AssertHSVCompare()
         {
-            auto IMAGE_SIZE = 640 * 480;
+            Assert::IsTrue(memcmp(h, hM, imageBGRASize) == 0, "Hue channel different from reference");
+            Assert::IsTrue(memcmp(s, sM, imageBGRASize) == 0, "Saturation channel different from reference");
+            Assert::IsTrue(memcmp(v, vM, imageBGRASize) == 0, "Value channel different from reference");
+        }
 
-            auto bgra = TestSetup::GetRandomBuffer<uint8_t>(IMAGE_SIZE * 4);
-            auto h = TestSetup::GetZeroedBuffer<uint8_t>(IMAGE_SIZE);
-            auto s = TestSetup::GetZeroedBuffer<uint8_t>(IMAGE_SIZE);
-            auto v = TestSetup::GetZeroedBuffer<uint8_t>(IMAGE_SIZE);
-            auto hM = TestSetup::GetZeroedBuffer<uint8_t>(IMAGE_SIZE);
-            auto sM = TestSetup::GetZeroedBuffer<uint8_t>(IMAGE_SIZE);
-            auto vM = TestSetup::GetZeroedBuffer<uint8_t>(IMAGE_SIZE);
-            
-            SetMultiThreadingStatus("Convert_32bgra_24hsv", 0);
-            int resultScalar = Convert_32bgra_24hsv(bgra, h, s, v, IMAGE_SIZE);
-            Assert::IsTrue(resultScalar == StatusCode::OperationSuccess, "Convert_32bgra_24hsv did not return OperationSuccess");
-            
-            SetMultiThreadingStatus("Convert_32bgra_24hsv", 1);
-            auto resultMulticore = Convert_32bgra_24hsv(bgra, hM, sM, vM, IMAGE_SIZE);
-            Assert::IsTrue(resultMulticore == StatusCode::OperationSuccess, "Convert_32bgra_24hsv[Multicore] did not return OperationSuccess");
+    public:
+        [ClassInitialize]
+        static void InitializeImageData(TestContext^ context)
+        {
+            // seed PRNG to ensure reproducible results across runs
+            srand(42);
 
-            auto compareHue = memcmp(h, hM, IMAGE_SIZE);
-            auto compareSaturation = memcmp(s, sM, IMAGE_SIZE);
-            auto compareValue = memcmp(v, vM, IMAGE_SIZE);
+            bgra = (uint8_t*)_mm_malloc(imageBGRABufferSize, 16);
+            h = (uint8_t*)_mm_malloc(outputBufferSize, 16);
+            s = (uint8_t*)_mm_malloc(outputBufferSize, 16);
+            v = (uint8_t*)_mm_malloc(outputBufferSize, 16);
+            hM = (uint8_t*)_mm_malloc(outputBufferSize, 16);
+            sM = (uint8_t*)_mm_malloc(outputBufferSize, 16);
+            vM = (uint8_t*)_mm_malloc(outputBufferSize, 16);
 
-            Assert::IsTrue(compareHue == 0, "Hue channel diferrent for Multicore version");
-            Assert::IsTrue(compareSaturation == 0, "Saturation channel diferrent for Multicore version");
-            Assert::IsTrue(compareValue == 0, "Value channel diferrent for Multicore version");
+            for (auto i = 0; i < imageBGRABufferSize; i++) bgra[i] = rand() % 32767;
+        }
+        [ClassCleanup]
+        static void CleanupImageDataMemory()
+        {
+            _mm_free(bgra);
+            _mm_free(h);
+            _mm_free(s);
+            _mm_free(v);
+            _mm_free(hM);
+            _mm_free(sM);
+            _mm_free(vM);
+        }
+        [TestInitialize]
+        void ResetTestData()
+        {
+            std::fill(h, h + outputBufferSize, 42);
+            std::fill(s, s + outputBufferSize, 42);
+            std::fill(v, v + outputBufferSize, 42);
+            std::fill(hM, hM + outputBufferSize, 42);
+            std::fill(sM, sM + outputBufferSize, 42);
+            std::fill(vM, vM + outputBufferSize, 42);
+        }
 
-            delete[] bgra;
-            delete[] h, delete[] hM, delete[] s, delete[] sM, delete[] v, delete[] vM;
+        [TestMethod]
+        void RgbToHsvReference()
+        {
+            int result = StatusCode::OperationSuccess;
+
+            SetMultiThreadingStatus(THIS_MODULE, 0);
+            SetImplementationLevel(THIS_MODULE, SIMDLevel::None);
+            result = Convert_32bgra_24hsv(bgra, h, s, v, imageBGRABufferSize);
+            Assert::IsTrue(result == StatusCode::OperationSuccess);
+
+            SetMultiThreadingStatus(THIS_MODULE, 1);
+            result = Convert_32bgra_24hsv(bgra, hM, sM, vM, imageBGRABufferSize);
+            Assert::IsTrue(result == StatusCode::OperationSuccess);
+
+            AssertHSVCompare();
+        }
+
+        [TestMethod]
+        void RgbToHsvSIMD()
+        {
+            int result = StatusCode::OperationSuccess;
+
+            // Reference
+            SetMultiThreadingStatus(THIS_MODULE, 0);
+            SetImplementationLevel(THIS_MODULE, SIMDLevel::None);
+            result = Convert_32bgra_24hsv(bgra, h, s, v, imageBGRABufferSize);
+
+            for (auto level : TestSetup::GetAllAvailableLevels(THIS_MODULE))
+            {
+                // SIMD 
+                SetMultiThreadingStatus(THIS_MODULE, 0);
+                SetImplementationLevel(THIS_MODULE, level);
+                result = Convert_32bgra_24hsv(bgra, hM, sM, vM, imageBGRABufferSize);
+                Assert::IsTrue(result == StatusCode::OperationSuccess);
+
+                MEMCMP(h, hM, imageBGRASize);
+
+                AssertHSVCompare();
+
+                ResetTestData();
+            }
+        }
+
+        [TestMethod]
+        void RgbToHsvSIMDWithMultithreading()
+        {
+            int result = StatusCode::OperationSuccess;
+
+            // Reference
+            SetMultiThreadingStatus(THIS_MODULE, 0);
+            SetImplementationLevel(THIS_MODULE, SIMDLevel::None);
+            result = Convert_32bgra_24hsv(bgra, h, s, v, imageBGRABufferSize);
+
+            for (auto level : TestSetup::GetAllAvailableLevels(THIS_MODULE))
+            {
+                // SIMD with Multithreading
+                SetMultiThreadingStatus(THIS_MODULE, 1);
+                SetImplementationLevel(THIS_MODULE, level);
+                result = Convert_32bgra_24hsv(bgra, hM, sM, vM, imageBGRABufferSize);
+                Assert::IsTrue(result == StatusCode::OperationSuccess);
+
+                MEMCMP(h, hM, imageBGRASize);
+
+                AssertHSVCompare();
+
+                ResetTestData();
+            }
         }
     };
 }

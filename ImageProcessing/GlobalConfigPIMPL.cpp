@@ -55,7 +55,7 @@ namespace Config
 #ifndef FORCE_REFERENCE_IMPL
         for (SIMDLevel level : featureFlags)
         {
-            if (queryCPUFeature(level) && config->queryAvailableImplementation(level))
+            if (g_ModulesConfig.queryCPUFeature(level) && config->queryAvailableImplementation(level))
             {
                 config->setSIMDLevel(level);
                 break;

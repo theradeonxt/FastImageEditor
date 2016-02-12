@@ -75,9 +75,9 @@ namespace Config
         int32_t SetMultiThreadingStatus(READONLY(char*) moduleName, int32_t status)
     {
         std::string module = moduleName;
-        Config::SingleConfig* config;
+        SingleConfig* config;
 
-        if (Config::g_ModulesConfig.getSingleConfig(module, config))
+        if (g_ModulesConfig.getSingleConfig(module, config))
         {
             config->setMultiThreadStatus(status);
             return OperationSuccess;
@@ -91,9 +91,9 @@ namespace Config
         int32_t GetMultiThreadingStatus(READONLY(char*) moduleName)
     {
         std::string module = moduleName;
-        Config::SingleConfig* config;
+        SingleConfig* config;
 
-        if (Config::g_ModulesConfig.getSingleConfig(module, config))
+        if (g_ModulesConfig.getSingleConfig(module, config))
         {
             return config->isMultiThreadEnabled();
         }
@@ -143,5 +143,36 @@ namespace Config
 
         TRACE_MESSAGE(L"Module does not exist.");
         return OperationFailed;
+    }
+
+    IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
+        int32_t GetImplementationLevel(READONLY(char*) moduleName)
+    {
+        std::string module = moduleName;
+        SingleConfig* config;
+
+        if (g_ModulesConfig.getSingleConfig(module, config))
+        {
+            return config->getSIMDLevel();
+        }
+
+        TRACE_MESSAGE(L"Module does not exist.");
+        return OperationFailed;
+    }
+
+    IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
+         int32_t MEMCMP(READONLY(void*) src, READONLY(void*) tar, int32_t sizeBytes)
+    {
+        int32_t result = memcmp(src, tar, sizeBytes);
+
+        for (int i = 0; i < sizeBytes; i++)
+        {
+            if (((uint8_t*)src)[i] != ((uint8_t*)tar)[i])
+            {
+                int u = 42;
+            }
+        }
+
+        return result;
     }
 }

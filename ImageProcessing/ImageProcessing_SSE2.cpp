@@ -232,13 +232,13 @@ Convert_32bgra_24hsv_SSE2(READONLY(uint8_t*)  source,
 
         // saturation component
         __m128 xmmSSSS = _mm_mul_ps(xmmDiff, xmm255const);
-        xmmSSSS = _mm_mul_ps(xmmSSSS, xmmInvDiff);
+        xmmSSSS = _mm_mul_ps(xmmSSSS, _mm_rcp_ps(xmmVVVV));
 
         __m128 xmmCmpVZero = _mm_cmpeq_ps(xmmVVVV, xmmZeroconst);  // check if v == 0
         __m128 xmmCmpSZero = _mm_cmpeq_ps(xmmSSSS, xmmZeroconst);  // check if s == 0
         __m128 xmmCmpMaxR = _mm_cmpeq_ps(xmmRgbMax, xmmRRRR);      // check if rgbMax == r (CASE 1)
         __m128 xmmCmpMaxG = _mm_cmpeq_ps(xmmRgbMax, xmmGGGG);      // check if rgbMax == g (CASE 2)
-        __m128 xmmElse = _mm_or_ps(xmmCmpMaxR, xmmCmpMaxG);        // check if (rgbMax != r && rgbMax != g) (CASE 3)
+        __m128 xmmElse = _mm_cmpeq_ps(xmmRgbMax, xmmBBBB);         // check if rgbMax == b (CASE 3)
 
         // calculate hue component in CASE 1
         __m128 xmmHTemp1 = _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmGGGG, xmmBBBB)), xmmInvDiff);
@@ -248,21 +248,32 @@ Convert_32bgra_24hsv_SSE2(READONLY(uint8_t*)  source,
         xmmHTemp2 = _mm_and_ps(xmmHTemp2, xmmCmpMaxG);
         // calculate hue component in CASE 3
         __m128 xmmHTemp3 = _mm_add_ps(xmm171const, _mm_mul_ps(_mm_mul_ps(xmm43const, _mm_sub_ps(xmmRRRR, xmmGGGG)), xmmInvDiff));
-        xmmHTemp3 = _mm_andnot_ps(xmmElse, xmmHTemp3);
+        xmmHTemp3 = _mm_and_ps(xmmElse, xmmHTemp3);
 
         // the final hue value is mask-selected from the temporary ones
         // based on the result of comparisons
         __m128 xmmHHHH = _mm_or_ps(xmmHTemp1, _mm_or_ps(xmmHTemp2, xmmHTemp3));
-        xmmHHHH = _mm_andnot_ps(xmmHHHH, xmmCmpSZero);
-        xmmHHHH = _mm_andnot_ps(xmmHHHH, xmmCmpVZero);
-        xmmSSSS = _mm_andnot_ps(xmmSSSS, xmmCmpVZero);
+        xmmHHHH = _mm_andnot_ps(xmmCmpSZero, xmmHHHH);
+        xmmHHHH = _mm_andnot_ps(xmmCmpVZero, xmmHHHH);
+        xmmSSSS = _mm_andnot_ps(xmmCmpVZero, xmmSSSS);
 
-        // cast the values to integer domain
-        __m128i xmmHHHHi = _mm_cvtps_epi32(xmmHHHH);
+        __m128i xmmHHHHi = _mm_packus_epi16(_mm_cvtps_epi32(xmmHHHH), _mm_cvtps_epi32(xmmHHHH));
+        __m128i xmmSSSSi = _mm_packus_epi16(_mm_cvtps_epi32(xmmSSSS), _mm_cvtps_epi32(xmmSSSS));
+        __m128i xmmVVVVi = _mm_packus_epi16(_mm_cvtps_epi32(xmmVVVV), _mm_cvtps_epi32(xmmVVVV));
 
-        _mm_store_ss(reinterpret_cast<float*>(destinationHueChannel + ih), xmmHHHH);
-        _mm_store_ss(reinterpret_cast<float*>(destinationSaturationChannel + is), xmmSSSS);
-        _mm_store_ss(reinterpret_cast<float*>(destinationValueChannel + iv), xmmVVVV);
+        //h3h1h2h0
+        int dword = _mm_extract_epi16(_mm_and_si128(xmmHHHHi, _mm_srli_si128(xmmHHHHi, 24)), 0);
+        int htuple = ((dword << 8) & 0x00FF0000) || ((dword >> 8) & 0x0000FF00) || (dword & 0xFF0000FF);
+
+        dword = _mm_extract_epi16(_mm_and_si128(xmmSSSSi, _mm_srli_si128(xmmSSSSi, 24)), 0);
+        int stuple = ((dword << 8) & 0x00FF0000) || ((dword >> 8) & 0x0000FF00) || (dword & 0xFF0000FF);
+
+        dword = _mm_extract_epi16(_mm_and_si128(xmmVVVVi, _mm_srli_si128(xmmVVVVi, 24)), 0);
+        int vtuple = ((dword << 8) & 0x00FF0000) || ((dword >> 8) & 0x0000FF00) || (dword & 0xFF0000FF);
+
+        *reinterpret_cast<int*>(destinationHueChannel + index / 4) = htuple;
+        *reinterpret_cast<int*>(destinationSaturationChannel + index / 4) = stuple;
+        *reinterpret_cast<int*>(destinationValueChannel + index / 4) = vtuple;
     }
 
     return OperationSuccess;

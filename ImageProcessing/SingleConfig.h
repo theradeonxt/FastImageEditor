@@ -8,9 +8,6 @@
 #include <atomic>
 #include <vector>
 
-// Forward declarations
-enum SIMDLevel;
-
 namespace Config
 {
     //

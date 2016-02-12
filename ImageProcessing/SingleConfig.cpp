@@ -1,7 +1,6 @@
 
 #include "GlobalConfig.h"
 #include "SingleConfig.h"
-#include "Common.h"
 
 //
 // Define more readable flags for multithreading and impementation switches
@@ -67,7 +66,7 @@ namespace Config
 
     void SingleConfig::setSIMDLevel(SIMDLevel level)
     {
-        m_UseReferenceImpl = (m_SIMDLevel == None);
+        m_UseReferenceImpl = (level == None);
         m_SIMDLevel = level;
     }
 

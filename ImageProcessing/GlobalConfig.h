@@ -38,16 +38,16 @@ namespace Config
         GlobalConfigPIMPL *pimpl;
     };
 
-    //
     // Configuration object used by modules
     // There is one instance of this, created at library loadtime.
-    //
     extern GlobalConfig g_ModulesConfig;
 }
 
 //
 // Exported helper functions from the library
+// These are provided to enable users to tune different settings depending on their usecase
 //
+
 IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
 extern int32_t SetMultiThreadingStatus(READONLY(char*) moduleName, int32_t status);
 
@@ -59,5 +59,11 @@ extern int32_t QueryAvailableImplementation(READONLY(char*) moduleName, int32_t 
 
 IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
 extern int32_t SetImplementationLevel(READONLY(char*) moduleName, int32_t level);
+
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
+extern int32_t GetImplementationLevel(READONLY(char*) moduleName);
+
+IMAGEPROCESSING_CDECL IMAGEPROCESSING_API
+extern int32_t MEMCMP(READONLY(void*) src, READONLY(void*) tar, int32_t sizeBytes);
 
 #endif /* IMAGEPROCESSING_GLOBALCONFIG_H */
