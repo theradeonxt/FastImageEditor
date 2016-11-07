@@ -18,7 +18,7 @@ For start it supports SIMD for x86-64 only. The plans are to add support for CUD
 
 - Multicore aware, tries to split workloads where possible (OpenMP).
 - maximize the potential of your desktop x86/x86-64 Intel or Amd CPU by using SIMD data paralellism. 
-- Dynamic CPU Dispatching - it runs the code most optimal for the detected CPU (at runtime).
+- Dynamic CPU Dispatching - it runs the code most optimal for the detected CPU (at runtime). (Credit to https://github.com/anrieff/libcpuid)
 - Pure "C" interface, allowing it to be used from higher level frameworks, e.g in this case a NET app.
 
 # Preliminary Benchmarks
