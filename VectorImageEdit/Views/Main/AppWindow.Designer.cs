@@ -959,7 +959,6 @@ namespace VectorImageEdit.Views.Main
             this.treeView1.ShowNodeToolTips = true;
             this.treeView1.Size = new System.Drawing.Size(129, 141);
             this.treeView1.TabIndex = 10;
-            this.treeView1.Visible = false;
             // 
             // AppWindow
             // 

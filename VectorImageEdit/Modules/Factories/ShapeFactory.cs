@@ -45,7 +45,8 @@ namespace VectorImageEdit.Modules.Factories
         }
         public static ShapeBase CreateDiamond(Size size, ShapeStyle style)
         {
-            throw new System.NotImplementedException();
+            Point location = new Point(size.Width / 3, size.Height / 3);
+            return new Diamond(new Rectangle(location.X, location.Y, size.Width / 5, size.Height / 7), style);
         }
         public static ShapeBase CreateTriangle(Size size, ShapeStyle style)
         {

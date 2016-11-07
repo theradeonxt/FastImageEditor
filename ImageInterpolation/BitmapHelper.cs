@@ -12,7 +12,6 @@ namespace ImageInterpolation
         /// the caller must release this resource to unlock the image data.
         /// </summary>
         /// <param name="img"> Input image </param>
-
         public BitmapHelper(Bitmap img)
         {
             var bmd = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),
@@ -27,7 +26,6 @@ namespace ImageInterpolation
         /// This is used to release the lock on the image if 
         /// the instance was created with a Bitmap constructor
         /// </summary>
-
         public void Dispose()
         {
             if (Locked)

@@ -24,10 +24,8 @@ namespace VectorImageEdit.Modules.Utility
         /// <param name="item"> The item to add </param>
         public new void Add(TItem item)
         {
-            /* TODO: wrap the operation to make it atomic?
-             * The underlying container "Add" is thread-safe, 
+            /* The underlying container "Add" is thread-safe, 
              * but the overall behavior here is not
-             * 
              * Note: Locking here sometimes deadlocks...
              * */
 

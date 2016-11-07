@@ -12,28 +12,39 @@ namespace VectorImageEdit.Controllers
     /// </summary>
     class WorkspaceController
     {
-        private readonly AppWindow _appView;
-        private readonly WorkspaceModel _model;
+        private readonly AppWindow view;
+        private readonly WorkspaceModel model;
 
         public WorkspaceController(AppWindow appView, WorkspaceModel model)
         {
-            _appView = appView;
-            _model = model;
+            view = appView;
+            this.model = model;
 
-            _appView.AddWorkspaceMouseDownListener(new WorkspaceMouseDownListener(this));
-            _appView.AddWorkspaceMouseMoveListener(new WorkspaceMouseMoveListener(this));
-            _appView.AddWorkspaceMouseUpListener(new WorkspaceMouseUpListener(this));
+            view.AddWorkspaceMouseDownListener(new WorkspaceMouseDownListener(this));
+            view.AddWorkspaceMouseMoveListener(new WorkspaceMouseMoveListener(this));
+            view.AddWorkspaceMouseUpListener(new WorkspaceMouseUpListener(this));
 
             // TODO: These don't belong here
-            _appView.MemoryProgressbarPercentage = BackgroundStatitics.MemoryUsagePercent;
-            _appView.MemoryLabelText = string.Format("Memory Used ({0}%)", BackgroundStatitics.MemoryUsagePercent);
+            view.MemoryProgressbarPercentage = BackgroundStatitics.MemoryUsagePercent;
+            view.MemoryLabelText = string.Format("Memory Used ({0}%)", BackgroundStatitics.MemoryUsagePercent);
         }
 
         public void GraphicsUpdateCallback(GraphicsProfiler profiler)
         {
             // TODO: Ensure this is called on the GUI thread
-            _appView.GraphicsDebugText = string.Format("ClearFrame: {0}ms{1}RasterizeObjects: {2}ms{1}DrawFrame: {3}ms{1}",
-                profiler.ClearFrameDuration, Environment.NewLine, profiler.RasterizeObjectsDuration, profiler.DrawFrameDuration);
+            if (view.InvokeRequired)
+            {
+                MyMethodInvoker.Invoke(() =>
+                {
+                    view.GraphicsDebugText = string.Format("ClearFrame: {0}ms{1}RasterizeObjects: {2}ms{1}DrawFrame: {3}ms{1}",
+                        profiler.ClearFrameDuration, Environment.NewLine, profiler.RasterizeObjectsDuration, profiler.DrawFrameDuration);
+                });
+            }
+            else
+            {
+                view.GraphicsDebugText = string.Format("ClearFrame: {0}ms{1}RasterizeObjects: {2}ms{1}DrawFrame: {3}ms{1}",
+                        profiler.ClearFrameDuration, Environment.NewLine, profiler.RasterizeObjectsDuration, profiler.DrawFrameDuration);
+            }
         }
 
         private class WorkspaceMouseDownListener : AbstractMouseListener<WorkspaceController>, IMouseListener
@@ -46,19 +57,20 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._model.MouseDown(e);
+                Controller.model.MouseDown(e);
 
-                switch (Controller._model.SelectedLayerState)
+                switch (Controller.model.StateHandler.SelectedLayerState)
                 {
-                    case WorkspaceModel.LayerState.Resizing:
-                        Controller._appView.SetLayerResizeCursor();
+                    case LayerState.Resizing:
+                        Controller.view.SetLayerResizeCursor();
                         break;
-                    case WorkspaceModel.LayerState.Moving:
-                        Controller._appView.SetLayerMoveCursor();
+                    case LayerState.Moving:
+                        Controller.view.SetLayerMoveCursor();
                         break;
                 }
             }
         }
+
         private class WorkspaceMouseMoveListener : AbstractMouseListener<WorkspaceController>, IMouseListener
         {
             public WorkspaceMouseMoveListener(WorkspaceController controller)
@@ -69,9 +81,18 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._model.MouseMovement(e);
+                LayerState state = Controller.model.MouseMovement(e);
+                if (state == LayerState.Selectable)
+                {
+                    Controller.view.SetLayerMoveCursor();
+                }
+                else
+                {
+                    Controller.view.SetDefaultCursor();
+                }
             }
         }
+
         private class WorkspaceMouseUpListener : AbstractMouseListener<WorkspaceController>, IMouseListener
         {
             public WorkspaceMouseUpListener(WorkspaceController controller)
@@ -82,8 +103,8 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, MyMouseEventArgs e)
             {
-                Controller._appView.SetDefaultCursor();
-                Controller._model.MouseUp(e);
+                Controller.view.SetDefaultCursor();
+                Controller.model.MouseUp(e);
             }
         }
     }

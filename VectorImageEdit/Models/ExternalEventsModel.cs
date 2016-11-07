@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using VectorImageEdit.Modules;
+using VectorImageEdit.Modules.BasicShapes;
 using VectorImageEdit.Modules.ImportExports;
 using VectorImageEdit.Modules.Interfaces;
 using VectorImageEdit.Modules.LayerManagement;
@@ -18,7 +19,7 @@ namespace VectorImageEdit.Models
     {
         public bool TryExportVector(IDiskResourceExporter<int, IList> exporter)
         {
-            exporter.DataSource = AppModel.Instance.LayerManager.GetLayers();
+            exporter.DataSource = AppModel.Instance.LayerManager.LayersList;
             return exporter.ExportData();
         }
 

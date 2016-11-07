@@ -20,8 +20,15 @@ namespace VectorImageEdit.Modules.LayerManagement
             DisplayName = displayName + " [" + Uid + "]";
         }
 
+        /// <summary>
+        /// Gets or sets the name associated with the layer.
+        /// </summary>
         [NotNull]
         public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Gets or sets an unique ID for the layer.
+        /// </summary>
         public int Uid { get; private set; }
     }
 }

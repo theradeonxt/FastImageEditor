@@ -30,7 +30,8 @@ namespace VectorImageEdit.Models
             SecondaryColor = Color.LightBlue;
             ShapeEdgeSize = 4.0f;
 
-            LayerSelectionPen = new Pen(Brushes.DarkBlue, 3) { DashStyle = DashStyle.DashDot };
+            LayerSelectionPen = new Pen(Brushes.DarkBlue, 2) { DashStyle = DashStyle.DashDot };
+            GeometryItemPen = new Pen(Brushes.DarkGray, 2);
 
             VectorFileExtension = ".vdata";
             DefaultImageFileExtension = ".jpg";

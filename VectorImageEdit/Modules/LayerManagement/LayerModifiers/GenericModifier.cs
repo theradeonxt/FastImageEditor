@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using NLog;
+using VectorImageEdit.Modules.GraphicsCompositing;
 using VectorImageEdit.Modules.Interfaces;
 
 namespace VectorImageEdit.Modules.LayerManagement.LayerModifiers

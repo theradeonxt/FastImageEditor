@@ -7,21 +7,21 @@ namespace VectorImageEdit.Controllers
 {
     class SceneTreeController
     {
-        private readonly AppWindow _appView;
-        private readonly SceneTreeModel _model;
+        private readonly AppWindow view;
+        private readonly SceneTreeModel model;
 
-        public SceneTreeController(AppWindow appView, SceneTreeModel model)
+        public SceneTreeController(AppWindow view, SceneTreeModel model)
         {
-            _appView = appView;
-            _model = model;
+            this.view = view;
+            this.model = model;
 
-            _appView.AddTreeSelectionChangedListener(new LayerListSelectedChangedListener(this));
+            this.view.AddTreeSelectionChangedListener(new LayerListSelectedChangedListener(this));
         }
 
         public void OnListboxItemsChangedCallback()
         {
-            var layers = AppModel.Instance.LayerManager.GetLayers().ToArray();
-            MyMethodInvoker.Invoke(() => _appView.Items = layers);
+            var layers = AppModel.Instance.LayerManager.LayersList.ToArray();
+            MyMethodInvoker.Invoke(() => view.Items = layers);
         }
 
         private class LayerListSelectedChangedListener : AbstractListener<SceneTreeController>, IListener

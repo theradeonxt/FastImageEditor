@@ -29,11 +29,6 @@ namespace VectorImageEdit.Views.Main
             Move += listener.ActionPerformed;
         }
 
-        public Control WorkspaceArea
-        {
-            get { return pboxWorkspaceRegion; }
-        }
-
         // TODO: how to prevent multiple BackgroundWorkers from modifying the label/progressbar?
         // TODO: it's a waste to restrict to only one background task? OR dynamically add action status + progressbar?
         public int StatusProgressbarPercentage
@@ -72,7 +67,10 @@ namespace VectorImageEdit.Views.Main
 
         public string GraphicsDebugText
         {
-            set { labelGraphicsDebug.Text = value; }
+            set
+            {
+                labelGraphicsDebug.Text = value;
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms; // TODO: Fix
 using VectorImageEdit.Modules;
 using VectorImageEdit.Modules.GraphicsCompositing;
 using VectorImageEdit.Modules.LayerManagement;
@@ -33,6 +32,7 @@ namespace VectorImageEdit.Models
         public Color SecondaryColor              { get; set; }
         public float ShapeEdgeSize               { get; set; }
         public Pen LayerSelectionPen             { get; private set; }
+        public Pen GeometryItemPen               { get; private set; }
         public string VectorFileExtension        { get; private set; }
         public string DefaultImageFileExtension  { get; private set; }
 
@@ -44,7 +44,7 @@ namespace VectorImageEdit.Models
             {
                 // The single LayerManager instance
                 LayerManager = new LayerManager(
-                    (Control)arguments[0],
+                    (IGraphicsSurface)arguments[0],
                     graphicsCallback);
 
                 // The single GraphicsManager instance

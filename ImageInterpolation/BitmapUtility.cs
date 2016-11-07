@@ -1,6 +1,9 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace ImageInterpolation
 {
@@ -46,7 +49,6 @@ namespace ImageInterpolation
         /// <param name="quality"> Conversion quality </param>
         /// <param name="type"> Conversion type </param>
         /// <returns> Resulting image </returns>
-
         public static Bitmap ConvertToFormat(
             Bitmap img,
             PixelFormat format,
@@ -74,7 +76,6 @@ namespace ImageInterpolation
         /// <param name="quality"> Conversion quality </param>
         /// <param name="type"> Conversion type </param>
         /// <returns> Resulting image </returns>
-
         public static Bitmap Resize(
             Bitmap img, Size size,
             ConversionQuality quality = ConversionQuality.LowQuality,
@@ -98,7 +99,6 @@ namespace ImageInterpolation
         /// <param name="img"> Input image </param>
         /// <param name="type"> Conversion type </param>
         /// <returns> Resulting image </returns>
-
         public static Bitmap Copy(Bitmap img, ConversionType type = ConversionType.Copy)
         {
             var bmp = new Bitmap(img.Width, img.Height, img.PixelFormat);
@@ -109,6 +109,33 @@ namespace ImageInterpolation
             }
             SetConversionType(ref img, bmp, type);
             return bmp;
+        }
+
+        /// <summary>
+        /// Extracts an image from a local disk-based path.
+        /// Note: Exception safe. 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="value"> The image extracted, null if any error occured. </param>
+        /// <returns> True if ok, false otherwise. </returns>
+        public static bool ExtractLocalImage(string path, out Image value)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(path) && File.Exists(path))
+                {
+                    MemoryStream ms = new MemoryStream(File.ReadAllBytes(path));
+                    Image img = Image.FromStream(ms);
+                    value = img;
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[Serialization]: " + ex);
+            }
+            value = null;
+            return false;
         }
 
         private static void SetConversionQuality(Graphics graphics, ConversionQuality quality)

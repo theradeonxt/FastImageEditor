@@ -4,8 +4,8 @@ using System.Security;
 namespace VectorImageEdit.Modules.GraphicsCompositing
 {
     /// <summary>
-    /// Wrapper for the ImageProcessing library
-    /// with imported method definitions  
+    /// Managed Wrapper for the ImageProcessing library
+    /// Contains imported method definitions  
     /// </summary>
     static class ImageProcessingApi
     {

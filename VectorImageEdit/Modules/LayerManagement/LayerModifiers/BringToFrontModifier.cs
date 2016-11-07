@@ -1,4 +1,5 @@
-﻿using VectorImageEdit.Modules.Interfaces;
+﻿using VectorImageEdit.Modules.GraphicsCompositing;
+using VectorImageEdit.Modules.Interfaces;
 
 namespace VectorImageEdit.Modules.LayerManagement.LayerModifiers
 {
@@ -19,7 +20,7 @@ namespace VectorImageEdit.Modules.LayerManagement.LayerModifiers
                 layer.DepthLevel = HandlerLayers.WorkspaceLayers.Last.DepthLevel + 1;
                 HandlerLayers.WorkspaceLayers.Rebuild();
             },
-            RenderingPolicyFactory.MinimalUpdatePolicy(layer.Region),
+            RenderingPolicy.MinimalUpdatePolicy(layer.Region),
             () => HandlerLayers.WorkspaceLayers.Contains(layer));
         }
     }

@@ -8,23 +8,23 @@ namespace VectorImageEdit.Controllers
 {
     class ToolstripItemsController
     {
-        private readonly AppWindow _appView;
-        private readonly ToolstripItemsModel _model;
+        private readonly AppWindow view;
+        private readonly ToolstripItemsModel model;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ToolstripItemsController(AppWindow appView, ToolstripItemsModel model)
+        public ToolstripItemsController(AppWindow view, ToolstripItemsModel model)
         {
-            _appView = appView;
-            _model = model;
+            this.view = view;
+            this.model = model;
 
-            _appView.ToolbarPrimaryColor = AppModel.Instance.PrimaryColor;
-            _appView.ToolbarSecondaryColor = AppModel.Instance.SecondaryColor;
-            _appView.SetPrimaryColorActive();
+            this.view.ToolbarPrimaryColor = AppModel.Instance.PrimaryColor;
+            this.view.ToolbarSecondaryColor = AppModel.Instance.SecondaryColor;
+            this.view.SetPrimaryColorActive();
 
-            _appView.AddSwitchColorClickListener(new SwitchColorClickListener(this));
-            _appView.AddCustomColorClickListener(new CustomColorClickListener(this));
-            _appView.AddPresetColorClickListener(new PresetColorClickListener(this));
-            _appView.AddShapeItemClickListener(new ShapeItemClickListener(this));
+            this.view.AddSwitchColorClickListener(new SwitchColorClickListener(this));
+            this.view.AddCustomColorClickListener(new CustomColorClickListener(this));
+            this.view.AddPresetColorClickListener(new PresetColorClickListener(this));
+            this.view.AddShapeItemClickListener(new ShapeItemClickListener(this));
         }
 
         private class CustomColorClickListener : AbstractListener<ToolstripItemsController>, IListener
@@ -40,17 +40,17 @@ namespace VectorImageEdit.Controllers
                 var result = factory.CreateDialog(true);
                 var selectedColor = result;
 
-                switch (Controller._model.ColorMode)
+                switch (Controller.model.ColorMode)
                 {
                     case ColorType.PrimaryColor:
                         AppModel.Instance.PrimaryColor = selectedColor;
-                        Controller._appView.ToolbarPrimaryColor = selectedColor;
-                        Controller._appView.SetPrimaryColorActive();
+                        Controller.view.ToolbarPrimaryColor = selectedColor;
+                        Controller.view.SetPrimaryColorActive();
                         break;
                     default:
                         AppModel.Instance.SecondaryColor = selectedColor;
-                        Controller._appView.ToolbarSecondaryColor = selectedColor;
-                        Controller._appView.SetSecondaryColorActive();
+                        Controller.view.ToolbarSecondaryColor = selectedColor;
+                        Controller.view.SetSecondaryColorActive();
                         break;
                 }
             }
@@ -64,16 +64,16 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                string itemName = Controller._appView.GetToolstripItemName(sender);
+                string itemName = Controller.view.GetToolstripItemName(sender);
                 if (itemName.ToLower().Contains("primary"))
                 {
-                    Controller._model.ColorMode = ColorType.PrimaryColor;
-                    Controller._appView.SetPrimaryColorActive();
+                    Controller.model.ColorMode = ColorType.PrimaryColor;
+                    Controller.view.SetPrimaryColorActive();
                 }
                 else
                 {
-                    Controller._model.ColorMode = ColorType.SecondaryColor;
-                    Controller._appView.SetSecondaryColorActive();
+                    Controller.model.ColorMode = ColorType.SecondaryColor;
+                    Controller.view.SetSecondaryColorActive();
                 }
             }
         }
@@ -86,15 +86,15 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                var itemColor = Controller._appView.GetToolstripItemBackground(sender);
-                if (Controller._model.ColorMode == ColorType.PrimaryColor)
+                var itemColor = Controller.view.GetToolstripItemBackground(sender);
+                if (Controller.model.ColorMode == ColorType.PrimaryColor)
                 {
-                    Controller._appView.ToolbarPrimaryColor = itemColor;
+                    Controller.view.ToolbarPrimaryColor = itemColor;
                     AppModel.Instance.PrimaryColor = itemColor;
                 }
                 else
                 {
-                    Controller._appView.ToolbarSecondaryColor = itemColor;
+                    Controller.view.ToolbarSecondaryColor = itemColor;
                     AppModel.Instance.SecondaryColor = itemColor;
                 }
             }
@@ -110,13 +110,13 @@ namespace VectorImageEdit.Controllers
             {
                 try
                 {
-                    string itemName = Controller._appView.GetToolstripItemName(sender);
+                    string itemName = Controller.view.GetToolstripItemName(sender);
                     string shapeName = itemName.ToLower()
                         .Replace("toolstrip", "")
                         .Replace("shape", "")
                         .ToLower();
                     
-                    Controller._model.CreateNewShape(shapeName);
+                    Controller.model.CreateNewShape(shapeName);
                 }
                 catch (Exception ex)
                 {

@@ -1,81 +1,160 @@
-﻿using System.Drawing;
-using VectorImageEdit.Modules.Interfaces;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using VectorImageEdit.Modules.BasicShapes;
+using VectorImageEdit.Modules.BasicShapes.Geometries;
+using VectorImageEdit.Modules.GraphicsCompositing;
 using VectorImageEdit.Modules.LayerManagement;
 using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Models
 {
+    public enum LayerState
+    {
+        Moving,         // specifies if an object will be moving
+        Resizing,       // specifies if an object will be resizing
+        Normal,         // no special considerations
+        Selectable,     // hover function
+        GeometryAction  // affects a geometry point
+    };
+
+    class MovementTracker
+    {
+        public MovementTracker()
+        {
+
+        }
+
+        public void BeginTracking(Point location, Point objectOffset)
+        {
+            PointDown = location;
+            PointOffset = PointDown;
+            PointOffset.Offset(-objectOffset.X, -objectOffset.Y);
+        }
+
+        public Point PointOffset { get; private set; } // the mouse offset when used to drag objects
+        public Point PointDown { get; private set; }   // original location where movement began
+
+        public Point GetDelta(Point location)
+        {
+            Point result = location;
+            result.Offset(-PointOffset.X, -PointOffset.Y);
+            return result;
+        }
+    }
+
+    class StateHandler
+    {
+        public StateHandler()
+        {
+            DummySelected = new Picture(new Bitmap(1, 1), Rectangle.Empty, 0);
+
+            SelectedLayer = DummySelected;
+            SelectedLayerState = LayerState.Normal;
+            SelectionGroup = new List<Layer>();
+        }
+
+        public LayerState SelectedLayerState { get; set; }
+
+        public Layer SelectedLayer { get; set; }
+
+        public Layer DummySelected { get; set; }
+
+        public GeometryPoint EditingPoint { get; set; }
+
+        public List<Layer> SelectionGroup { get; private set; }
+
+        public bool IsMultipleSelection()
+        {
+            return SelectionGroup.Count > 1;
+        }
+
+        public void ResetState()
+        {
+            SelectedLayerState = LayerState.Normal;
+        }
+    }
+
     partial class WorkspaceModel
     {
-        public enum LayerState
-        {
-            Moving,     // specifies if an object will be moving
-            Resizing,   // specifies if an object will be resizing
-            Normal      // no special considerations
-        };
+        public StateHandler StateHandler { get; private set; }
 
         public WorkspaceModel()
         {
-            _noLayer = new Picture(new Bitmap(1, 1), Rectangle.Empty, 0);
-
-            _selectedLayer = _noLayer;
-            SelectedLayerState = LayerState.Normal;
+            StateHandler = new StateHandler();
+            MoveTracker = new MovementTracker();
         }
 
-        public LayerState SelectedLayerState;
         public Layer SelectedLayer
         {
-            get { return _selectedLayer; }
+            get { return selectedLayer; }
+
             set
             {
                 //if (!IsNewSelection(value)) return;
 
-                if (_selectedLayer != _noLayer &&
-                    _selectedLayer.Metadata.Uid == value.Metadata.Uid) return;
+                if (selectedLayer != StateHandler.DummySelected &&
+                    selectedLayer.Metadata.Uid == value.Metadata.Uid) return;
 
-                _selectedLayer = value;
+                selectedLayer = value;
 
-                NotifyGraphicsHandler(RenderingPolicyFactory.MinimalUpdatePolicy(_selectedLayer.Region));
+                NotifyGraphicsHandler(RenderingPolicy.MinimalUpdatePolicy(selectedLayer.Region));
             }
         }
 
-        public void MouseMovement(MyMouseEventArgs e)
+        public LayerState MouseMovement(MyMouseEventArgs e)
         {
-            if (_selectedLayer == _noLayer) return;
+            LayerState result = LayerState.Normal;
 
-            switch (SelectedLayerState)
+            bool canSelect = CanSelectLayer(e.Location);
+            if (canSelect)
+            {
+                result = LayerState.Selectable;
+            }
+
+            if (selectedLayer == StateHandler.DummySelected &&
+                canSelect == false)
+            {
+                return LayerState.Normal;
+            }
+
+            switch (StateHandler.SelectedLayerState)
             {
                 case LayerState.Moving:
                     {
-                        Rectangle oldRegion = _selectedLayer.Region;
-                        _selectedLayer.Move(new Point(e.X - _pointOffset.X, e.Y - _pointOffset.Y));
+                        Rectangle oldRegion = selectedLayer.Region;
+
+                        selectedLayer.Move(MoveTracker.GetDelta(e.Location));
 
                         // 2-step update: first on old region and then on the new one 
-                        NotifyGraphicsHandler(RenderingPolicyFactory.MinimalUpdatePolicy(oldRegion));
-                        NotifyGraphicsHandler(RenderingPolicyFactory.MinimalUpdatePolicy(_selectedLayer.Region));
+                        //NotifyGraphicsHandler(RenderingPolicy.MinimalUpdatePolicy(oldRegion));
+                        NotifyGraphicsHandler(RenderingPolicy.MinimalUpdatePolicy(selectedLayer.Region, oldRegion));
 
                         break;
                     }
                 case LayerState.Resizing:
                     {
-                        Rectangle oldRegion = _selectedLayer.Region;
-                        _selectedLayer.Resize(new Size(e.X - _pointDown.X, e.Y - _pointDown.Y));
+                        Rectangle oldRegion = selectedLayer.Region;
+
+                        selectedLayer.Resize((Size)MoveTracker.GetDelta(e.Location));
 
                         // Update the largest invalidated region
-                        Rectangle invalidatedRegion = oldRegion.Contains(_selectedLayer.Region)
+                        Rectangle invalidatedRegion = oldRegion.Contains(selectedLayer.Region)
                             ? oldRegion
-                            : _selectedLayer.Region;
-                        NotifyGraphicsHandler(RenderingPolicyFactory.MinimalUpdatePolicy(invalidatedRegion));
+                            : selectedLayer.Region;
+                        NotifyGraphicsHandler(RenderingPolicy.MinimalUpdatePolicy(invalidatedRegion));
 
                         break;
                     }
-                case LayerState.Normal:
-                    break;
             }
+
+            return result;
         }
+
         public void MouseDown(MyMouseEventArgs e)
         {
             if (e.Button != MyMouseEventArgs.MyMouseButton.Left) return;
+
+            // Deselect all layers
             if (CanSelectLayer(e.Location) == false)
             {
                 DeselectLayers();
@@ -83,31 +162,35 @@ namespace VectorImageEdit.Models
             }
 
             // Keep track of initial mouse down
-            _pointDown = e.Location;
+            //pointDown = e.Location;
 
-            Layer layer = FindSelectable(_pointDown);
+            // Selection test at the mouse position
+            Layer layer;
+            if (CanSelectLayer(e.Location, out layer) == false) return;
 
-            // The exterior region is 4 pixels inside from the layer edges 
+            // The exterior region is 4 pixels inside from the layer Edges 
             Rectangle resizeInterior = layer.Region;
             resizeInterior.Inflate(-4, -4);
-            SelectedLayerState = resizeInterior.Contains(e.Location) ? LayerState.Moving : LayerState.Resizing;
-            
+            StateHandler.SelectedLayerState = resizeInterior.Contains(e.Location) ? LayerState.Moving : LayerState.Resizing;
+
             // Logic to respond to the state change
-            if (SelectedLayerState == LayerState.Moving)
+            if (StateHandler.SelectedLayerState == LayerState.Moving)
             {
                 // Movement begin
-                _pointOffset.X = _pointDown.X - layer.Region.Left;
-                _pointOffset.Y = _pointDown.Y - layer.Region.Top;
+                MoveTracker.BeginTracking(e.Location, layer.Region.Location);
+                //pointOffset.X = pointDown.X - layer.Region.Left;
+                //pointOffset.Y = pointDown.Y - layer.Region.Top;
             }
 
             SelectedLayer = layer;
         }
+
         public void MouseUp(MyMouseEventArgs e)
         {
-            if (SelectedLayerState != LayerState.Normal)
+            if (StateHandler.SelectedLayerState != LayerState.Normal)
             {
-                NotifyGraphicsHandler(RenderingPolicyFactory.MinimalUpdatePolicy(_selectedLayer.Region));
-                SelectedLayerState = LayerState.Normal;
+                NotifyGraphicsHandler(RenderingPolicy.MinimalUpdatePolicy(selectedLayer.Region));
+                StateHandler.SelectedLayerState = LayerState.Normal;
             }
         }
     }

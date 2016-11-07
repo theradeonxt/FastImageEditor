@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VectorImageEdit</RootNamespace>
     <AssemblyName>VectorImageEdit</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -94,6 +94,18 @@
     <Compile Include="Controllers\WorkspaceController.cs" />
     <Compile Include="Models\AppModelPrivate.cs" />
     <Compile Include="Models\WindowModel.cs" />
+    <Compile Include="Modules\BasicShapes\BezierCurve.cs" />
+    <Compile Include="Modules\BasicShapes\Geometries\GeometryEditableCue.cs" />
+    <Compile Include="Modules\BasicShapes\Geometries\IGeometryShape.cs" />
+    <Compile Include="Modules\BasicShapes\Geometries\MidpointGeometryRegion.cs" />
+    <Compile Include="Modules\GraphicsCompositing\CompositionStage.cs" />
+    <Compile Include="Modules\GraphicsCompositing\IRenderingStage.cs" />
+    <Compile Include="Modules\GraphicsCompositing\IGraphicsSurface.cs" />
+    <Compile Include="Modules\BasicShapes\Geometries\GeometryBoundsCue.cs" />
+    <Compile Include="Modules\BasicShapes\Geometries\GeometryItem.cs" />
+    <Compile Include="Modules\BasicShapes\Geometries\GeometryPoint.cs" />
+    <Compile Include="Modules\LayerManagement\LayerGroup.cs" />
+    <Compile Include="Modules\Utility\PointPacker.cs" />
     <Compile Include="Views\Main\AppMenuItems.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +116,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\CustomLook.cs" />
+    <Compile Include="WindowsFormsBridge\AbstractListenerHelpers.cs" />
     <Compile Include="WindowsFormsBridge\MyMethodInvoker.cs" />
     <Compile Include="WindowsFormsBridge\IFormDialogFactory.cs" />
     <Compile Include="Models\WorkspaceModelPrivate.cs" />
@@ -129,7 +142,7 @@
     <Compile Include="Modules\BasicShapes\ShapeBase.cs" />
     <Compile Include="Modules\GraphicsCompositing\GraphicsProfiler.cs" />
     <Compile Include="Modules\GraphicsCompositing\ImageProcessingAPI.cs" />
-    <Compile Include="Modules\Interfaces\IRenderingPolicy.cs" />
+    <Compile Include="Modules\GraphicsCompositing\IRenderingPolicy.cs" />
     <Compile Include="Modules\ImportExports\AbstractExporter.cs" />
     <Compile Include="Modules\ImportExports\GenericResourceImporter.cs" />
     <Compile Include="Modules\ImportExports\ImageImporter.cs" />
@@ -142,7 +155,7 @@
     <Compile Include="Modules\ImportExports\ImageExporter.cs" />
     <Compile Include="Modules\ImportExports\VectorImporter.cs" />
     <Compile Include="Modules\GraphicsCompositing\RenderingPolicy.cs" />
-    <Compile Include="Modules\Interfaces\IGraphicsHandler.cs" />
+    <Compile Include="Modules\GraphicsCompositing\IGraphicsHandler.cs" />
     <Compile Include="Modules\Interfaces\ILayerHandler.cs" />
     <Compile Include="Modules\LayerManagement\LayerModifiers\BringToFrontModifier.cs" />
     <Compile Include="Modules\LayerManagement\LayerModifiers\GenericModifier.cs" />
@@ -180,13 +193,14 @@
     <Compile Include="Modules\LayerManagement\Layer.cs" />
     <Compile Include="Modules\LayerManagement\LayerManager.cs" />
     <Compile Include="Modules\Layout.cs" />
-    <Compile Include="Modules\LayerManagement\Picture.cs" />
+    <Compile Include="Modules\BasicShapes\Picture.cs" />
     <Compile Include="Modules\GraphicsCompositing\RasterizerStage.cs" />
     <Compile Include="Modules\Utility\BoundingRectangle.cs" />
     <Compile Include="Modules\Utility\SortedContainer.cs" />
     <Compile Include="Modules\Utility\ImagingHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Resources\Layer 0.png" />
     <EmbeddedResource Include="Views\Main\AppWindow.resx">
       <DependentUpon>AppWindow.cs</DependentUpon>

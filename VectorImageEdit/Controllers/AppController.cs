@@ -14,14 +14,14 @@ namespace VectorImageEdit.Controllers
     /// </summary>
     class AppController
     {
-        private readonly AppWindow _appView;
+        private readonly AppWindow appView;
 
-        private readonly WorkspaceController _workspaceController;
-        private readonly ExternalEventsController _externalController;
-        private readonly MenuItemsController _menuController;
-        private readonly SceneTreeController _sceneTreeController;
-        private readonly ToolstripItemsController _toolbarController;
-        private readonly WindowController _windowController;
+        private readonly WorkspaceController workspaceController;
+        private readonly ExternalEventsController externalController;
+        private readonly MenuItemsController menuController;
+        private readonly SceneTreeController sceneTreeController;
+        private readonly ToolstripItemsController toolbarController;
+        private readonly WindowController windowController;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -29,20 +29,20 @@ namespace VectorImageEdit.Controllers
         {
             try
             {
-                _appView = appView;
+                this.appView = appView;
                 var appModel = AppModel.Instance;
 
                 // Create application modules
-                _externalController = new ExternalEventsController(_appView, appModel.ExternalModel);
-                _workspaceController = new WorkspaceController(_appView, appModel.WorkspaceModel);
-                _menuController = new MenuItemsController(_appView, appModel.MenuModel);
-                _sceneTreeController = new SceneTreeController(_appView, appModel.SceneTreeModel);
-                _toolbarController = new ToolstripItemsController(_appView, appModel.ToolbarsModel);
-                _windowController = new WindowController(_appView, appModel.AppWindowModel);
+                externalController = new ExternalEventsController(this.appView, appModel.ExternalModel);
+                workspaceController = new WorkspaceController(this.appView, appModel.WorkspaceModel);
+                menuController = new MenuItemsController(this.appView, appModel.MenuModel);
+                sceneTreeController = new SceneTreeController(this.appView, appModel.SceneTreeModel);
+                toolbarController = new ToolstripItemsController(this.appView, appModel.ToolbarsModel);
+                windowController = new WindowController(this.appView, appModel.AppWindowModel);
 
                 // Create application configuration
-                appModel.InitializeSettings(_workspaceController.GraphicsUpdateCallback,
-                    _appView.WorkspaceArea, _appView.Size);
+                appModel.InitializeSettings(workspaceController.GraphicsUpdateCallback,
+                    this.appView, this.appView.Size);
 
                 // Redirect UI invocations to the main form control
                 MyMethodInvoker.SetInvocationTarget(appView);

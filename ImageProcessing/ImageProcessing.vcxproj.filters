@@ -1,93 +1,124 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{cbe464e2-9888-402b-a2ce-d40873d08108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dispatcher">
+      <UniqueIdentifier>{ea21c570-ba87-42a8-8e99-1feb09c43f5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SIMD">
+      <UniqueIdentifier>{27e35fc7-cc6e-4d08-a08c-4e1d8b41252f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModuleDef">
+      <UniqueIdentifier>{be22e98d-a36a-4556-a1f7-3789adabecea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{56f6abc4-05ce-4376-bdfe-361d5443edde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ImageProcessing.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Config\ConfigManager.h">
+      <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="CpuRdtsc.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Config\ConfigManagerPIMPL.h">
+      <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="Helpers.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Config\ModuleConfig.h">
+      <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Config\ModuleInterface.h">
+      <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="CpuDispatcher.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Config\ModuleSetupDetails.hpp">
+      <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="ProfileTools.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Config\ModuleSetupPerformer.h">
+      <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="ImageProcessing_AVX.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Dispatcher\DispatchManager.h">
+      <Filter>Dispatcher</Filter>
     </ClInclude>
-    <ClInclude Include="ImageProcessing_FMA3.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ModuleDef\Common.h">
+      <Filter>ModuleDef</Filter>
     </ClInclude>
-    <ClInclude Include="ImageProcessing_SSE2.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ModuleDef\ImageProcessing.h">
+      <Filter>ModuleDef</Filter>
     </ClInclude>
-    <ClInclude Include="ImageProcessing_SSSE3.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ModuleDef\ReferenceProcessing.h">
+      <Filter>ModuleDef</Filter>
     </ClInclude>
-    <ClInclude Include="HelpersSIMD.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Utils\CpuRdtsc.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ReferenceProcessing.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Utils\Helpers.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="SingleConfig.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Utils\HelpersSIMD.hpp">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="GlobalConfig.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Utils\ProfileTools.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="GlobalConfigPIMPL.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="SIMD\ImageProcessing_AVX.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="SIMD\ImageProcessing_FMA3.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="SIMD\ImageProcessing_SSE2.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="SIMD\ImageProcessing_SSSE3.h">
+      <Filter>SIMD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ImageProcessing.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Config\ConfigManager.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="ImageProcessing_SSE2.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Config\ConfigManagerPIMPL.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="ImageProcessing_AVX.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Config\ModuleConfig.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="ImageProcessing_FMA3.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Config\ModuleInterface.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="ReferenceProcessing.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Config\ModuleSetupPerformer.cpp">
+      <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="ImageProcessing_SSSE3.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Dispatcher\DispatchManager.cpp">
+      <Filter>Dispatcher</Filter>
     </ClCompile>
-    <ClCompile Include="SingleConfig.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ModuleDef\ImageProcessing.cpp">
+      <Filter>ModuleDef</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalConfig.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ModuleDef\ReferenceProcessing.cpp">
+      <Filter>ModuleDef</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalConfigPIMPL.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Utils\HelpersSIMD.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="SIMD\ImageProcessing_AVX.cpp">
+      <Filter>SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="SIMD\ImageProcessing_FMA3.cpp">
+      <Filter>SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="SIMD\ImageProcessing_SSE2.cpp">
+      <Filter>SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="SIMD\ImageProcessing_SSSE3.cpp">
+      <Filter>SIMD</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

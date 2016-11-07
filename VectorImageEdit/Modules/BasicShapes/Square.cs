@@ -13,12 +13,18 @@ namespace VectorImageEdit.Modules.BasicShapes
 
         public override void DrawGraphics(Graphics destination)
         {
+            DrawGraphics();
             using (var brush = Style.CreateBrush())
             using (var pen = Style.CreatePen())
             {
                 destination.DrawRectangle(pen, Region);
                 destination.FillRectangle(brush, Region);
             }
+        }
+
+        public override void ConstructFrom(Rectangle region)
+        {
+            throw new NotImplementedException();
         }
     }
 }

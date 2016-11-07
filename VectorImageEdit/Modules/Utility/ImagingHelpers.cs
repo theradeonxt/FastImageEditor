@@ -13,20 +13,19 @@ namespace VectorImageEdit.Modules.Utility
     /// </summary>
     static class ImagingHelpers
     {
-        [NotNull]
-        private static readonly string ImagesFilter;
-        [NotNull]
-        private static readonly Bitmap ErrorImage;
-        [NotNull]
-        private static readonly Dictionary<string, ImageFormat> MapExtToFormat;
-        [NotNull]
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         static ImagingHelpers()
         {
             MapExtToFormat = CreateFilterDictionary();
             ImagesFilter = CreateFilterMap();
             ErrorImage = CreateDefaultErrorImage();
+        }
+
+        public static void GraphicsHighQualityDrawingBlend([NotNull]Graphics g)
+        {
+            g.CompositingQuality = CompositingQuality.HighSpeed;
+            g.InterpolationMode = InterpolationMode.Bilinear;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            g.CompositingMode = CompositingMode.SourceOver;
         }
 
         public static void GraphicsFastDrawing([NotNull]Graphics g)
@@ -36,6 +35,7 @@ namespace VectorImageEdit.Modules.Utility
             g.SmoothingMode = SmoothingMode.None;
             g.CompositingMode = CompositingMode.SourceCopy;
         }
+
         public static void GraphicsFastDrawingWithBlending([NotNull]Graphics g)
         {
             g.CompositingQuality = CompositingQuality.HighSpeed;
@@ -43,10 +43,12 @@ namespace VectorImageEdit.Modules.Utility
             g.SmoothingMode = SmoothingMode.None;
             g.CompositingMode = CompositingMode.SourceOver;
         }
+
         public static void GraphicsFastResizePixelated([NotNull]Graphics g)
         {
             GraphicsFastDrawing(g);
         }
+
         public static void GraphicsFastResizeBilinear([NotNull]Graphics g)
         {
             g.CompositingQuality = CompositingQuality.HighSpeed;
@@ -108,11 +110,23 @@ namespace VectorImageEdit.Modules.Utility
             throw new ArgumentException();
         }
 
+        #region Private Members
+
+        [NotNull]
+        private static readonly string ImagesFilter;
+        [NotNull]
+        private static readonly Bitmap ErrorImage;
+        [NotNull]
+        private static readonly Dictionary<string, ImageFormat> MapExtToFormat;
+        [NotNull]
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         [NotNull]
         private static Dictionary<string, ImageFormat> CreateFilterDictionary()
         {
             return new Dictionary<string, ImageFormat>();
         }
+
         [NotNull]
         private static string CreateFilterMap()
         {
@@ -141,6 +155,7 @@ namespace VectorImageEdit.Modules.Utility
             }
             return filter;
         }
+
         [NotNull]
         private static Bitmap CreateDefaultErrorImage()
         {
@@ -161,5 +176,7 @@ namespace VectorImageEdit.Modules.Utility
             }
             return Properties.Resources.placeholder;
         }
+
+        #endregion
     }
 }

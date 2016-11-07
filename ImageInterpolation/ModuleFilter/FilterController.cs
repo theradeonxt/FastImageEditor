@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using ImageInterpolation.ModuleImageBlending;
 
 namespace ImageInterpolation.ModuleFilter
 {
-    sealed class FilterController
+    sealed partial class FilterController
     {
-        private static GuiView _view;
+        private readonly ModuleFilterUi view;
+        private static FilterController self;
+        private InputOutputParams modelData;
+        private InputOutputParams guiData;
 
-        public FilterController(GuiView view)
+        public FilterController(ModuleFilterUi view)
         {
-            _view = view;
+            this.view = view;
+            self = this;
 
             BuiltinFilters.Load();
+            SetupUi();
+        }
 
+        private void SetupUi()
+        {
             view.AddKernelTextChangedListener(new KernelTextChangedListener());
             view.AddBuiltinFilterChangedListener(new BuiltinFilterChangedListener());
             view.AddNormalizationChangedListener(new NormalizationChangedListener());
@@ -21,83 +30,42 @@ namespace ImageInterpolation.ModuleFilter
             // initialize combobox items
             foreach (var builtinFilter in Enum.GetValues(typeof(BuiltinKernel)))
             {
-                _view.AddFilterOption = ((BuiltinKernel)builtinFilter).ToString();
+                view.AddFilterOption = ((BuiltinKernel)builtinFilter).ToString();
             }
             foreach (var normalization in Enum.GetValues(typeof(NormalizationType)))
             {
-                _view.AddNormalizeOption = ((NormalizationType)normalization).ToString();
+                view.AddNormalizeOption = ((NormalizationType)normalization).ToString();
             }
         }
 
-        private class KernelTextChangedListener : IActionListener
-        {
-            public void ActionPerformed(object sender, EventArgs e)
-            {
-                try
-                {
-                    Filter filter = FormatFilter.Deserialize(_view.KernelText);
-                    if (_view.NormalizeState)
-                    {
-                        // post processing the kernel if normalization is desired
-                        filter.Normalize(ActiveNormalization());
-                    }
-                    OnSuccessDisplayFilter(filter);
-                }
-                catch (FormatException)
-                {
-                    OnErrorAction();
-                }
-            }
-        }
-
-        private class BuiltinFilterChangedListener : IActionListener
-        {
-            public void ActionPerformed(object sender, EventArgs e)
-            {
-                // obtain builtin filter for selected item
-                BuiltinKernel builtin = (BuiltinKernel)Enum.Parse(typeof(BuiltinKernel), _view.SelectedFilter);
-                Filter filter = FilterBuilder.BuiltinFilter(builtin);
-                OnSuccessDisplayFilter(filter);
-            }
-        }
-
-        private class NormalizationChangedListener : IActionListener
-        {
-            public void ActionPerformed(object sender, EventArgs e)
-            {
-                IActionListener listener = new BuiltinFilterChangedListener();
-                listener.ActionPerformed(sender, e);
-            }
-        }
-
-        private static NormalizationType ActiveNormalization()
+        private NormalizationType ActiveNormalization()
         {
             // get the user selected normalization type
             return Enum.GetValues(typeof(NormalizationType))
                 .Cast<NormalizationType>()
-                .First(item => item.ToString() == _view.SelectedNormalization);
+                .First(item => item.ToString() == view.SelectedNormalization);
         }
 
-        private static void OnSuccessDisplayFilter(Filter filter)
+        private void OnSuccessDisplayFilter(Filter filter)
         {
             // update filter properties shown
-            _view.NormalizeProperty = FormatFilter.NormalizeProperty(filter);
-            _view.KernelSizeProperty = FormatFilter.SizeProperty(filter);
-            _view.FilterTitleColor = Color.MediumAquamarine;
+            view.NormalizeProperty = FormatFilter.NormalizeProperty(filter);
+            view.KernelSizeProperty = FormatFilter.SizeProperty(filter);
+            view.FilterTitleColor = Color.MediumAquamarine;
 
             // update the filter's kernel only if it's changed
             string filterAsText = FormatFilter.Serialize(filter);
-            if (String.Compare(filterAsText, _view.KernelText, StringComparison.Ordinal) != 0)
+            if (String.Compare(filterAsText, view.KernelText, StringComparison.Ordinal) != 0)
             {
-                _view.KernelText = filterAsText;
+                view.KernelText = filterAsText;
             }
         }
 
-        private static void OnErrorAction()
+        private void OnErrorAction()
         {
-            _view.KernelSizeProperty = "";
-            _view.NormalizeProperty = "";
-            _view.FilterTitleColor = Color.Salmon;
+            view.KernelSizeProperty = "";
+            view.NormalizeProperty = "";
+            view.FilterTitleColor = Color.Salmon;
         }
     }
 }

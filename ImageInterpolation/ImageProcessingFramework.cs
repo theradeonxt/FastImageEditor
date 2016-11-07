@@ -140,8 +140,7 @@ namespace ImageInterpolation
         // TODO: static member is bad for thread safety
         public static long LastOperationDuration
         {
-            get;
-            private set;
+            get; private set;
         }
     }
 }

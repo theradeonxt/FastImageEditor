@@ -7,19 +7,19 @@ namespace VectorImageEdit.Controllers
 {
     class MenuItemsController
     {
-        private readonly AppWindow _appView;
-        private readonly MenuItemsModel _model;
+        private readonly AppWindow view;
+        private readonly MenuItemsModel model;
 
-        public MenuItemsController(AppWindow appView, MenuItemsModel model)
+        public MenuItemsController(AppWindow view, MenuItemsModel model)
         {
-            _appView = appView;
-            _model = model;
+            this.view = view;
+            this.model = model;
 
-            _appView.AddContextMenuPropertiesListener(new ContextMenuPropertiesListener(this));
-            _appView.AddContextMenuDeleteListener(new ContextMenuDeleteListener(this));
-            _appView.AddContextMenuBringFrontListener(new ContextMenuBringFrontListener(this));
-            _appView.AddContextMenuSendBackListener(new ContextMenuSendBackListener(this));
-            _appView.AddContextMenuSendBackwardsListener(new ContextMenuSendBackwardsListener(this));
+            this.view.AddContextMenuPropertiesListener(new ContextMenuPropertiesListener(this));
+            this.view.AddContextMenuDeleteListener(new ContextMenuDeleteListener(this));
+            this.view.AddContextMenuBringFrontListener(new ContextMenuBringFrontListener(this));
+            this.view.AddContextMenuSendBackListener(new ContextMenuSendBackListener(this));
+            this.view.AddContextMenuSendBackwardsListener(new ContextMenuSendBackwardsListener(this));
         }
 
         private class ContextMenuPropertiesListener : AbstractListener<MenuItemsController>, IListener

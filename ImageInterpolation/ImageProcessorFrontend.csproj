@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapUtility.cs" />
+    <Compile Include="Common\ImageType.cs" />
     <Compile Include="GuiView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,31 +77,49 @@
       <DependentUpon>GuiView.cs</DependentUpon>
     </Compile>
     <Compile Include="BitmapHelper.cs" />
-    <Compile Include="IActionListener.cs" />
+    <Compile Include="Common\IActionListener.cs" />
     <Compile Include="ImageProcessingFramework.cs" />
+    <Compile Include="ImagePropertiesUi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ImagePropertiesUi.Designer.cs">
+      <DependentUpon>ImagePropertiesUi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleImageBlending\Misc.cs" />
+    <Compile Include="ModuleImageBlending\ModuleBlendingUi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ModuleImageBlending\ModuleBlendingUi.Designer.cs">
+      <DependentUpon>ModuleBlendingUi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModuleFilter\ModuleFilterUi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ModuleFilter\ModuleFilterUi.Designer.cs">
+      <DependentUpon>ModuleFilterUi.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModuleFilter\BuiltinFilters.cs" />
     <Compile Include="ModuleFilter\Filter.cs" />
     <Compile Include="ModuleFilter\FilterBuilder.cs" />
     <Compile Include="ModuleFilter\FilterController.cs" />
     <Compile Include="ModuleFilter\FormatFilter.cs" />
+    <Compile Include="ModuleFilter\FilterControllerListeners.cs" />
     <Compile Include="ModuleImageBlending\BlendingController.cs" />
+    <Compile Include="ModuleImageBlending\BlendingControllerListeners.cs" />
     <Compile Include="ParallelBitmap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI Templates\ProgressStatus.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI Templates\ProgressStatus.Designer.cs">
-      <DependentUpon>ProgressStatus.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UI Templates\TwoImageProcess.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UI Templates\TwoImageProcess.Designer.cs">
-      <DependentUpon>TwoImageProcess.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="GuiView.resx">
       <DependentUpon>GuiView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImagePropertiesUi.resx">
+      <DependentUpon>ImagePropertiesUi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModuleImageBlending\ModuleBlendingUi.resx">
+      <DependentUpon>ModuleBlendingUi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModuleFilter\ModuleFilterUi.resx">
+      <DependentUpon>ModuleFilterUi.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -112,12 +131,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="UI Templates\ProgressStatus.resx">
-      <DependentUpon>ProgressStatus.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI Templates\TwoImageProcess.resx">
-      <DependentUpon>TwoImageProcess.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -145,18 +158,18 @@
     <None Include="Resources\placeholder.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BuiltinFilters\Blur3X3Average.txt" />
-    <Content Include="BuiltinFilters\Blur3X3HvAverage.txt" />
-    <Content Include="BuiltinFilters\EdgeDetect3X3.txt" />
-    <Content Include="BuiltinFilters\EdgeDetect3X3Any.txt" />
-    <Content Include="BuiltinFilters\EdgeDetect5X5Deg45.txt" />
-    <Content Include="BuiltinFilters\EdgeDetect5X5Horiz.txt" />
-    <Content Include="BuiltinFilters\EdgeDetect5X5Vert.txt" />
-    <Content Include="BuiltinFilters\EdgeEnhance3X3.txt" />
-    <Content Include="BuiltinFilters\Emboss3X3.txt" />
-    <Content Include="BuiltinFilters\MotionBlur9X9Tlbr.txt" />
-    <Content Include="BuiltinFilters\Sharpen3X3.txt" />
-    <Content Include="BuiltinFilters\Sharpen5X5.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\Blur3X3Average.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\Blur3X3HvAverage.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\EdgeDetect3X3.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\EdgeDetect3X3Any.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\EdgeDetect5X5Deg45.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\EdgeDetect5X5Horiz.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\EdgeDetect5X5Vert.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\EdgeEnhance3X3.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\Emboss3X3.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\MotionBlur9X9Tlbr.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\Sharpen3X3.txt" />
+    <Content Include="ModuleFilter\BuiltinFilters\Sharpen5X5.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

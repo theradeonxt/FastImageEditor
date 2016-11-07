@@ -16,21 +16,21 @@ namespace VectorImageEdit.Controllers
     /// </summary>
     class ExternalEventsController
     {
-        private readonly AppWindow _appView;
-        private readonly ExternalEventsModel _model;
+        private readonly AppWindow view;
+        private readonly ExternalEventsModel model;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ExternalEventsController(AppWindow appView, ExternalEventsModel model)
+        public ExternalEventsController(AppWindow view, ExternalEventsModel model)
         {
-            _appView = appView;
-            _model = model;
+            this.view = view;
+            this.model = model;
 
-            _appView.AddSaveVectorListener(new SaveVectorListener(this));
-            _appView.AddOpenVectorListener(new OpenVectorListener(this));
-            _appView.AddExportFileListener(new ExportScenePreviewListener(this));
-            _appView.AddOpenFileListener(new OpenImagesListener(this));
-            _appView.AddDragDropFileListener(new DragDropFileListener(this));
-            _appView.AddDragEnterListener(new DragEnterListener(this));
+            this.view.AddSaveVectorListener(new SaveVectorListener(this));
+            this.view.AddOpenVectorListener(new OpenVectorListener(this));
+            this.view.AddExportFileListener(new ExportScenePreviewListener(this));
+            this.view.AddOpenFileListener(new OpenImagesListener(this));
+            this.view.AddDragDropFileListener(new DragDropFileListener(this));
+            this.view.AddDragEnterListener(new DragEnterListener(this));
         }
 
         private class SaveVectorListener : AbstractListener<ExternalEventsController>, IListener
@@ -47,7 +47,7 @@ namespace VectorImageEdit.Controllers
                 string result = factory.CreateDialog("Save Layer Data",
                     string.Format("Vector data|*{0}", AppModel.Instance.VectorFileExtension));
 
-                bool status = Controller._model.TryExportVector(new VectorExporter(result));
+                bool status = Controller.model.TryExportVector(new VectorExporter(result));
                 if (!status)
                 {
                     MessageBoxFactory.Create("Error",
@@ -73,7 +73,7 @@ namespace VectorImageEdit.Controllers
                 
                 try
                 {
-                    Controller._model.OpenVectorDeserialize(result);
+                    Controller.model.OpenVectorDeserialize(result);
                 }
                 catch (Exception ex)
                 {
@@ -101,7 +101,7 @@ namespace VectorImageEdit.Controllers
                      ImagingHelpers.GetSupportedImagesFilter(),
                      2);
 
-                bool status = Controller._model.TryExportScenePreview(new ImageExporter(result));
+                bool status = Controller.model.TryExportScenePreview(new ImageExporter(result));
                 if (!status)
                 {
                     MessageBoxFactory.Create("Error",
@@ -181,19 +181,19 @@ namespace VectorImageEdit.Controllers
             {
                 bw.DoWork += (obj, workEvent) =>
                 {
-                    workEvent.Result = _model.LoadImageFiles((string[]) workEvent.Argument, bw.ReportProgress);
+                    workEvent.Result = model.LoadImageFiles((string[]) workEvent.Argument, bw.ReportProgress);
                 };
                 bw.ProgressChanged += (obj, progressEvent) =>
                 {
                     int percentage = progressEvent.ProgressPercentage;
-                    _appView.StatusProgressbarPercentage = percentage;
-                    _appView.StatusLabelText = @"Loading " + percentage + @"/" + fileNames.Length + @" images...";
+                    view.StatusProgressbarPercentage = percentage;
+                    view.StatusLabelText = @"Loading " + percentage + @"/" + fileNames.Length + @" images...";
                 };
                 bw.RunWorkerCompleted += (obj, completeEvent) =>
                 {
-                    _model.LoadImageLayers((List<Bitmap>) completeEvent.Result);
-                    _appView.StatusProgressbarPercentage = 0;
-                    _appView.StatusLabelText = @"No action";
+                    model.LoadImageLayers((List<Bitmap>) completeEvent.Result);
+                    view.StatusProgressbarPercentage = 0;
+                    view.StatusLabelText = @"No action";
                 };
                 bw.RunWorkerAsync(fileNames);
             }

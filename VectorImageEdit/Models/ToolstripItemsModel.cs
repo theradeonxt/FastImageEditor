@@ -11,13 +11,13 @@ namespace VectorImageEdit.Models
         /// <summary>
         /// Define the actions at creation of every shape (when triggered from the GUI)
         /// </summary>
-        private readonly Dictionary<string, DefaultShapeFactory.ShapeCreator> _shapeActionMap;
+        private readonly Dictionary<string, DefaultShapeFactory.ShapeCreator> shapeActionMap;
 
         public ToolstripItemsModel()
         {
             ColorMode = ColorType.PrimaryColor;
 
-            _shapeActionMap = new Dictionary<string, DefaultShapeFactory.ShapeCreator>
+            shapeActionMap = new Dictionary<string, DefaultShapeFactory.ShapeCreator>
             {
                 {"circle", DefaultShapeFactory.CreateCircle},
                 {"square",  DefaultShapeFactory.CreateSquare},
@@ -46,7 +46,7 @@ namespace VectorImageEdit.Models
                 var style = ShapeStyleBuilder.CreateShapeStyle(global.PrimaryColor,
                     global.SecondaryColor, global.ShapeEdgeSize);
 
-                var shape = _shapeActionMap[shapeName](size, style);
+                var shape = shapeActionMap[shapeName](size, style);
                 global.LayerManager.Add(shape);
             }
             catch (NotImplementedException) { }

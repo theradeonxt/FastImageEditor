@@ -1,11 +1,41 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using VectorImageEdit.Modules.GraphicsCompositing;
 using VectorImageEdit.WindowsFormsBridge;
 
 namespace VectorImageEdit.Views.Main
 {
-    public partial class AppWindow
+    public partial class AppWindow : IGraphicsSurface
     {
+        #region IGraphicsSurface Implementation
+
+        public int GraphicsHeight
+        {
+            get { return WorkspaceSize.Height; }
+        }
+
+        public int GraphicsWidth
+        {
+            get { return WorkspaceSize.Width; }
+        }
+
+        public Size GraphicsSize
+        {
+            get { return WorkspaceSize; }
+        }
+
+        public Color GraphicsBackground
+        {
+            get { return pboxWorkspaceRegion.BackColor; }
+        }
+
+        public Graphics GetGraphics()
+        {
+            return pboxWorkspaceRegion.CreateGraphics();
+        }
+
+        #endregion
+
         public Size WorkspaceSize
         {
             get { return pboxWorkspaceRegion.Size; }
@@ -13,15 +43,15 @@ namespace VectorImageEdit.Views.Main
 
         public void AddWorkspaceMouseDownListener(IMouseListener listener)
         {
-            WorkspaceArea.MouseDown += listener.ActionPerformed;
+            pboxWorkspaceRegion.MouseDown += listener.ActionPerformed;
         }
         public void AddWorkspaceMouseMoveListener(IMouseListener listener)
         {
-            WorkspaceArea.MouseMove += listener.ActionPerformed;
+            pboxWorkspaceRegion.MouseMove += listener.ActionPerformed;
         }
         public void AddWorkspaceMouseUpListener(IMouseListener listener)
         {
-            WorkspaceArea.MouseUp += listener.ActionPerformed;
+            pboxWorkspaceRegion.MouseUp += listener.ActionPerformed;
         }
 
         public void SetLayerResizeCursor()

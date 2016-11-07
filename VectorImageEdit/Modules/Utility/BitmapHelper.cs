@@ -5,25 +5,32 @@ using JetBrains.Annotations;
 
 namespace VectorImageEdit.Modules.Utility
 {
+    /// <summary>
+    /// Helper class to deal with the properties of an image in memory.
+    /// Provides low-level memory access to the underlying image, safely,
+    /// and methods to query various image parameters.
+    /// Note: do not rely on thread-safety. Not handled here.
+    /// </summary>
     class BitmapHelper : IDisposable
     {
         /// <summary>
         /// Creates a helper object to access the bitmap data held by the input image. 
         /// 
-        /// Note1: This locks the image data for reading/writing,
-        ///        the caller must release this resource to unlock the image data.
-        /// Note2: Warning! Use this only in a thread that created the Bitmap.
+        /// Notes: 
+        ///     - This locks the image data for reading/writing, to unlock the image
+        ///         the caller must use a using or Dispose construct.
+        ///     - Use this only in the thread that originally created the Bitmap.
         /// 
         /// </summary>
-        // <param name="img"> Input image </param>
+        /// <param name="img"> Input image </param>
         public BitmapHelper([NotNull]Bitmap img)
         {
             BitmapData bmd = img.LockBits(new Rectangle(0, 0, img.Width, img.Height),
                 ImageLockMode.ReadWrite,
                 img.PixelFormat);
 
-            SourceData = bmd;
-            SourceImage = img;
+            ImageInfo = bmd;
+            ImageData = img;
             ImageParameters(bmd);
 
             // If the above operations failed, an exception will be handled by the caller;
@@ -38,7 +45,8 @@ namespace VectorImageEdit.Modules.Utility
         {
             if (Locked)
             {
-                SourceImage.UnlockBits(SourceData);
+                ImageData.UnlockBits(ImageInfo);
+                Locked = false;
             }
         }
 
@@ -50,15 +58,15 @@ namespace VectorImageEdit.Modules.Utility
         /// <summary>
         /// Returns a pointer to the last pixel in the image.
         /// </summary>
-        public unsafe byte* End { get; private set; }
+        public unsafe byte* Last { get; private set; }
 
         /// <summary>
-        /// Returns the size of the image pixel.
+        /// Returns the size of the image pixel (bytes taken).
         /// </summary>
         public uint PixelSize { get; private set; }
 
         /// <summary>
-        /// Returns the (padded) size of an entire row of image pixels.
+        /// Returns the (padded) size of an entire row of image pixels (bytes).
         /// </summary>
         public uint Stride { get; private set; }
 
@@ -67,13 +75,24 @@ namespace VectorImageEdit.Modules.Utility
         /// </summary>
         public uint SizeBytes { get; private set; }
 
+        /// <summary>
+        /// Gets the image width in pixels.
+        /// </summary>
         public int Width { get; private set; }
+
+        /// <summary>
+        /// Gets the image height in pixels.
+        /// </summary>
         public int Height { get; private set; }
 
+        #region Private Members
+
         [NotNull]
-        private BitmapData SourceData { get; set; }
+        private BitmapData ImageInfo { get; set; }
+
         [NotNull]
-        private Bitmap SourceImage { get; set; }
+        private Bitmap ImageData { get; set; }
+
         private bool Locked { get; set; }
 
         private void ImageParameters([NotNull]BitmapData bmd)
@@ -91,7 +110,7 @@ namespace VectorImageEdit.Modules.Utility
                 default:
                     throw new ArgumentException("UnsupportedImageFormat Exception");
             }
-            if (bmd.Stride < 0)
+            if (bmd.Stride < 0) // FIXME: Handle negative strides too
             {
                 throw new ArgumentException("UnsupportedImageStride Exception");
             }
@@ -100,11 +119,21 @@ namespace VectorImageEdit.Modules.Utility
                 Stride = (uint)Math.Abs(bmd.Stride);
                 SizeBytes = (uint)(Stride * bmd.Height);
                 Start = (byte*)(void*)bmd.Scan0;
-                End = Start + SizeBytes - 1;
 
-                Width = SourceImage.Width;
-                Height = SourceImage.Height;
+                if (SizeBytes == 1) // special case of 1 pixel
+                {
+                    Last = Start;
+                }
+                else // general pixel count
+                {
+                    Last = Start + SizeBytes - 1;
+                }
+
+                Width = ImageData.Width;
+                Height = ImageData.Height;
             }
         }
+
+        #endregion
     }
 }

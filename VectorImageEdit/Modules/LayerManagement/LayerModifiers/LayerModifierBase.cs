@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NLog;
+using VectorImageEdit.Modules.GraphicsCompositing;
 using VectorImageEdit.Modules.Interfaces;
 
 namespace VectorImageEdit.Modules.LayerManagement.LayerModifiers

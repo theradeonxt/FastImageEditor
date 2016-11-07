@@ -1,8 +1,8 @@
 
 #include "stdafx.h"
 
-#include "GlobalConfig.h"
-#include "ConfigTestAdaptor.h"
+#include "ModuleInterface.h"
+#include "ConfigTestAdaptor.hpp"
 
 using namespace System;
 using namespace System::Text;
@@ -19,47 +19,63 @@ namespace ImageProcessingTests
         // Tests changing Multicore implementation between two states: enabled & disabled
         //
         [TestMethod]
-        void MulticoreStatusChange()
+        void MulticoreStatusChangeSucceeds()
         {
             auto& moduleList = TestSetup::GetModuleList();
             for (auto& module : moduleList)
             {
-                auto statusMT = GetMultiThreadingStatus(module.c_str());
-                Assert::IsTrue(statusMT != StatusCode::OperationFailed);
+                // set to disabled and expect to get back disabled
+                auto statusSet = SetMultiThreadingStatus(module.c_str(), 0);
+                Assert::IsTrue(statusSet == StatusCode::OperationSuccess);
 
-                auto newStatusMT = !statusMT;
+                auto statusGet = GetMultiThreadingStatus(module.c_str());
+                Assert::IsTrue(statusGet != StatusCode::OperationFailed);
+                Assert::IsTrue(statusGet == 0);
 
-                auto result = SetMultiThreadingStatus(module.c_str(), newStatusMT);
-                Assert::IsTrue(result == StatusCode::OperationSuccess);
+                // set to enabled and expect to get back enabled
+                statusSet = SetMultiThreadingStatus(module.c_str(), 1);
+                Assert::IsTrue(statusSet == StatusCode::OperationSuccess);
 
-                auto statusMTAfter = GetMultiThreadingStatus(module.c_str());
-                Assert::IsTrue(statusMT != statusMTAfter);
-                Assert::IsTrue(statusMTAfter != StatusCode::OperationFailed);
+                statusGet = GetMultiThreadingStatus(module.c_str());
+                Assert::IsTrue(statusGet != StatusCode::OperationFailed);
+                Assert::IsTrue(statusGet == 1);
             }
         }
 
         //
-        // Tests for availability of Reference and SSE2 implementations
-        // These are considered the baseline for every module
+        // Tests for availability of Reference
         //
         [TestMethod]
-        void BaselineImplementationQuery()
+        void ModulesShouldHaveReferenceImplementation()
         {
             auto& moduleList = TestSetup::GetModuleList();
             for (auto& module : moduleList)
             {
                 auto status = QueryAvailableImplementation(module.c_str(), SIMDLevel::None);
                 Assert::IsTrue(status == OperationSuccess);
+            }
+        }
 
-                status = QueryAvailableImplementation(module.c_str(), SIMDLevel::SSE2);
+        //
+        // Tests for availability of SSE2 implementations
+        //
+        [TestMethod]
+        void ModulesShouldHaveSSE2Implementation()
+        {
+            auto& moduleList = TestSetup::GetModuleList();
+            for (auto& module : moduleList)
+            {
+                auto status = QueryAvailableImplementation(module.c_str(), SIMDLevel::SSE2);
                 Assert::IsTrue(status == OperationSuccess);
             }
         }
 
+        //
         // Tests changing the optimization level of modules 
         // This cycles the different levels a module has and changes them, then reverts back
+        //
         [TestMethod]
-        void SIMDLevelChange()
+        void SIMDLevelChangeSucceeds()
         {
             auto& moduleList = TestSetup::GetModuleList();
             for (auto& module : moduleList)
@@ -82,6 +98,31 @@ namespace ImageProcessingTests
                     statusGet = GetImplementationLevel(module.c_str());
                     Assert::IsTrue(statusGet != OperationFailed);
                     Assert::IsTrue(statusGet == level);
+                }
+            }
+        }
+
+        //
+        // Tests that trying to change to an unavailable implementation is not permitted
+        //
+        [TestMethod]
+        void SetUnavailableSIMDLevelShouldFail()
+        {
+            auto& moduleList = TestSetup::GetModuleList();
+            for (auto& module : moduleList)
+            {
+                // try to set an invalid level and expact to fail
+                for (auto level : TestSetup::GetUnavailableLevels(module))
+                {
+                    auto statusGet = GetImplementationLevel(module.c_str());
+                    Assert::IsTrue(statusGet != OperationFailed);
+
+                    auto statusSet = SetImplementationLevel(module.c_str(), level);
+                    Assert::IsTrue(statusSet == OperationFailed);
+
+                    auto statusGet2 = GetImplementationLevel(module.c_str());
+                    Assert::IsTrue(statusGet != OperationFailed);
+                    Assert::IsTrue(statusGet == statusGet2);
                 }
             }
         }

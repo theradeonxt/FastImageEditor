@@ -12,11 +12,11 @@ namespace VectorImageEdit.Modules.GraphicsCompositing
     /// </summary>
     public class GraphicsProfiler
     {
-        private readonly Stopwatch _timer;
+        private readonly Stopwatch timer;
 
         public GraphicsProfiler()
         {
-            _timer = new Stopwatch();
+            timer = new Stopwatch();
             ClearFrameDuration = RasterizeObjectsDuration = DrawFrameDuration = 0;
         }
 
@@ -39,11 +39,11 @@ namespace VectorImageEdit.Modules.GraphicsCompositing
 
         private long ProfileInternal(Action method)
         {
-            _timer.Reset();
-            _timer.Start();
+            timer.Reset();
+            timer.Start();
             method();
-            _timer.Stop();
-            return _timer.ElapsedMilliseconds;
+            timer.Stop();
+            return timer.ElapsedMilliseconds;
         }
     }
 }

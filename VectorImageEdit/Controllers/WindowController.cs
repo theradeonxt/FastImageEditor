@@ -10,16 +10,16 @@ namespace VectorImageEdit.Controllers
     /// </summary>
     class WindowController
     {
-        private readonly AppWindow _appView;
-        private readonly WindowModel _model;
+        private readonly AppWindow view;
+        private readonly WindowModel model;
 
-        public WindowController(AppWindow appView, WindowModel model)
+        public WindowController(AppWindow view, WindowModel model)
         {
-            _appView = appView;
-            _model = model;
+            this.view = view;
+            this.model = model;
 
-            _appView.AddWindowSizeChangedListener(new WindowSizeChangedListener(this));
-            _appView.AddWindowMovedListener(new WindowMovedListener(this));
+            this.view.AddWindowSizeChangedListener(new WindowSizeChangedListener(this));
+            this.view.AddWindowMovedListener(new WindowMovedListener(this));
         }
 
         private class WindowSizeChangedListener : AbstractListener<WindowController>, IListener
@@ -31,7 +31,7 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                Controller._model.WorkspaceResize(Controller._appView.WorkspaceSize);
+                Controller.model.WorkspaceResize(Controller.view.WorkspaceSize);
             }
         }
         private class WindowMovedListener : AbstractListener<WindowController>, IListener
@@ -43,7 +43,7 @@ namespace VectorImageEdit.Controllers
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                Controller._model.AppWindowMove();
+                Controller.model.AppWindowMove();
             }
         }
     }

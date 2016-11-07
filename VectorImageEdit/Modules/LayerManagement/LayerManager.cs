@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;  // TODO: Fix
 using JetBrains.Annotations;
+using VectorImageEdit.Modules.BasicShapes;
 using VectorImageEdit.Modules.GraphicsCompositing;
 using VectorImageEdit.Modules.Interfaces;
 using VectorImageEdit.Modules.LayerManagement.LayerModifiers;
@@ -28,94 +28,102 @@ namespace VectorImageEdit.Modules.LayerManagement
     /// </summary>
     public class LayerManager : GraphicsManager, ILayerHandler
     {
-        private readonly SortedContainer<Layer> _activeLayers;
-        private readonly GenericModifier _modifiers;
+        private readonly SortedContainer<Layer> activeLayers;
+        private readonly GenericModifier modifiers;
 
-        public LayerManager(Control formControl,
-            Action<GraphicsProfiler> graphicsUpdateCallback)
-            : base(formControl, graphicsUpdateCallback)
+        public LayerManager(IGraphicsSurface surfaceInfo, Action<GraphicsProfiler> graphicsUpdateCallback)
+            : base(surfaceInfo, graphicsUpdateCallback)
         {
-            _modifiers = new GenericModifier(this, this);
+            modifiers = new GenericModifier(this, this);
 
-            _activeLayers = new SortedContainer<Layer>();
-            
+            activeLayers = new SortedContainer<Layer>();
+
             InsertionPolicy = InsertionPolicy.BringToFront;
         }
 
+        #region Properties
+
         public InsertionPolicy InsertionPolicy { get; set; }
-        public SortedContainer<Layer> WorkspaceLayers { get { return _activeLayers; } }
+
+        public SortedContainer<Layer> WorkspaceLayers { get { return activeLayers; } }
+
+        [NotNull]
+        public List<Layer> LayersList
+        {
+            get { return activeLayers.ToList(); }
+        }
+
+        [NotNull]
+        public List<Layer> ShapesList
+        {
+            get { return activeLayers.Where(layer => !(layer is Picture)).ToList(); }
+        }
+
+        #endregion
 
         public void Add([NotNull]Layer newLayer)
         {
             if (InsertionPolicy == InsertionPolicy.BringToFront) ApplyModifier("BringToFront", newLayer);
 
-            _activeLayers.Add(newLayer);
+            activeLayers.Add(newLayer);
             //_layerListChangedCallback();
 
-            UpdateFrame(_activeLayers, RenderingPolicyFactory.MinimalUpdatePolicy(newLayer.Region));
+            UpdateFrame(activeLayers, RenderingPolicy.MinimalUpdatePolicy(newLayer.Region));
         }
+
         public void AddRange([NotNull]List<Layer> newLayers)
         {
             BoundingRectangle boundRect = new BoundingRectangle();
-            
+
             foreach (Layer layer in newLayers)
             {
                 if (InsertionPolicy == InsertionPolicy.BringToFront) ApplyModifier("BringToFront", layer);
-                _activeLayers.Add(layer);
+                activeLayers.Add(layer);
 
                 boundRect.EnlargeToFit(layer.Region);
             }
 
             //_layerListChangedCallback();
 
-            UpdateFrame(_activeLayers, RenderingPolicyFactory.MinimalUpdatePolicy(boundRect.Region));
+            UpdateFrame(activeLayers, RenderingPolicy.MinimalUpdatePolicy(boundRect.Region));
         }
+
         public void Remove([NotNull]Layer existingLayer)
         {
             Rectangle oldRegion = existingLayer.Region;
 
             // Do necessary cleanup operations
-            _activeLayers.Remove(existingLayer);
+            activeLayers.Remove(existingLayer);
             //_layerListChangedCallback();
             existingLayer.Dispose();
 
-            UpdateFrame(_activeLayers, RenderingPolicyFactory.MinimalUpdatePolicy(oldRegion));
+            UpdateFrame(activeLayers, RenderingPolicy.MinimalUpdatePolicy(oldRegion));
         }
+
         public void RemoveAll()
         {
             BoundingRectangle boundRect = new BoundingRectangle();
 
-            foreach (Layer layer in _activeLayers)
+            foreach (Layer layer in activeLayers)
             {
                 boundRect.EnlargeToFit(layer.Region);
                 layer.Dispose();
             }
-            _activeLayers.Clear();
+            activeLayers.Clear();
             //_layerListChangedCallback();
 
-            UpdateFrame(_activeLayers, RenderingPolicyFactory.MinimalUpdatePolicy(boundRect.Region));
+            UpdateFrame(activeLayers, RenderingPolicy.MinimalUpdatePolicy(boundRect.Region));
         }
 
         public void ApplyModifier([CanBeNull]string modifierName, [NotNull]Layer layer)
         {
-            _modifiers.ApplyModifier(layer, modifierName);
-        }
-        
-        [NotNull]
-        public List<Layer> GetLayers()
-        {
-            return _activeLayers.ToList();
-        }
-        [NotNull]
-        public List<Layer> GetShapesList()
-        {
-            return _activeLayers.Where(layer => !(layer is Picture)).ToList();
+            modifiers.ApplyModifier(layer, modifierName);
         }
 
-        private void ObjectUpdateCallback(Rectangle objectRegion, IRenderingPolicy renderPolicy)
+        private void ObjectUpdateCallback(Rectangle objectRegion, [NotNull]IRenderingPolicy renderPolicy)
         {
             // Update the invaidated frame region
-            UpdateFrame(_activeLayers, renderPolicy);
+            UpdateFrame(activeLayers, renderPolicy);
 
             // Redraw the selection rectangle over the frame
             UpdateSelection(objectRegion);

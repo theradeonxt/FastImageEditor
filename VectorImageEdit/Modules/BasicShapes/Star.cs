@@ -14,6 +14,12 @@ namespace VectorImageEdit.Modules.BasicShapes
 
         public override void DrawGraphics(Graphics destination)
         {
+            DrawGraphics();
+            throw new NotImplementedException();
+        }
+
+        public override void ConstructFrom(Rectangle region)
+        {
             throw new NotImplementedException();
         }
     }

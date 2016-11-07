@@ -10,6 +10,7 @@ namespace VectorImageEdit.Modules.BasicShapes
         public Color EdgeColor { get; set; }
         public Color FillColor { get; set; }
         public float EdgeSize { get; set; }
+        public DashStyle LineDash { get; set; }
 
         /// <summary>
         /// Obtains a new Brush from the style parameters
@@ -20,7 +21,7 @@ namespace VectorImageEdit.Modules.BasicShapes
         {
             return new HatchBrush(HatchStyle.Cross, FillColor, FillColor);
         }
-        
+
         /// <summary>
         // Obtains a new Pen from this ShapeStyle instance
         /// Note: use this in a using construct to auto-dispose!
@@ -28,7 +29,7 @@ namespace VectorImageEdit.Modules.BasicShapes
         /// <returns> The new Pen </returns>
         public Pen CreatePen()
         {
-            return new Pen(EdgeColor, EdgeSize);
+            return new Pen(EdgeColor, EdgeSize) { DashStyle = LineDash };
         }
     }
 }

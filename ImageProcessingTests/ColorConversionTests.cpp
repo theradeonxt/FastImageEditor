@@ -2,8 +2,8 @@
 #include "stdafx.h"
 
 #include "ImageProcessing.h"
-#include "GlobalConfig.h"
-#include "ConfigTestAdaptor.h"
+#include "ModuleInterface.h"
+#include "ConfigTestAdaptor.hpp"
 
 using namespace System;
 using namespace System::Text;
