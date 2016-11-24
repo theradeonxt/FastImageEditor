@@ -41,6 +41,7 @@
             this.pictureBoxFilterOutput = new System.Windows.Forms.PictureBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btnLoadSource = new System.Windows.Forms.Button();
+            this.btnApplyKernel = new System.Windows.Forms.Button();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFilterInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxFilterOutput)).BeginInit();
@@ -189,6 +190,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.btnApplyKernel);
             this.splitContainer1.Panel2.Controls.Add(this.pictureBoxFilterOutput);
             this.splitContainer1.Size = new System.Drawing.Size(554, 299);
             this.splitContainer1.SplitterDistance = 266;
@@ -203,6 +205,16 @@
             this.btnLoadSource.TabIndex = 4;
             this.btnLoadSource.Text = "Load Image...";
             this.btnLoadSource.UseVisualStyleBackColor = true;
+            // 
+            // btnApplyKernel
+            // 
+            this.btnApplyKernel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnApplyKernel.Location = new System.Drawing.Point(0, 276);
+            this.btnApplyKernel.Name = "btnApplyKernel";
+            this.btnApplyKernel.Size = new System.Drawing.Size(284, 23);
+            this.btnApplyKernel.TabIndex = 5;
+            this.btnApplyKernel.Text = "Apply Kernel";
+            this.btnApplyKernel.UseVisualStyleBackColor = true;
             // 
             // ModuleFilterUi
             // 
@@ -239,6 +251,7 @@
         private System.Windows.Forms.PictureBox pictureBoxFilterOutput;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button btnLoadSource;
+        private System.Windows.Forms.Button btnApplyKernel;
 
     }
 }

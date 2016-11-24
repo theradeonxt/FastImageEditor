@@ -1,9 +1,9 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using JetBrains.Annotations;
 
-namespace VectorImageEdit.Modules.Utility
+namespace ImageProcessingNET
 {
     /// <summary>
     /// Helper class to deal with the properties of an image in memory.
@@ -11,7 +11,7 @@ namespace VectorImageEdit.Modules.Utility
     /// and methods to query various image parameters.
     /// Note: do not rely on thread-safety. Not handled here.
     /// </summary>
-    class BitmapHelper : IDisposable
+    public class BitmapHelper : IDisposable
     {
         /// <summary>
         /// Creates a helper object to access the bitmap data held by the input image. 

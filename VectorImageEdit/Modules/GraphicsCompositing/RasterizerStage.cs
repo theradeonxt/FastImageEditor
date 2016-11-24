@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ImageProcessingNET;
+using JetBrains.Annotations;
+using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using NLog;
 using VectorImageEdit.Modules.BasicShapes;
 using VectorImageEdit.Modules.LayerManagement;
 using VectorImageEdit.Modules.Utility;

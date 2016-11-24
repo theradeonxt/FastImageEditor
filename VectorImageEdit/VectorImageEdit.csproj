@@ -164,7 +164,6 @@
     <Compile Include="Modules\LayerManagement\LayerModifiers\ModifierType.cs" />
     <Compile Include="Modules\LayerManagement\LayerModifiers\SendBackwardModifier.cs" />
     <Compile Include="Modules\LayerManagement\LayerModifiers\SendToBackModifier.cs" />
-    <Compile Include="Modules\Utility\BitmapHelper.cs" />
     <Compile Include="Modules\ImportExports\VectorSerializer.cs" />
     <Compile Include="Views\Main\AppWindow.cs">
       <SubType>Form</SubType>
@@ -324,7 +323,12 @@
   <ItemGroup>
     <None Include="Resources\Memory Slot-50.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ImageProcessingNET\ImageProcessingNET.csproj">
+      <Project>{41cb7825-641c-41fd-91dc-ead96a58b3c7}</Project>
+      <Name>ImageProcessingNET</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

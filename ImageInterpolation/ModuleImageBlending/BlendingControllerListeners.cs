@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using ImageProcessingNET;
 
 namespace ImageInterpolation.ModuleImageBlending
 {
@@ -57,11 +58,11 @@ namespace ImageInterpolation.ModuleImageBlending
                 float perc = (float)self.view.TrackbarValue / self.view.TrackbarMax;
                 self.view.BlendingPercentage = perc;
 
-                ImageProcessingFramework.ImageAlphaBlend(self.modelImages.Source, self.modelImages.Target, 
+                ImageProcessingApi.ImageAlphaBlend(self.modelImages.Source, self.modelImages.Target, 
                     self.modelImages.Output);
-                self.statProcessing.Track(ImageProcessingFramework.LastOperationDuration);
+                self.statProcessing.Track(ImageProcessingApi.LastOperationDuration);
 
-                ImageProcessingFramework.ImageAlphaBlend(self.guiImages.Source, self.guiImages.Target,
+                ImageProcessingApi.ImageAlphaBlend(self.guiImages.Source, self.guiImages.Target,
                     self.guiImages.Output);
 
                 self.view.ProcessStats = @"Processing[ms] : " + self.statProcessing.LastValue();

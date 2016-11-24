@@ -13,7 +13,6 @@ namespace ImageInterpolation.ModuleFilter
         /// <param name="size"> Kernel size </param>
         /// <param name="values"> Kernel values </param>
         /// <returns> Filter instance </returns>
-
         public static Filter CustomFilter(int size, float[] values)
         {
             if (size % 2 == 0 ||
@@ -30,7 +29,6 @@ namespace ImageInterpolation.ModuleFilter
         /// </summary>
         /// <param name="type"> Builtin kernel desired </param>
         /// <returns> Filter object </returns>
-
         public static Filter BuiltinFilter(BuiltinKernel type)
         {
             float[] values = BuiltinFilters.Kernel(type);

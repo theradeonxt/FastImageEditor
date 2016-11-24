@@ -59,26 +59,20 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapUtility.cs" />
     <Compile Include="Common\ImageType.cs" />
+    <Compile Include="Common\InputOutputParams.cs" />
     <Compile Include="GuiView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GuiView.Designer.cs">
       <DependentUpon>GuiView.cs</DependentUpon>
     </Compile>
-    <Compile Include="BitmapHelper.cs" />
     <Compile Include="Common\IActionListener.cs" />
-    <Compile Include="ImageProcessingFramework.cs" />
     <Compile Include="ImagePropertiesUi.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -170,6 +164,12 @@
     <Content Include="ModuleFilter\BuiltinFilters\MotionBlur9X9Tlbr.txt" />
     <Content Include="ModuleFilter\BuiltinFilters\Sharpen3X3.txt" />
     <Content Include="ModuleFilter\BuiltinFilters\Sharpen5X5.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImageProcessingNET\ImageProcessingNET.csproj">
+      <Project>{41cb7825-641c-41fd-91dc-ead96a58b3c7}</Project>
+      <Name>ImageProcessingNET</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

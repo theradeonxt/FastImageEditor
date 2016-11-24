@@ -2,35 +2,11 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
-namespace ImageInterpolation
+namespace ImageProcessingNET
 {
-    static class ImageProcessingFramework
+    public static class ImageProcessingApi
     {
-        [DllImport("ImageProcessing.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern int Blend24bgr_24bgr(
-            byte* source,
-            byte* target,
-            byte* destination,
-            uint sizeBytes,
-            float percentage
-        );
-        [DllImport("ImageProcessing.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern int OpacityAdjust_32bgra(
-            byte* source,
-            byte* destination,
-            uint sizeBytes,
-            float percentage
-        );
-        [DllImport("ImageProcessing.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static unsafe extern int AlphaBlend32bgra_32bgra(
-            byte* source,
-            byte* target,
-            byte* destination,
-            uint sizeBytes
-        );
-
         public static Bitmap ImageInterpolate(Bitmap srcImage1, Bitmap srcImage2, float step)
         {
             var destHeight = Math.Min(srcImage1.Height, srcImage2.Height);
@@ -53,7 +29,7 @@ namespace ImageInterpolation
             {
                 unsafe
                 {
-                    Blend24bgr_24bgr(ibSrc1.Start, ibSrc2.Start, ibDest.Start, ibDest.SizeBytes, step);
+                    ImageProcessingWrapper.Blend24bgr_24bgr(ibSrc1.Start, ibSrc2.Start, ibDest.Start, ibDest.SizeBytes, step);
                 }
             }
 
@@ -79,7 +55,7 @@ namespace ImageInterpolation
                     byte* currentLineSrc1 = (byte*)src1Data.Scan0 + (y * stride);
                     byte* currentLineSrc2 = (byte*)src2Data.Scan0 + (y * stride);
                     byte* currentLineResult = (byte*)resultData.Scan0 + (y * stride);
-                    Blend24bgr_24bgr(currentLineSrc1, currentLineSrc2, currentLineResult, stride, step);
+                    ImageProcessingWrapper.Blend24bgr_24bgr(currentLineSrc1, currentLineSrc2, currentLineResult, stride, step);
                 });
 
                 resultImage.UnlockBits(resultData);
@@ -107,7 +83,7 @@ namespace ImageInterpolation
             {
                 unsafe
                 {
-                    OpacityAdjust_32bgra(ibSrc1.Start, ibDest.Start, ibDest.SizeBytes, step);
+                    ImageProcessingWrapper.OpacityAdjust_32bgra(ibSrc1.Start, ibDest.Start, ibDest.SizeBytes, step);
                 }
             }
 
@@ -129,7 +105,7 @@ namespace ImageInterpolation
             {
                 unsafe
                 {
-                    AlphaBlend32bgra_32bgra(ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes);
+                    ImageProcessingWrapper.AlphaBlend32bgra_32bgra(ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes);
                 }
             }
 
@@ -137,10 +113,50 @@ namespace ImageInterpolation
             LastOperationDuration = sw.ElapsedMilliseconds;
         }
 
+        public static void ConvolutionFilter(Bitmap srcImage, Bitmap dstImage, float[] kernel)
+        {
+            StaticCheckFormat(PixelFormat.Format32bppArgb, srcImage, dstImage);
+            StaticCheckSameSize(srcImage, dstImage);
+
+            using (var ibSrc = new BitmapHelper(srcImage))
+            using (var ibDest = new BitmapHelper(dstImage))
+            {
+                var stride = ibSrc.Stride;
+                var size = ibSrc.SizeBytes;
+                var kw = (uint)kernel.GetLength(0);
+                var kh = (uint)kernel.Length / kw;
+                unsafe
+                {
+                    ImageProcessingWrapper.ConvFilter_32bgra_ref(ibSrc.Start, ibDest.Start, size, stride, kernel, kw, kh);
+                }
+            }
+        }
+
         // TODO: static member is bad for thread safety
         public static long LastOperationDuration
         {
-            get; private set;
+            get;
+            private set;
+        }
+
+        private static void StaticCheckFormat(PixelFormat pixFmt, params Bitmap[] args)
+        {
+            foreach (var img in args)
+            {
+                Debug.Assert(img.PixelFormat == pixFmt);
+            }
+        }
+
+        private static void StaticCheckSameSize(params Bitmap[] args)
+        {
+            Size oldSz = Size.Empty, newSz = Size.Empty;
+            foreach (var img in args)
+            {
+                newSz = img.Size;
+                if (!newSz.IsEmpty && !oldSz.IsEmpty)
+                    Debug.Assert(newSz == oldSz);
+                oldSz = newSz;
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using ImageInterpolation.ModuleImageBlending;
 
 namespace ImageInterpolation.ModuleFilter
 {
@@ -11,11 +10,15 @@ namespace ImageInterpolation.ModuleFilter
         private static FilterController self;
         private InputOutputParams modelData;
         private InputOutputParams guiData;
+        private Filter selectedFilter;
 
         public FilterController(ModuleFilterUi view)
         {
             this.view = view;
             self = this;
+
+            modelData = new InputOutputParams();
+            guiData = new InputOutputParams();
 
             BuiltinFilters.Load();
             SetupUi();
@@ -26,6 +29,8 @@ namespace ImageInterpolation.ModuleFilter
             view.AddKernelTextChangedListener(new KernelTextChangedListener());
             view.AddBuiltinFilterChangedListener(new BuiltinFilterChangedListener());
             view.AddNormalizationChangedListener(new NormalizationChangedListener());
+            view.AddLoadSourceListener(new LoadSourceListener());
+            view.AddApplyFilterListener(new ApplyFilterListener());
 
             // initialize combobox items
             foreach (var builtinFilter in Enum.GetValues(typeof(BuiltinKernel)))
@@ -66,6 +71,11 @@ namespace ImageInterpolation.ModuleFilter
             view.KernelSizeProperty = "";
             view.NormalizeProperty = "";
             view.FilterTitleColor = Color.Salmon;
+        }
+
+        private void StoreSelectedFilter(Filter filter)
+        {
+            selectedFilter = filter;
         }
     }
 }

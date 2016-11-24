@@ -19,7 +19,7 @@ namespace ImageInterpolation.ModuleFilter
     static class BuiltinFilters
     {
         private const string FilterFileExtension = ".txt";
-        private const string FilterLocation = @"BuiltinFilters\";
+        private const string FilterLocation = "BuiltinFilters";
 
         private static readonly Dictionary<BuiltinKernel, float[]> Map =
         new Dictionary<BuiltinKernel, float[]>();
@@ -33,12 +33,14 @@ namespace ImageInterpolation.ModuleFilter
 
         public static void Load()
         {
+            Map.Clear();
+
             // Load saved standard filters
             Enum.GetValues((typeof(BuiltinKernel))).
                Cast<BuiltinKernel>().ToList().
                ForEach(filterId =>
                {
-                   string expectedFile = FilterLocation + filterId.ToString() + FilterFileExtension;
+                   string expectedFile = Path.Combine(FilterLocation, filterId.ToString() + FilterFileExtension);
                    if (File.Exists(expectedFile))
                    {
                        string kernelAsText = File.ReadAllText(expectedFile);

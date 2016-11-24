@@ -1,7 +1,8 @@
-﻿using System;
-using System.Drawing;
+﻿using ImageProcessingNET;
 using JetBrains.Annotations;
 using NLog;
+using System;
+using System.Drawing;
 using VectorImageEdit.Models;
 using VectorImageEdit.Modules.LayerManagement;
 using VectorImageEdit.Modules.Utility;

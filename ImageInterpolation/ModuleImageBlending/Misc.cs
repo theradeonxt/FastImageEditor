@@ -1,14 +1,5 @@
-﻿using System.Drawing;
-
-namespace ImageInterpolation.ModuleImageBlending
+﻿namespace ImageInterpolation.ModuleImageBlending
 {
-    class InputOutputParams
-    {
-        public Bitmap Source;
-        public Bitmap Target;
-        public Bitmap Output;
-    }
-
     class ValueStatistics
     {
         private double sum;

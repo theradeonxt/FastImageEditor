@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using ImageProcessingNET;
 
 namespace ImageInterpolation.ModuleFilter
 {
@@ -18,6 +19,7 @@ namespace ImageInterpolation.ModuleFilter
                         filter.Normalize(self.ActiveNormalization());
                     }
                     self.OnSuccessDisplayFilter(filter);
+                    self.StoreSelectedFilter(filter);
                 }
                 catch (FormatException)
                 {
@@ -31,9 +33,11 @@ namespace ImageInterpolation.ModuleFilter
             public void ActionPerformed(object sender, EventArgs e)
             {
                 // obtain builtin filter for selected item
-                BuiltinKernel builtin = (BuiltinKernel)Enum.Parse(typeof(BuiltinKernel), self.view.SelectedFilter);
+                BuiltinKernel builtin = (BuiltinKernel)Enum.Parse(typeof(BuiltinKernel),
+                    self.view.SelectedFilter);
                 Filter filter = FilterBuilder.BuiltinFilter(builtin);
                 self.OnSuccessDisplayFilter(filter);
+                self.StoreSelectedFilter(filter);
             }
         }
 
@@ -54,6 +58,15 @@ namespace ImageInterpolation.ModuleFilter
                 var file = ev.Data;
                 Image loaded = self.modelData.Source;
                 BitmapUtility.ExtractLocalImage(file, out loaded);
+            }
+        }
+
+        private class ApplyFilterListener : IActionListener
+        {
+            public void ActionPerformed(object sender, EventArgs e)
+            {
+                ImageProcessingApi.ConvolutionFilter(self.modelData.Source, self.modelData.Output,
+                    self.selectedFilter.Kernel);
             }
         }
     }

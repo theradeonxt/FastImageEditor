@@ -32,7 +32,7 @@ namespace ImageInterpolation
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.moduleBlendingUi1 = new ModuleBlendingUi();
+            this.moduleBlendingUi1 = new ImageInterpolation.ModuleImageBlending.ModuleBlendingUi();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.moduleFilterUi1 = new ImageInterpolation.ModuleFilterUi();
             this.labelProcessingTime = new System.Windows.Forms.Label();
@@ -67,6 +67,7 @@ namespace ImageInterpolation
             // 
             // moduleBlendingUi1
             // 
+            this.moduleBlendingUi1.BlendingPercentage = 0F;
             this.moduleBlendingUi1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.moduleBlendingUi1.Location = new System.Drawing.Point(3, 3);
             this.moduleBlendingUi1.Name = "moduleBlendingUi1";

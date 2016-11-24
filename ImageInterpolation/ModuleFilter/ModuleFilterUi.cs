@@ -51,7 +51,7 @@ namespace ImageInterpolation
 
         public void AddLoadSourceListener(IActionListener listener)
         {
-            btnLoadSource.Click += listener.ActionPerformed;
+            //btnLoadSource.Click += listener.ActionPerformed;
 
             btnLoadSource.Click += (sender, e) =>
             {
@@ -61,6 +61,11 @@ namespace ImageInterpolation
                     listener.ActionPerformed(pictureBoxFilterInput, new MyFileEventArgs(fileDialog.FileName));
                 }
             };
+        }
+
+        public void AddApplyFilterListener(IActionListener listener)
+        {
+            btnApplyKernel.Click += listener.ActionPerformed;
         }
     }
 }

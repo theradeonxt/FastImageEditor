@@ -1,4 +1,5 @@
 ﻿using ImageInterpolation.Properties;
+using ImageProcessingNET;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -162,7 +163,7 @@ namespace ImageInterpolation.ModuleImageBlending
         {
             generationTimer.Dispose();
 
-            guiImages.Output = ImageProcessingFramework.ImageInterpolate(
+            guiImages.Output = ImageProcessingApi.ImageInterpolate(
                 guiImages.Source, guiImages.Target, ProgressIncrement * iterationCount);
 
             view.ProcessStats = @"Processing[ms] : " + statProcessing.LastValue();
@@ -193,9 +194,9 @@ namespace ImageInterpolation.ModuleImageBlending
                 processingGuard.WaitOne();
                 processingGuard.Set();
 
-                modelImages.Output = ImageProcessingFramework.ImageInterpolate(
+                modelImages.Output = ImageProcessingApi.ImageInterpolate(
                     modelImages.Source, modelImages.Target, ProgressIncrement * iterationCount);
-                statProcessing.Track(ImageProcessingFramework.LastOperationDuration);
+                statProcessing.Track(ImageProcessingApi.LastOperationDuration);
                 ProcessingDone();
             }
             finally
