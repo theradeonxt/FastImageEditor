@@ -8,8 +8,7 @@ using System.IO;
 namespace ImageInterpolation
 {
     /// <summary>
-    /// Defines the quality level used for image transformations.
-    /// By default, ConversionQuality.LowQuality is used.
+    /// Defines the quality level used for BitmapUtility helper methods.
     /// </summary>
     public enum ConversionQuality
     {
@@ -24,7 +23,7 @@ namespace ImageInterpolation
     };
 
     /// <summary>
-    /// This specifies the relation between input and output image.
+    /// Specifies the relation between input and output image.
     /// </summary>
     public enum ConversionType
     {
@@ -38,6 +37,14 @@ namespace ImageInterpolation
         Overwrite
     };
 
+    /// <summary>
+    /// Specifies the type of resizing operation
+    /// </summary>
+    public enum ResizeType
+    {
+        Scaling, Crop
+    }
+
     static class BitmapUtility
     {
         /// <summary>
@@ -48,7 +55,6 @@ namespace ImageInterpolation
         /// <param name="format"> Desired PixelFormat </param>
         /// <param name="quality"> Conversion quality </param>
         /// <param name="type"> Conversion type </param>
-        /// <returns> Resulting image </returns>
         public static Bitmap ConvertToFormat(
             Bitmap img,
             PixelFormat format,
@@ -68,16 +74,17 @@ namespace ImageInterpolation
         }
 
         /// <summary>
-        ///     Scales the input image to a desired size using
+        ///     Applies a resize operation to the input image with the desired size using
         ///     a specified conversion quality and conversion type.
         /// </summary>
         /// <param name="img"> Input image </param>
         /// <param name="size"> Output size </param>
+        /// <param name="rType"> Resizing operation </param>
         /// <param name="quality"> Conversion quality </param>
         /// <param name="type"> Conversion type </param>
-        /// <returns> Resulting image </returns>
         public static Bitmap Resize(
             Bitmap img, Size size,
+            ResizeType rType = ResizeType.Scaling,
             ConversionQuality quality = ConversionQuality.LowQuality,
             ConversionType type = ConversionType.Copy)
         {
@@ -87,7 +94,16 @@ namespace ImageInterpolation
             using (var g = Graphics.FromImage(scaled))
             {
                 SetConversionQuality(g, quality);
-                g.DrawImage(img, new Rectangle(0, 0, size.Width, size.Height));
+                switch (rType)
+                {
+                    case ResizeType.Scaling:
+                        g.DrawImage(img, new Rectangle(0, 0, size.Width, size.Height));
+                        break;
+                    case ResizeType.Crop:
+                        g.DrawImageUnscaledAndClipped(img,
+                            new Rectangle(0, 0, size.Width, size.Height));
+                        break;
+                }
             }
             SetConversionType(ref img, scaled, type);
             return scaled;
@@ -98,7 +114,6 @@ namespace ImageInterpolation
         /// </summary>
         /// <param name="img"> Input image </param>
         /// <param name="type"> Conversion type </param>
-        /// <returns> Resulting image </returns>
         public static Bitmap Copy(Bitmap img, ConversionType type = ConversionType.Copy)
         {
             var bmp = new Bitmap(img.Width, img.Height, img.PixelFormat);
@@ -157,7 +172,10 @@ namespace ImageInterpolation
             }
         }
 
-        private static void SetConversionType(ref Bitmap original, Bitmap result, ConversionType type)
+        private static void SetConversionType(
+            ref Bitmap original,
+            Bitmap result,
+            ConversionType type)
         {
             switch (type)
             {

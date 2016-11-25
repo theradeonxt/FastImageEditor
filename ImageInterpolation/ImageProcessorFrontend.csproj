@@ -37,7 +37,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
     <CodeAnalysisRuleSet>ExtendedDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -65,7 +65,7 @@
   <ItemGroup>
     <Compile Include="BitmapUtility.cs" />
     <Compile Include="Common\ImageType.cs" />
-    <Compile Include="Common\InputOutputParams.cs" />
+    <Compile Include="Common\ImageContainer.cs" />
     <Compile Include="GuiView.cs">
       <SubType>Form</SubType>
     </Compile>

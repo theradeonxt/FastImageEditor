@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ImageProcessingNET;
+using System;
 using System.Drawing;
-using ImageProcessingNET;
 
 namespace ImageInterpolation.ModuleFilter
 {
@@ -56,8 +56,15 @@ namespace ImageInterpolation.ModuleFilter
             {
                 var ev = (MyFileEventArgs)e;
                 var file = ev.Data;
-                Image loaded = self.modelData.Source;
+                var set = self.dataSet;
+                var guiSize = self.view.GetSizeOf(sender);
+
+                Image loaded;
                 BitmapUtility.ExtractLocalImage(file, out loaded);
+
+                set.AddItem("SRC", (Bitmap)loaded, guiSize);
+
+                self.view.SetNewImage(sender, set.Item("SRC", ItemRole.Presentation));
             }
         }
 
@@ -65,8 +72,17 @@ namespace ImageInterpolation.ModuleFilter
         {
             public void ActionPerformed(object sender, EventArgs e)
             {
-                ImageProcessingApi.ConvolutionFilter(self.modelData.Source, self.modelData.Output,
+                var set = self.dataSet;
+
+                ImageProcessingApi.ConvolutionFilter(set.Item("SRC", ItemRole.Model),
+                    set.Item("DST", ItemRole.Model),
                     self.selectedFilter.Kernel);
+
+                ImageProcessingApi.ConvolutionFilter(set.Item("SRC", ItemRole.Presentation),
+                    set.Item("DST", ItemRole.Presentation),
+                    self.selectedFilter.Kernel);
+
+                self.view.SetNewImageOutput(set.Item("DST", ItemRole.Presentation));
             }
         }
     }

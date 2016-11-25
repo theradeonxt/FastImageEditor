@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -7,29 +6,19 @@ namespace ImageProcessingNET
 {
     public static class ImageProcessingApi
     {
-        public static Bitmap ImageInterpolate(Bitmap srcImage1, Bitmap srcImage2, float step)
+        public static void ImageInterpolate(Bitmap srcImg, Bitmap tarImg, Bitmap dstImg, float step)
         {
-            var destHeight = Math.Min(srcImage1.Height, srcImage2.Height);
-            var destWidth = Math.Min(srcImage1.Width, srcImage2.Width);
-
-            // TODO: maybe don't create Bitmap every time
-            var resultImage = new Bitmap(destWidth, destHeight, PixelFormat.Format24bppRgb);
-
-            // ensure same-sized inputs
-            // srcImage1 = Resize(srcImage1, resultImage.Size);
-            // srcImage2 = Resize(srcImage2, resultImage.Size);
-
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            StaticCheckFormat(PixelFormat.Format24bppRgb, srcImg, tarImg, dstImg);
+            StaticCheckSameSize(srcImg, tarImg, dstImg);
 
             // Less work for caller: let C++ handle threading
-            using (var ibSrc1 = new BitmapHelper(srcImage1))
-            using (var ibSrc2 = new BitmapHelper(srcImage2))
-            using (var ibDest = new BitmapHelper(resultImage))
+            using (var ibSrc = new BitmapHelper(srcImg))
+            using (var ibTar = new BitmapHelper(tarImg))
+            using (var ibDest = new BitmapHelper(dstImg))
             {
                 unsafe
                 {
-                    ImageProcessingWrapper.Blend24bgr_24bgr(ibSrc1.Start, ibSrc2.Start, ibDest.Start, ibDest.SizeBytes, step);
+                    ImageProcessingWrapper.Blend24bgr_24bgr(ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes, step);
                 }
             }
 
@@ -62,55 +51,33 @@ namespace ImageProcessingNET
                 srcImage1.UnlockBits(src1Data);
                 srcImage2.UnlockBits(src2Data);
             }*/
-
-            sw.Stop();
-            LastOperationDuration = sw.ElapsedMilliseconds;
-
-            return resultImage;
         }
 
-        public static Bitmap ImageOpacity(Bitmap srcImage, float step)
+        public static void ImageOpacity(Bitmap srcImg, Bitmap dstImg, float step)
         {
-            // TODO: maybe don't create Bitmap every time
-            var resultImage = new Bitmap(srcImage.Width, srcImage.Height, srcImage.PixelFormat);
-
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             // Less work for caller: let C++ handle threading
-            using (var ibSrc1 = new BitmapHelper(srcImage))
-            using (var ibDest = new BitmapHelper(resultImage))
+            using (var ibSrc = new BitmapHelper(srcImg))
+            using (var ibDest = new BitmapHelper(dstImg))
             {
                 unsafe
                 {
-                    ImageProcessingWrapper.OpacityAdjust_32bgra(ibSrc1.Start, ibDest.Start, ibDest.SizeBytes, step);
+                    ImageProcessingWrapper.OpacityAdjust_32bgra(ibSrc.Start, ibDest.Start, ibDest.SizeBytes, step);
                 }
             }
-
-            sw.Stop();
-            LastOperationDuration = sw.ElapsedMilliseconds;
-
-            return resultImage;
         }
 
-        public static void ImageAlphaBlend(Bitmap srcImage, Bitmap tarImage, Bitmap refImage)
+        public static void ImageAlphaBlend(Bitmap srcImg, Bitmap tarImg, Bitmap dstImg)
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             // Less work for caller: let C++ handle threading
-            using (var ibSrc = new BitmapHelper(srcImage))
-            using (var ibTar = new BitmapHelper(tarImage))
-            using (var ibDest = new BitmapHelper(refImage))
+            using (var ibSrc = new BitmapHelper(srcImg))
+            using (var ibTar = new BitmapHelper(tarImg))
+            using (var ibDest = new BitmapHelper(dstImg))
             {
                 unsafe
                 {
                     ImageProcessingWrapper.AlphaBlend32bgra_32bgra(ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes);
                 }
             }
-
-            sw.Stop();
-            LastOperationDuration = sw.ElapsedMilliseconds;
         }
 
         public static void ConvolutionFilter(Bitmap srcImage, Bitmap dstImage, float[] kernel)
@@ -130,13 +97,6 @@ namespace ImageProcessingNET
                     ImageProcessingWrapper.ConvFilter_32bgra_ref(ibSrc.Start, ibDest.Start, size, stride, kernel, kw, kh);
                 }
             }
-        }
-
-        // TODO: static member is bad for thread safety
-        public static long LastOperationDuration
-        {
-            get;
-            private set;
         }
 
         private static void StaticCheckFormat(PixelFormat pixFmt, params Bitmap[] args)

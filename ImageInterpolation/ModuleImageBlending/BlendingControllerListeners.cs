@@ -1,6 +1,7 @@
-﻿using System;
+﻿using ImageProcessingNET;
+using System;
+using System.Drawing;
 using System.Threading;
-using ImageProcessingNET;
 
 namespace ImageInterpolation.ModuleImageBlending
 {
@@ -13,14 +14,27 @@ namespace ImageInterpolation.ModuleImageBlending
             public void ActionPerformed(object sender, EventArgs e)
             {
                 var ev = (MyDragDropEventArgs<string[]>)e;
-                var files = ev.Data;
+                var file = ev.Data[0];
+                var set = self.dataSet;
+                var guiSize = self.view.GetSizeOf(sender);
+
+                Image loaded;
+                BitmapUtility.ExtractLocalImage(file, out loaded);
 
                 ImageType type = self.view.IsSource(sender) ? ImageType.Source : ImageType.Target;
-                var loaded = self.LoadSourceOrTarget(files[0], type);
-                var scaled = self.ScaleImage(loaded, self.view.GetSizeOf(sender));
-
-                self.view.SetNewImage(sender, scaled);
-                self.DisplayParameters(loaded, type);
+                switch (type)
+                {
+                    case ImageType.Source:
+                        set.AddItem("SRC", (Bitmap)loaded, guiSize);
+                        self.view.SetNewImage(sender, set.Item("SRC", ItemRole.Presentation));
+                        self.DisplayParameters(set.Item("SRC", ItemRole.Presentation), type);
+                        break;
+                    case ImageType.Target:
+                        set.AddItem("TAR", (Bitmap)loaded, guiSize);
+                        self.view.SetNewImage(sender, set.Item("TAR", ItemRole.Presentation));
+                        self.DisplayParameters(set.Item("TAR", ItemRole.Presentation), type);
+                        break;
+                }
             }
         }
 
@@ -29,14 +43,10 @@ namespace ImageInterpolation.ModuleImageBlending
             public void ActionPerformed(object sender, EventArgs e)
             {
                 var ev = (MyFileEventArgs)e;
-                var fileName = ev.Data;
+                var transport = new MyDragDropEventArgs<string[]>(new[] { ev.Data });
 
-                ImageType type = self.view.IsSource(sender) ? ImageType.Source : ImageType.Target;
-                var loaded = self.LoadSourceOrTarget(fileName, type);
-                var scaled = self.ScaleImage(loaded, self.view.GetSizeOf(sender));
-
-                self.view.SetNewImage(sender, scaled);
-                self.DisplayParameters(loaded, type);
+                new SourceImageDragDropListener()
+                    .ActionPerformed(sender, transport);
             }
         }
 
@@ -52,21 +62,25 @@ namespace ImageInterpolation.ModuleImageBlending
 
             public void ActionPerformed(object sender, EventArgs e)
             {
-                if (self.modelImages.Source == null || self.modelImages.Target == null)
+                var set = self.dataSet;
+
+                if (!set.InputImageCount(2))
                     return;
 
                 float perc = (float)self.view.TrackbarValue / self.view.TrackbarMax;
                 self.view.BlendingPercentage = perc;
 
-                ImageProcessingApi.ImageAlphaBlend(self.modelImages.Source, self.modelImages.Target, 
-                    self.modelImages.Output);
-                self.statProcessing.Track(ImageProcessingApi.LastOperationDuration);
+                using (self.statProcessing.Tracker)
+                {
+                    ImageProcessingApi.ImageAlphaBlend(set.Item("SRC", ItemRole.Model),
+                        set.Item("TAR", ItemRole.Model), set.Item("DST", ItemRole.Model));
+                }
 
-                ImageProcessingApi.ImageAlphaBlend(self.guiImages.Source, self.guiImages.Target,
-                    self.guiImages.Output);
+                ImageProcessingApi.ImageAlphaBlend(set.Item("SRC", ItemRole.Presentation),
+                    set.Item("TAR", ItemRole.Presentation), set.Item("DST", ItemRole.Presentation));
 
                 self.view.ProcessStats = @"Processing[ms] : " + self.statProcessing.LastValue();
-                self.view.SetNewImageOutput(self.guiImages.Output);
+                self.view.SetNewImageOutput(set.Item("DST", ItemRole.Presentation));
 
                 waitForActions = 1;
             }
@@ -85,7 +99,7 @@ namespace ImageInterpolation.ModuleImageBlending
         {
             public void ActionPerformed(object sender, EventArgs e)
             {
-                if (self.modelImages.Source == null || self.modelImages.Target == null)
+                if (!self.dataSet.InputImageCount(2))
                     return;
 
                 self.InitProcessingTimer();

@@ -8,8 +8,7 @@ namespace ImageInterpolation.ModuleFilter
     {
         private readonly ModuleFilterUi view;
         private static FilterController self;
-        private InputOutputParams modelData;
-        private InputOutputParams guiData;
+        private readonly ImageContainer dataSet;
         private Filter selectedFilter;
 
         public FilterController(ModuleFilterUi view)
@@ -17,8 +16,7 @@ namespace ImageInterpolation.ModuleFilter
             this.view = view;
             self = this;
 
-            modelData = new InputOutputParams();
-            guiData = new InputOutputParams();
+            dataSet = new ImageContainer();
 
             BuiltinFilters.Load();
             SetupUi();

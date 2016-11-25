@@ -1,7 +1,5 @@
-﻿using ImageInterpolation.Properties;
-using ImageProcessingNET;
+﻿using ImageProcessingNET;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
@@ -19,9 +17,8 @@ namespace ImageInterpolation.ModuleImageBlending
         readonly int progressIntervals;
         int iterationCount;
 
-        private readonly ValueStatistics statProcessing; // statistics for processing model images
-        private readonly InputOutputParams modelImages;  // images in data model (full size)
-        private readonly InputOutputParams guiImages;    // images shown on gui (prescaled)
+        private readonly ValueStatistics statProcessing;
+        private readonly ImageContainer dataSet;
 
         private int generateMs = 100;
         private Timer generationTimer;
@@ -35,8 +32,10 @@ namespace ImageInterpolation.ModuleImageBlending
             const float intervals = (ProgressMax - ProgressStart) / ProgressIncrement;
             progressIntervals = (int)Math.Ceiling(intervals) + 1;
 
-            modelImages = new InputOutputParams();
-            guiImages = new InputOutputParams();
+            dataSet = new ImageContainer
+            {
+                ContainerFormat = PixelFormat.Format24bppRgb
+            };
 
             statProcessing = new ValueStatistics();
             processingGuard = new ManualResetEvent(false);
@@ -52,77 +51,6 @@ namespace ImageInterpolation.ModuleImageBlending
             view.AddProcessingClickedListener(new ProcessingClickedListener());
 
             view.BlendingPercentage = (int)(iterationCount * ProgressIncrement);
-        }
-
-        private Bitmap LoadSourceOrTarget(string fileName, ImageType type = ImageType.DontCare, object sender = null)
-        {
-            Bitmap loaded;
-            try
-            {
-                loaded = (Bitmap)Image.FromFile(fileName);
-                if (modelImages.Output != null)
-                {
-                    // dispose old output images and allocate new ones according to dimensions
-                    if (loaded.Width != modelImages.Output.Width || loaded.Height != modelImages.Output.Height)
-                    {
-                        modelImages.Output.Dispose();
-                        guiImages.Output.Dispose();
-
-                        modelImages.Output = new Bitmap(loaded.Width, loaded.Height, PixelFormat.Format32bppArgb);
-                        var size = self.view.GetSizeOf(sender);
-                        guiImages.Output = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
-                    }
-                }
-                else
-                {
-                    modelImages.Output = new Bitmap(loaded.Width, loaded.Height, PixelFormat.Format32bppArgb);
-                    var size = self.view.GetSizeOf(sender);
-                    guiImages.Output = new Bitmap(size.Width, size.Height, PixelFormat.Format32bppArgb);
-                }
-                // ensure the correct pixel format of the loaded image
-                loaded = BitmapUtility.ConvertToFormat(loaded, PixelFormat.Format32bppArgb, ConversionQuality.HighQuality, ConversionType.Overwrite);
-
-                // replace old source/target images with new ones (discard the old ones)
-                if (type == ImageType.Source)
-                {
-                    DisposeAndReplace(ref modelImages.Source, loaded);
-                    DisposeAndReplace(ref guiImages.Source, loaded);
-                }
-                else if (type == ImageType.Target)
-                {
-                    DisposeAndReplace(ref modelImages.Target, loaded);
-                    DisposeAndReplace(ref guiImages.Target, loaded);
-                }
-            }
-            catch (Exception ex)
-            {
-                // discard input data, since one of them failed to load
-                DisposeAndReplace(ref modelImages.Source, null);
-                DisposeAndReplace(ref modelImages.Source, null);
-                DisposeAndReplace(ref guiImages.Target, null);
-                DisposeAndReplace(ref guiImages.Source, null);
-
-                Debug.WriteLine("[LoadSourceOrTarget] Exception: {0}", ex);
-                return Resources.placeholder;
-            }
-            return loaded;
-        }
-
-        private Bitmap ScaleImage(Bitmap modelImage, Size scaledSize)
-        {
-            var scaled = BitmapUtility.Resize(
-                modelImage, scaledSize, ConversionQuality.HighQuality);
-            return scaled;
-        }
-
-        private void DisposeAndReplace(ref Bitmap old, Bitmap with)
-        {
-            // Note: This can cause problems when used to modify property objects.
-            if (old != null)
-            {
-                old.Dispose();
-            }
-            old = with;
         }
 
         private void DisplayParameters(Bitmap img, ImageType type)
@@ -163,27 +91,22 @@ namespace ImageInterpolation.ModuleImageBlending
         {
             generationTimer.Dispose();
 
-            guiImages.Output = ImageProcessingApi.ImageInterpolate(
-                guiImages.Source, guiImages.Target, ProgressIncrement * iterationCount);
+            ImageProcessingApi.ImageInterpolate(dataSet.Item("SRC", ItemRole.Presentation),
+                dataSet.Item("TAR", ItemRole.Presentation),
+                dataSet.Item("DST", ItemRole.Presentation),
+                ProgressIncrement * iterationCount);
 
             view.ProcessStats = @"Processing[ms] : " + statProcessing.LastValue();
-            view.SetNewImageOutput(guiImages.Output);
+            view.SetNewImageOutput(dataSet.Item("DST", ItemRole.Presentation));
         }
 
         private void ProcessingDone()
         {
             iterationCount++;
-
             if (iterationCount >= progressIntervals)
             {
                 PostProcessing();
             }
-            //if (pictureBoxIntermediate.BackgroundImage != null)
-            {
-                //pictureBoxIntermediate.BackgroundImage.Dispose();
-            }
-            view.SetNewImageOutput(guiImages.Output);
-
             processingGuard.Reset();
         }
 
@@ -194,9 +117,14 @@ namespace ImageInterpolation.ModuleImageBlending
                 processingGuard.WaitOne();
                 processingGuard.Set();
 
-                modelImages.Output = ImageProcessingApi.ImageInterpolate(
-                    modelImages.Source, modelImages.Target, ProgressIncrement * iterationCount);
-                statProcessing.Track(ImageProcessingApi.LastOperationDuration);
+                using (statProcessing.Tracker)
+                {
+                    ImageProcessingApi.ImageInterpolate(dataSet.Item("SRC", ItemRole.Model),
+                        dataSet.Item("TAR", ItemRole.Model),
+                        dataSet.Item("DST", ItemRole.Model),
+                        ProgressIncrement * iterationCount);
+                }
+
                 ProcessingDone();
             }
             finally

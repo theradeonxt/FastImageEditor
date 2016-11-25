@@ -34,6 +34,28 @@ namespace ImageInterpolation
         public string AddNormalizeOption { set { comboBoxNormalization.Items.Add(value); } }
         public Color FilterTitleColor { set { labelFilterTitle.BackColor = value; } }
 
+        public Size GetSizeOf(object sender)
+        {
+            var container = sender as PictureBox;
+            if (container != null)
+            {
+                return container.Size;
+            }
+            return new Size(1, 1);
+        }
+        public void SetNewImage(object sender, Bitmap bmp)
+        {
+            var container = sender as PictureBox;
+            if (container != null)
+            {
+                container.BackgroundImage = bmp;
+            }
+        }
+        public void SetNewImageOutput(Bitmap bmp)
+        {
+            pictureBoxFilterOutput.BackgroundImage = bmp;
+        }
+
         public void AddKernelTextChangedListener(IActionListener listener)
         {
             richTextBoxKernel.TextChanged += listener.ActionPerformed;
@@ -51,8 +73,6 @@ namespace ImageInterpolation
 
         public void AddLoadSourceListener(IActionListener listener)
         {
-            //btnLoadSource.Click += listener.ActionPerformed;
-
             btnLoadSource.Click += (sender, e) =>
             {
                 using (var fileDialog = new OpenFileDialog())
