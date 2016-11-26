@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -90,8 +89,6 @@ namespace ImageInterpolation
             ApplyLambda((i, k) => i.Dispose());
         }
 
-        #region Private Members
-
         private Bitmap ItemGet(string key, IDictionary<string, Bitmap> container)
         {
             Bitmap result;
@@ -167,7 +164,5 @@ namespace ImageInterpolation
             ApplyLambda(model, lambda);
             ApplyLambda(presentation, lambda);
         }
-
-        #endregion
     }
 }

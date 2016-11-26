@@ -55,21 +55,7 @@ namespace ImageInterpolation.ModuleImageBlending
 
         private void DisplayParameters(Bitmap img, ImageType type)
         {
-            ImagePropertiesUi propertyObject;
-            switch (type)
-            {
-                case ImageType.Source:
-                    propertyObject = self.view.propertySource;
-                    break;
-                case ImageType.Target:
-                    propertyObject = self.view.propertyTarget;
-                    break;
-                case ImageType.Output:
-                    propertyObject = self.view.propertyOutput;
-                    break;
-                default:
-                    return;
-            }
+            ImagePropertiesUi propertyObject = GetPropertyObject(type);
             float rawSize;
             using (var bh = new BitmapHelper(img))
             {
@@ -78,6 +64,20 @@ namespace ImageInterpolation.ModuleImageBlending
             propertyObject.Resolution = img.Size;
             propertyObject.RawSize = rawSize;
             propertyObject.PixelFormat = img.PixelFormat;
+        }
+
+        private ImagePropertiesUi GetPropertyObject(ImageType type)
+        {
+            switch (type)
+            {
+                case ImageType.Source:
+                    return self.view.propertySource;
+                case ImageType.Target:
+                    return self.view.propertyTarget;
+                case ImageType.Output:
+                    return self.view.propertyOutput;
+            }
+            return null;
         }
 
         private void InitProcessingTimer()
