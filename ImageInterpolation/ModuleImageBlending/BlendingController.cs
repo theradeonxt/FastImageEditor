@@ -34,7 +34,8 @@ namespace ImageInterpolation.ModuleImageBlending
 
             dataSet = new ImageContainer
             {
-                ContainerFormat = PixelFormat.Format24bppRgb
+                ContainerFormat = PixelFormat.Format24bppRgb,
+                InputCount = 2
             };
 
             statProcessing = new ValueStatistics();

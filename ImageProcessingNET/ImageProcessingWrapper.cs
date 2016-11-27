@@ -33,7 +33,7 @@ namespace ImageProcessingNET
             );
 
         [DllImport("ImageProcessing.dll", CallingConvention = CallingConvention.Cdecl)]
-        internal static extern unsafe int ConvFilter_32bgra_ref(
+        internal static extern unsafe int ConvFilter_32bgra(
             byte* source,
             byte* destination,
             uint sizeBytes,

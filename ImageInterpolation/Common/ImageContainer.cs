@@ -31,7 +31,13 @@ namespace ImageInterpolation
 
             ImageCorelation = ImageCorelation.MinSizeCrop;
             ContainerFormat = PixelFormat.Format32bppArgb;
+            Output = "DST";
         }
+
+        /// <summary>
+        /// Gets or sets the key of the output item
+        /// </summary>
+        public string Output { get; set; }
 
         /// <summary>
         /// Gets or sets the corelation imposed on all images.
@@ -42,6 +48,23 @@ namespace ImageInterpolation
         /// Gets or sets the pixel format of the images managed by the container
         /// </summary>
         public PixelFormat ContainerFormat { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of input images the container should manage.
+        /// </summary>
+        public int InputCount { get; set; }
+
+        /// <summary>
+        /// Validates the number of input images managed by the container.
+        /// </summary>
+        public bool InputValid
+        {
+            get
+            {
+                int actualCount = model.Count(item => item.Key != "DST");
+                return actualCount == InputCount;
+            }
+        }
 
         /// <summary>
         /// Gets the container image with the given key using the provided role.
@@ -59,7 +82,7 @@ namespace ImageInterpolation
         }
 
         /// <summary>
-        /// Adds the image with the given key to the container using the provided role.
+        /// Adds the image with the given key to the container.
         /// </summary>
         public bool AddItem(string key, Bitmap item, Size presentationSize)
         {
@@ -69,24 +92,36 @@ namespace ImageInterpolation
 
             // compute appropriate presentation
             var scaledPresentation = BitmapUtility.Resize(Item(key, ItemRole.Model), presentationSize,
-                ResizeType.Scaling, ConversionQuality.HighQuality, ConversionType.Overwrite);
+                ResizeType.Scaling, ConversionQuality.HighQuality);
 
             // add presentation
             return AddItem(key, scaledPresentation, presentation);
         }
 
-        public bool InputImageCount(int count)
-        {
-            int actualCount = model.Count(item => item.Key != "DST");
-            return actualCount == count;
-        }
-
         /// <summary>
-        /// Releases all resources used by this container, effectively clearing its data.
+        /// Releases all resources used by the container, effectively clearing its data.
         /// </summary>
         public void Dispose()
         {
-            ApplyLambda((i, k) => i.Dispose());
+            ForeachInput((i, k) => i.Dispose());
+        }
+
+        /// <summary>
+        /// Adds an output image in the container, both as model and presentation.
+        /// The presentation is resized according to ImageCorelation and the provided size.
+        /// </summary>
+        /// <remarks>
+        /// The output is created only if the number of input images equals InputCount.
+        /// </remarks>
+        /// <param name="size"> Size of presentation </param>
+        public void AddOutput(Size size)
+        {
+            if (InputValid)
+            {
+                Size modelSize = model.First().Value.Size;
+                Bitmap dst = new Bitmap(modelSize.Width, modelSize.Height, ContainerFormat);
+                AddItem(Output, dst, size);
+            }
         }
 
         private Bitmap ItemGet(string key, IDictionary<string, Bitmap> container)
@@ -109,7 +144,7 @@ namespace ImageInterpolation
 
             var updatedItems = new List<KeyValuePair<string, Bitmap>>();
 
-            ApplyLambda(container, (i, k) =>
+            ForeachInput(container, (i, k) =>
             {
                 // apply configured image corelation
                 var resized = BitmapUtility.Resize(i, min, GetRType(),
@@ -145,7 +180,7 @@ namespace ImageInterpolation
             int minWidth = container.First().Value.Width;
             int minHeight = container.First().Value.Height;
 
-            ApplyLambda(container, (i, k) =>
+            ForeachInput(container, (i, k) =>
             {
                 minWidth = i.Width < minWidth ? i.Width : minWidth;
                 minHeight = i.Height < minHeight ? i.Height : minHeight;
@@ -153,16 +188,16 @@ namespace ImageInterpolation
             return new Size(minWidth, minHeight);
         }
 
-        private void ApplyLambda(IDictionary<string, Bitmap> container, Action<Bitmap, string> lambda)
+        private void ForeachInput(IDictionary<string, Bitmap> container, Action<Bitmap, string> lambda)
         {
             foreach (var item in container)
                 lambda(item.Value, item.Key);
         }
 
-        private void ApplyLambda(Action<Bitmap, string> lambda)
+        private void ForeachInput(Action<Bitmap, string> lambda)
         {
-            ApplyLambda(model, lambda);
-            ApplyLambda(presentation, lambda);
+            ForeachInput(model, lambda);
+            ForeachInput(presentation, lambda);
         }
     }
 }

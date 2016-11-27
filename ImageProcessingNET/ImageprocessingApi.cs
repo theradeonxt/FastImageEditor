@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -90,11 +91,11 @@ namespace ImageProcessingNET
             {
                 var stride = ibSrc.Stride;
                 var size = ibSrc.SizeBytes;
-                var kw = (uint)kernel.GetLength(0);
+                var kw = (uint)Math.Sqrt(kernel.GetLength(0));
                 var kh = (uint)kernel.Length / kw;
                 unsafe
                 {
-                    ImageProcessingWrapper.ConvFilter_32bgra_ref(ibSrc.Start, ibDest.Start, size, stride, kernel, kw, kh);
+                    ImageProcessingWrapper.ConvFilter_32bgra(ibSrc.Start, ibDest.Start, size, stride, kernel, kw, kh);
                 }
             }
         }

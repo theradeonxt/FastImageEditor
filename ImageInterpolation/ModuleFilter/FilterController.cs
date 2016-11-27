@@ -7,7 +7,6 @@ namespace ImageInterpolation.ModuleFilter
     sealed partial class FilterController
     {
         private readonly ModuleFilterUi view;
-        private static FilterController self;
         private readonly ImageContainer dataSet;
         private Filter selectedFilter;
 
@@ -16,9 +15,9 @@ namespace ImageInterpolation.ModuleFilter
             this.view = view;
             self = this;
 
-            dataSet = new ImageContainer();
-
+            dataSet = new ImageContainer { InputCount = 1 };
             BuiltinFilters.Load();
+
             SetupUi();
         }
 
@@ -58,7 +57,7 @@ namespace ImageInterpolation.ModuleFilter
 
             // update the filter's kernel only if it's changed
             string filterAsText = FormatFilter.Serialize(filter);
-            if (String.Compare(filterAsText, view.KernelText, StringComparison.Ordinal) != 0)
+            if (string.Compare(filterAsText, view.KernelText, StringComparison.Ordinal) != 0)
             {
                 view.KernelText = filterAsText;
             }
@@ -74,6 +73,11 @@ namespace ImageInterpolation.ModuleFilter
         private void StoreSelectedFilter(Filter filter)
         {
             selectedFilter = filter;
+        }
+
+        private bool HasSelectedFilter
+        {
+            get { return self.selectedFilter != null; }
         }
     }
 }

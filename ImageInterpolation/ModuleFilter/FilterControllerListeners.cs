@@ -6,6 +6,8 @@ namespace ImageInterpolation.ModuleFilter
 {
     partial class FilterController
     {
+        private static FilterController self;
+
         private class KernelTextChangedListener : IActionListener
         {
             public void ActionPerformed(object sender, EventArgs e)
@@ -63,6 +65,7 @@ namespace ImageInterpolation.ModuleFilter
                 BitmapUtility.ExtractLocalImage(file, out loaded);
 
                 set.AddItem("SRC", (Bitmap)loaded, guiSize);
+                set.AddOutput(guiSize);
 
                 self.view.SetNewImage(sender, set.Item("SRC", ItemRole.Presentation));
             }
@@ -73,6 +76,9 @@ namespace ImageInterpolation.ModuleFilter
             public void ActionPerformed(object sender, EventArgs e)
             {
                 var set = self.dataSet;
+
+                if (!self.HasSelectedFilter)
+                    return;
 
                 ImageProcessingApi.ConvolutionFilter(set.Item("SRC", ItemRole.Model),
                     set.Item("DST", ItemRole.Model),

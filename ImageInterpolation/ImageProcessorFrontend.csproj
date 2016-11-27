@@ -173,8 +173,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>if NOT exist "$(TargetDir)\BuiltinFilters" (
+  mkdir "$(TargetDir)\BuiltinFilters"
+  xcopy "$(ProjectDir)\ModuleFilter\BuiltinFilters\*.txt" "$(TargetDir)\BuiltinFilters" /S /E /Y )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

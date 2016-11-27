@@ -157,7 +157,7 @@
             // 
             // pictureBoxFilterInput
             // 
-            this.pictureBoxFilterInput.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBoxFilterInput.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBoxFilterInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxFilterInput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxFilterInput.Location = new System.Drawing.Point(0, 0);
@@ -168,7 +168,7 @@
             // 
             // pictureBoxFilterOutput
             // 
-            this.pictureBoxFilterOutput.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBoxFilterOutput.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBoxFilterOutput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxFilterOutput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxFilterOutput.Location = new System.Drawing.Point(0, 0);

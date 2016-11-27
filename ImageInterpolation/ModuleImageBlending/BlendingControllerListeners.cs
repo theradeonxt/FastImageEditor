@@ -26,11 +26,13 @@ namespace ImageInterpolation.ModuleImageBlending
                 {
                     case ImageType.Source:
                         set.AddItem("SRC", (Bitmap)loaded, guiSize);
+                        set.AddOutput(guiSize);
                         self.view.SetNewImage(sender, set.Item("SRC", ItemRole.Presentation));
                         self.DisplayParameters(set.Item("SRC", ItemRole.Presentation), type);
                         break;
                     case ImageType.Target:
                         set.AddItem("TAR", (Bitmap)loaded, guiSize);
+                        set.AddOutput(guiSize);
                         self.view.SetNewImage(sender, set.Item("TAR", ItemRole.Presentation));
                         self.DisplayParameters(set.Item("TAR", ItemRole.Presentation), type);
                         break;
@@ -45,8 +47,7 @@ namespace ImageInterpolation.ModuleImageBlending
                 var ev = (MyFileEventArgs)e;
                 var transport = new MyDragDropEventArgs<string[]>(new[] { ev.Data });
 
-                new SourceImageDragDropListener()
-                    .ActionPerformed(sender, transport);
+                new SourceImageDragDropListener().ActionPerformed(sender, transport);
             }
         }
 
@@ -64,7 +65,7 @@ namespace ImageInterpolation.ModuleImageBlending
             {
                 var set = self.dataSet;
 
-                if (!set.InputImageCount(2))
+                if (!set.InputValid)
                     return;
 
                 float perc = (float)self.view.TrackbarValue / self.view.TrackbarMax;
@@ -73,14 +74,17 @@ namespace ImageInterpolation.ModuleImageBlending
                 using (self.statProcessing.Tracker)
                 {
                     ImageProcessingApi.ImageAlphaBlend(set.Item("SRC", ItemRole.Model),
-                        set.Item("TAR", ItemRole.Model), set.Item("DST", ItemRole.Model));
+                        set.Item("TAR", ItemRole.Model),
+                        set.Item("DST", ItemRole.Model));
                 }
 
                 ImageProcessingApi.ImageAlphaBlend(set.Item("SRC", ItemRole.Presentation),
-                    set.Item("TAR", ItemRole.Presentation), set.Item("DST", ItemRole.Presentation));
+                    set.Item("TAR", ItemRole.Presentation),
+                    set.Item("DST", ItemRole.Presentation));
 
                 self.view.ProcessStats = @"Processing[ms] : " + self.statProcessing.LastValue();
                 self.view.SetNewImageOutput(set.Item("DST", ItemRole.Presentation));
+                self.DisplayParameters(set.Item("DST", ItemRole.Model), ImageType.Output);
 
                 waitForActions = 1;
             }
@@ -99,7 +103,7 @@ namespace ImageInterpolation.ModuleImageBlending
         {
             public void ActionPerformed(object sender, EventArgs e)
             {
-                if (!self.dataSet.InputImageCount(2))
+                if (!self.dataSet.InputValid)
                     return;
 
                 self.InitProcessingTimer();

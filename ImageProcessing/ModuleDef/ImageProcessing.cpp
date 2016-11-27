@@ -33,7 +33,8 @@ Blend24bgr_24bgr(READONLY (uint8_t*) source,
                  float               percentage)
 {
     return Runner<PreferSIMD, PreferAlignment>(__FUNCTION__).RunFrom(
-        0, sizeBytes, ADR_ARG(source), ADR_ARG(target), ADR_ARG(destination), SZ_ARG(sizeBytes), VAL_ARG(percentage));
+        0, sizeBytes, ADR_ARG(source), ADR_ARG(target), ADR_ARG(destination), 
+		SZ_ARG(sizeBytes), VAL_ARG(percentage));
 }
 
 // ====================================================
@@ -48,8 +49,11 @@ Convert_32bgra_24hsv(READONLY (uint8_t*) source,
                      uint32_t            sizeBytes)
 {
     return Runner<PreferSIMD, PreferAlignment>(__FUNCTION__).RunFrom(
-        0, sizeBytes, ADR_ARG(source), ADR_ARG(destinationHueChannel), ADR_ARG(destinationSaturationChannel), 
-        ADR_ARG(destinationValueChannel), SZ_ARG(sizeBytes));
+        0, sizeBytes, ADR_ARG(source), 
+		ADR_ARG(destinationHueChannel), 
+		ADR_ARG(destinationSaturationChannel), 
+        ADR_ARG(destinationValueChannel), 
+		SZ_ARG(sizeBytes));
 }
 
 IMPROC_CDECL IMPROC_API int32_t
@@ -59,7 +63,8 @@ OpacityAdjust_32bgra(READONLY (uint8_t*) source,
                      float               percentage)
 {
     return Runner<PreferSIMD, PreferAlignment>(__FUNCTION__).RunFrom(
-        0, sizeBytes, ADR_ARG(source), ADR_ARG(destination), SZ_ARG(sizeBytes), VAL_ARG(percentage));
+        0, sizeBytes, ADR_ARG(source), ADR_ARG(destination), 
+		SZ_ARG(sizeBytes), VAL_ARG(percentage));
 }
 
 IMPROC_CDECL IMPROC_API int32_t
@@ -69,7 +74,8 @@ AlphaBlend32bgra_32bgra(READONLY (uint8_t*) source,
                         uint32_t            sizeBytes)
 {
     return Runner<PreferSIMD, PreferAlignment>(__FUNCTION__).RunFrom(
-        0, sizeBytes, ADR_ARG(source), ADR_ARG(target), ADR_ARG(destination), SZ_ARG(sizeBytes));
+        0, sizeBytes, ADR_ARG(source), ADR_ARG(target), 
+		ADR_ARG(destination), SZ_ARG(sizeBytes));
 }
 
 IMPROC_CDECL IMPROC_API int32_t
@@ -82,5 +88,7 @@ ConvFilter_32bgra(READONLY (uint8_t*) source,
                   uint32_t            height)
 {
     return Runner<PreferSIMD, PreferAlignment>(__FUNCTION__).RunFrom(
-        0, sizeBytes, ADR_ARG(source), ADR_ARG(destination), SZ_ARG(sizeBytes), VAL_ARG(kernel), VAL_ARG(width), VAL_ARG(height));
+        0, sizeBytes, ADR_ARG(source), ADR_ARG(destination), 
+		SZ_ARG(sizeBytes), VAL_ARG(strideBytes), 
+		VAL_ARG(kernel), VAL_ARG(width), VAL_ARG(height));
 }
