@@ -145,7 +145,7 @@ IMPROC_MODULE(OpacityAdjust_32bgra_ref,
     uint32_t alphaLevel = uint32_t(percentage * 255.0f) << 24;
 
     REGISTER_TIMED_BLOCK(OpacityAdjust_32bgra_ref);
-    for (int32_t index = 0; index < nSizeBytes; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
+    for (int32_t index = 0; index < nSizeBytes; index += 4)
     {
         BEGIN_TIMED_BLOCK();
 
@@ -195,7 +195,7 @@ IMPROC_MODULE(AlphaBlend32bgra_32bgra_ref,
     int32_t nSizeBytes = int32_t(sizeBytes);
 
     REGISTER_TIMED_BLOCK(AlphaBlend32bgra_32bgra_ref);
-    for (int32_t index = 0; index < nSizeBytes; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
+    for (int32_t index = 0; index < nSizeBytes; index += 4)
     {
         BEGIN_TIMED_BLOCK();
 
@@ -270,6 +270,7 @@ IMPROC_MODULE(AlphaBlend32bgra_32bgra_ref_MT,
     return OperationSuccess;
 }
 
+/*
 IMPROC_MODULE(ConvFilter_32bgra_ref,
     READONLY (uint8_t*) source,
     READWRITE(uint8_t*) destination,
@@ -282,37 +283,84 @@ IMPROC_MODULE(ConvFilter_32bgra_ref,
     int32_t dimension = width * height;
     int32_t nSizeBytes = int32_t(sizeBytes);
     int32_t startIndex = (height / 2) * strideBytes + (width / 2) * 4;
+    // TODO: The first 4 should not be here, but otherwise results in an access violation
+    int32_t endIndex = nSizeBytes - 4 * ((height / 2) * strideBytes + (width / 2) * 4);
 
     REGISTER_TIMED_BLOCK(ConvFilter_32bgra_ref);
-    for (int32_t index = startIndex; index < nSizeBytes; index += 4) // guaranteed to be multiple of 4bytes (32bpp-BGRA)
+    for (int32_t index = startIndex; index < endIndex; index += 4)
     {
         BEGIN_TIMED_BLOCK();
 
         float sumB(0.0f);
         float sumG(0.0f);
         float sumR(0.0f);
-        float sumA(0.0f);
         for (int32_t k = 0; k < dimension; k++)
         {
-            int offset = (k / height - 2) * strideBytes + (k / width) * 4;
+            int offset = (k / height - (height / 2)) * strideBytes + (k / width) * 4;
             sumB += *(source + index + 0 + offset) * kernel[k];
             sumG += *(source + index + 1 + offset) * kernel[k];
             sumR += *(source + index + 2 + offset) * kernel[k];
-            sumA += *(source + index + 3 + offset) * kernel[k];
         }
         *(destination + index + 0) = uint8_t(Clamp(sumB, 0, 255));
         *(destination + index + 1) = uint8_t(Clamp(sumG, 0, 255));
         *(destination + index + 2) = uint8_t(Clamp(sumR, 0, 255));
-        *(destination + index + 3) = uint8_t(Clamp(sumA, 0, 255));
+        *(destination + index + 3) = *(source + index + 3);
     
         END_TIMED_BLOCK();
     }
     PROFILE_TRACE_BLOCK(L" - Cycles/Pixel: ");
 
     return OperationSuccess;
-}
+}*/
 
-IMPROC_MODULE(ConvFilter_32bgra_ref_MT,
+// WRONG
+
+/*
+IMPROC_MODULE(ConvFilter_32bgra_ref,
+    READONLY(uint8_t*)  source,
+    READWRITE(uint8_t*) destination,
+    uint32_t            sizeBytes,
+    uint32_t            strideBytes,
+    READONLY(float*)    kernel,
+    uint32_t            width,
+    uint32_t            height)
+{
+    int32_t dimension = width * height;
+    int32_t nSizeBytes = int32_t(sizeBytes);
+    int32_t startIndex = (height / 2) * strideBytes + (width / 2) * 4;
+    // TODO: The first 4 should not be here, but otherwise results in an access violation
+    int32_t endIndex = nSizeBytes - 4 * ((height / 2) * strideBytes + (width / 2) * 4);
+    float offsetAlpha = (1.0f * strideBytes * width + 4.0f * height) / (1.0f * height * width);
+    float offsetBeta = strideBytes * (height / 2.0f);
+
+    REGISTER_TIMED_BLOCK(ConvFilter_32bgra_ref);
+    for (int32_t index = startIndex; index < endIndex; index += 4)
+    {
+        BEGIN_TIMED_BLOCK();
+
+        float sumB(0.0f);
+        float sumG(0.0f);
+        float sumR(0.0f);
+        for (int32_t k = 0; k < dimension; k++)
+        {
+            int offset = (int)(offsetAlpha * k + offsetBeta);
+            sumB += *(source + index + 0 + offset) * kernel[k];
+            sumG += *(source + index + 1 + offset) * kernel[k];
+            sumR += *(source + index + 2 + offset) * kernel[k];
+        }
+        *(destination + index + 0) = uint8_t(Clamp(sumB, 0, 255));
+        *(destination + index + 1) = uint8_t(Clamp(sumG, 0, 255));
+        *(destination + index + 2) = uint8_t(Clamp(sumR, 0, 255));
+        *(destination + index + 3) = *(source + index + 3);
+
+        END_TIMED_BLOCK();
+    }
+    PROFILE_TRACE_BLOCK(L" - Cycles/Pixel: ");
+
+    return OperationSuccess;
+}*/
+
+IMPROC_MODULE(ConvFilter_32bgra_ref,
     READONLY (uint8_t*) source,
     READWRITE(uint8_t*) destination,
     uint32_t            sizeBytes,
@@ -321,7 +369,7 @@ IMPROC_MODULE(ConvFilter_32bgra_ref_MT,
     uint32_t            width,
     uint32_t            height)
 {
-    READONLY(int32_t*) offsetLookup = PixelOffsetsLookup(width, height, 4);
+    READONLY(int32_t*) offsetLookup = PixelOffsetsLookup(width, height, 4, strideBytes);
     if (offsetLookup == nullptr)
     {
         return OutOfMemory;
@@ -329,28 +377,29 @@ IMPROC_MODULE(ConvFilter_32bgra_ref_MT,
 
     int32_t dimension = width * height;
     int32_t nSizeBytes = int32_t(sizeBytes);
+    int32_t startIndex = (height / 2) * strideBytes + (width / 2) * 4;
+    // TODO: The first 4 should not be here, but otherwise results in an access violation
+    int32_t endIndex = nSizeBytes - 4 * ((height / 2) * strideBytes + (width / 2) * 4);
 
     REGISTER_TIMED_BLOCK(ConvFilter_32bgra_ref_MT);
-#pragma omp parallel for
-    for (int32_t index = 0; index < nSizeBytes; index += 4)
+//#pragma omp parallel for
+    for (int32_t index = startIndex; index < endIndex; index += 4)
     {
         BEGIN_TIMED_BLOCK();
 
         float sumB(0.0f);
         float sumG(0.0f);
         float sumR(0.0f);
-        float sumA(0.0f);
         for (int32_t k = 0; k < dimension; k++)
         {
             sumB += *(source + index + 0 + offsetLookup[k]) * kernel[k];
             sumG += *(source + index + 1 + offsetLookup[k]) * kernel[k];
             sumR += *(source + index + 2 + offsetLookup[k]) * kernel[k];
-            sumA += *(source + index + 3 + offsetLookup[k]) * kernel[k];
         }
         *(destination + index + 0) = uint8_t(Clamp(sumB, 0, 255));
         *(destination + index + 1) = uint8_t(Clamp(sumG, 0, 255));
         *(destination + index + 2) = uint8_t(Clamp(sumR, 0, 255));
-        *(destination + index + 3) = uint8_t(Clamp(sumA, 0, 255));
+        *(destination + index + 3) = *(source + index + 3);
 
         END_TIMED_BLOCK();
     }

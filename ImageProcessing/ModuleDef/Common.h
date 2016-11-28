@@ -67,6 +67,7 @@ enum SIMDLevel
     None,       //!< Standard C++, x86 integer and x87 FPU code
     SSE2,       //!< Optimized for Streaming SIMD Extensions 2
     SSSE3,      //!< Optimized for Supplemental Streaming SIMD Extensions 3
+    SSE41,      //!< Intel Streaming SIMD Extensions 4.1
     AVX,        //!< Full AVX-1 support - includes VEX prefix instructions; may not include 256-bit
     FMA3,       //!< Fused-multiply-add with three-operand instructions
     Count
@@ -84,7 +85,7 @@ enum SIMDLevel
 
 static const int SIMD_SIZE       = 16;  //!< Default SSE chunk size (bytes processed in one step)
 static const int SIMD_SIZE_AVX   = 32;  //!< Default AVX chunk size (bytes processed in one step)
-static const int CPU_FLAGS       = 5;   //!< How many CPU features we are interested to know
+static const int CPU_FLAGS       = 6;   //!< How many CPU features we are interested to know
 
 //
 // Enable/Disable reference implementation (Scalar)

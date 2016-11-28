@@ -9,12 +9,14 @@ namespace ImageInterpolation.ModuleFilter
         private readonly ModuleFilterUi view;
         private readonly ImageContainer dataSet;
         private Filter selectedFilter;
+        private ValueStatistics statProcessing;
 
         public FilterController(ModuleFilterUi view)
         {
             this.view = view;
             self = this;
 
+            statProcessing = new ValueStatistics();
             dataSet = new ImageContainer { InputCount = 1 };
             BuiltinFilters.Load();
 

@@ -80,15 +80,19 @@ namespace ImageInterpolation.ModuleFilter
                 if (!self.HasSelectedFilter)
                     return;
 
-                ImageProcessingApi.ConvolutionFilter(set.Item("SRC", ItemRole.Model),
-                    set.Item("DST", ItemRole.Model),
-                    self.selectedFilter.Kernel);
+                using (self.statProcessing.Tracker)
+                {
+                    ImageProcessingApi.ConvolutionFilter(set.Item("SRC", ItemRole.Model),
+                        set.Item("DST", ItemRole.Model),
+                        self.selectedFilter.Kernel);
+                }
 
                 ImageProcessingApi.ConvolutionFilter(set.Item("SRC", ItemRole.Presentation),
                     set.Item("DST", ItemRole.Presentation),
                     self.selectedFilter.Kernel);
 
                 self.view.SetNewImageOutput(set.Item("DST", ItemRole.Presentation));
+                self.view.ProcessTime = "ProcessTime: " + self.statProcessing.LastValue() + "[ms]";
             }
         }
     }

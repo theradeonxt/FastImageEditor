@@ -33,6 +33,7 @@ namespace Config
         m_CPUFlags[None] = 1;
         m_CPUFlags[SSE2] = data.flags[CPU_FEATURE_SSE2];
         m_CPUFlags[SSSE3] = data.flags[CPU_FEATURE_SSSE3];
+        m_CPUFlags[SSE41] = data.flags[CPU_FEATURE_SSE4_1];
         m_CPUFlags[AVX] = data.flags[CPU_FEATURE_AVX];
         m_CPUFlags[FMA3] = data.flags[CPU_FEATURE_FMA3];
     }
@@ -50,7 +51,7 @@ namespace Config
         // if Reference implementation wasn't forced at compile-time
 #ifndef FORCE_REFERENCE_IMPL
         // the list af all possible implementations, sorted descending
-        static const SIMDLevel featureFlags[CPU_FLAGS] = { FMA3, AVX, SSSE3, SSE2, None };
+        static const SIMDLevel featureFlags[CPU_FLAGS] = { FMA3, AVX, SSE41, SSSE3, SSE2, None };
 
         for (SIMDLevel level : featureFlags)
         {

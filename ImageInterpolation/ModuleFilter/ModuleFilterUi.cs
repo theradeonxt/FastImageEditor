@@ -33,6 +33,7 @@ namespace ImageInterpolation
         public string AddFilterOption { set { comboBoxBuiltinFilters.Items.Add(value); } }
         public string AddNormalizeOption { set { comboBoxNormalization.Items.Add(value); } }
         public Color FilterTitleColor { set { labelFilterTitle.BackColor = value; } }
+        public string ProcessTime { set { labelProcessTime.Text = value; } }
 
         public Size GetSizeOf(object sender)
         {
@@ -54,6 +55,7 @@ namespace ImageInterpolation
         public void SetNewImageOutput(Bitmap bmp)
         {
             pictureBoxFilterOutput.BackgroundImage = bmp;
+            pictureBoxFilterOutput.Refresh();
         }
 
         public void AddKernelTextChangedListener(IActionListener listener)

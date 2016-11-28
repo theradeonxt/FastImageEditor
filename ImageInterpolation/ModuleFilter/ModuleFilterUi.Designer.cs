@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.labelProcessTime = new System.Windows.Forms.Label();
             this.comboBoxNormalization = new System.Windows.Forms.ComboBox();
             this.comboBoxBuiltinFilters = new System.Windows.Forms.ComboBox();
             this.checkBoxNormalize = new System.Windows.Forms.CheckBox();
@@ -53,6 +54,7 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.labelProcessTime);
             this.groupBox5.Controls.Add(this.comboBoxNormalization);
             this.groupBox5.Controls.Add(this.comboBoxBuiltinFilters);
             this.groupBox5.Controls.Add(this.checkBoxNormalize);
@@ -67,6 +69,15 @@
             this.groupBox5.Size = new System.Drawing.Size(316, 299);
             this.groupBox5.TabIndex = 2;
             this.groupBox5.TabStop = false;
+            // 
+            // labelProcessTime
+            // 
+            this.labelProcessTime.AutoSize = true;
+            this.labelProcessTime.Location = new System.Drawing.Point(210, 173);
+            this.labelProcessTime.Name = "labelProcessTime";
+            this.labelProcessTime.Size = new System.Drawing.Size(67, 13);
+            this.labelProcessTime.TabIndex = 6;
+            this.labelProcessTime.Text = "processTime";
             // 
             // comboBoxNormalization
             // 
@@ -252,6 +263,7 @@
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button btnLoadSource;
         private System.Windows.Forms.Button btnApplyKernel;
+        private System.Windows.Forms.Label labelProcessTime;
 
     }
 }

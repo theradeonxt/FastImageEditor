@@ -2,11 +2,32 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace ImageProcessingNET
 {
     public static class ImageProcessingApi
     {
+        // ====================================================================
+        // API Configuration 
+        // ====================================================================
+
+        [DllImport("ImageProcessing.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern int SetMultiThreadingStatus(
+            [MarshalAs(UnmanagedType.LPStr)]string moduleName,
+            int status
+        );
+
+        [DllImport("ImageProcessing.dll", CallingConvention = CallingConvention.StdCall)]
+        public static extern int SetImplementationLevel(
+            [MarshalAs(UnmanagedType.LPStr)]string moduleName,
+            int level
+        );
+
+        // ====================================================================
+        // Helpers to operate with .NET types
+        // ====================================================================
+
         public static void ImageInterpolate(Bitmap srcImg, Bitmap tarImg, Bitmap dstImg, float step)
         {
             StaticCheckFormat(PixelFormat.Format24bppRgb, srcImg, tarImg, dstImg);
@@ -19,7 +40,8 @@ namespace ImageProcessingNET
             {
                 unsafe
                 {
-                    ImageProcessingWrapper.Blend24bgr_24bgr(ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes, step);
+                    ImageProcessingWrapper.Blend24bgr_24bgr(
+                        ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes, step);
                 }
             }
 
@@ -45,7 +67,8 @@ namespace ImageProcessingNET
                     byte* currentLineSrc1 = (byte*)src1Data.Scan0 + (y * stride);
                     byte* currentLineSrc2 = (byte*)src2Data.Scan0 + (y * stride);
                     byte* currentLineResult = (byte*)resultData.Scan0 + (y * stride);
-                    ImageProcessingWrapper.Blend24bgr_24bgr(currentLineSrc1, currentLineSrc2, currentLineResult, stride, step);
+                    ImageProcessingWrapper.Blend24bgr_24bgr(
+                        currentLineSrc1, currentLineSrc2, currentLineResult, stride, step);
                 });
 
                 resultImage.UnlockBits(resultData);
@@ -56,19 +79,26 @@ namespace ImageProcessingNET
 
         public static void ImageOpacity(Bitmap srcImg, Bitmap dstImg, float step)
         {
+            StaticCheckFormat(PixelFormat.Format32bppArgb, srcImg, dstImg, dstImg);
+            StaticCheckSameSize(srcImg, srcImg, dstImg);
+
             // Less work for caller: let C++ handle threading
             using (var ibSrc = new BitmapHelper(srcImg))
             using (var ibDest = new BitmapHelper(dstImg))
             {
                 unsafe
                 {
-                    ImageProcessingWrapper.OpacityAdjust_32bgra(ibSrc.Start, ibDest.Start, ibDest.SizeBytes, step);
+                    ImageProcessingWrapper.OpacityAdjust_32bgra(
+                        ibSrc.Start, ibDest.Start, ibDest.SizeBytes, step);
                 }
             }
         }
 
         public static void ImageAlphaBlend(Bitmap srcImg, Bitmap tarImg, Bitmap dstImg)
         {
+            StaticCheckFormat(PixelFormat.Format32bppArgb, srcImg, tarImg, dstImg);
+            StaticCheckSameSize(srcImg, tarImg, dstImg);
+
             // Less work for caller: let C++ handle threading
             using (var ibSrc = new BitmapHelper(srcImg))
             using (var ibTar = new BitmapHelper(tarImg))
@@ -76,18 +106,19 @@ namespace ImageProcessingNET
             {
                 unsafe
                 {
-                    ImageProcessingWrapper.AlphaBlend32bgra_32bgra(ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes);
+                    ImageProcessingWrapper.AlphaBlend32bgra_32bgra(
+                        ibSrc.Start, ibTar.Start, ibDest.Start, ibDest.SizeBytes);
                 }
             }
         }
 
-        public static void ConvolutionFilter(Bitmap srcImage, Bitmap dstImage, float[] kernel)
+        public static void ConvolutionFilter(Bitmap srcImg, Bitmap dstImg, float[] kernel)
         {
-            StaticCheckFormat(PixelFormat.Format32bppArgb, srcImage, dstImage);
-            StaticCheckSameSize(srcImage, dstImage);
+            StaticCheckFormat(PixelFormat.Format32bppArgb, srcImg, dstImg);
+            StaticCheckSameSize(srcImg, dstImg);
 
-            using (var ibSrc = new BitmapHelper(srcImage))
-            using (var ibDest = new BitmapHelper(dstImage))
+            using (var ibSrc = new BitmapHelper(srcImg))
+            using (var ibDest = new BitmapHelper(dstImg))
             {
                 var stride = ibSrc.Stride;
                 var size = ibSrc.SizeBytes;
@@ -95,7 +126,11 @@ namespace ImageProcessingNET
                 var kh = (uint)kernel.Length / kw;
                 unsafe
                 {
-                    ImageProcessingWrapper.ConvFilter_32bgra(ibSrc.Start, ibDest.Start, size, stride, kernel, kw, kh);
+                    // TODO: Testing only - reference c code
+                    SetImplementationLevel("ConvFilter_32bgra", 0);
+
+                    ImageProcessingWrapper.ConvFilter_32bgra(
+                        ibSrc.Start, ibDest.Start, size, stride, kernel, kw, kh);
                 }
             }
         }
@@ -103,9 +138,7 @@ namespace ImageProcessingNET
         private static void StaticCheckFormat(PixelFormat pixFmt, params Bitmap[] args)
         {
             foreach (var img in args)
-            {
                 Debug.Assert(img.PixelFormat == pixFmt);
-            }
         }
 
         private static void StaticCheckSameSize(params Bitmap[] args)

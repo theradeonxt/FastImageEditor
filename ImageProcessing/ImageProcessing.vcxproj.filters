@@ -76,6 +76,9 @@
     <ClInclude Include="SIMD\ImageProcessing_SSSE3.h">
       <Filter>SIMD</Filter>
     </ClInclude>
+    <ClInclude Include="ImageProcessing_SSE41.h">
+      <Filter>SIMD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Config\ConfigManager.cpp">
@@ -115,6 +118,9 @@
       <Filter>SIMD</Filter>
     </ClCompile>
     <ClCompile Include="SIMD\ImageProcessing_SSSE3.cpp">
+      <Filter>SIMD</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageProcessing_SSE41.cpp">
       <Filter>SIMD</Filter>
     </ClCompile>
   </ItemGroup>

@@ -18,7 +18,7 @@
 //! the ones on the edges of the kernel.
 //!
 inline int32_t*
-PixelOffsetsLookup(uint32_t width, uint32_t height, uint32_t pixelSize)
+PixelOffsetsLookup(uint32_t width, uint32_t height, uint32_t pixelSize, uint32_t strideBytes)
 {
 
     int32_t* offsets = new (std::nothrow) int32_t[width * height];
@@ -27,18 +27,11 @@ PixelOffsetsLookup(uint32_t width, uint32_t height, uint32_t pixelSize)
         return nullptr;
     }
 
-    uint32_t midpointX = width / 2;
-    uint32_t midpointY = height / 2;
-    uint32_t byteMid   = (midpointY * pixelSize + midpointX * pixelSize);
-    
     for (uint32_t i = 0; i < height; i++)
     {
         for (uint32_t j = 0; j < width; j++)
         {
-            // subtract from current byte location the midpoint byte location
-            uint32_t byteNow = (i * pixelSize + j * pixelSize);
-            assert(byteNow - byteMid >= 0);
-            offsets[i*width + j] = byteNow - byteMid;
+            offsets[i*height+j] = (i - height / 2) * strideBytes + (i - width / 2) * pixelSize;
         }
     }
 
@@ -54,7 +47,6 @@ PixelOffsetsLookup(uint32_t width, uint32_t height, uint32_t pixelSize)
 inline float 
 Clamp(float value, float min, float max)
 {
-
     const float t = (value < min) ? min : value;
     return (t > max) ? max : t;
 }
@@ -75,7 +67,9 @@ RgbToHsv(RgbColor rgb)
     HsvColor hsv;
     uint8_t rgbMin, rgbMax;
 
+    // min(r, g, b)
     rgbMin = rgb.r < rgb.g ? (rgb.r < rgb.b ? rgb.r : rgb.b) : (rgb.g < rgb.b ? rgb.g : rgb.b);
+    // max(r, g, b)
     rgbMax = rgb.r > rgb.g ? (rgb.r > rgb.b ? rgb.r : rgb.b) : (rgb.g > rgb.b ? rgb.g : rgb.b);
 
     hsv.v = rgbMax;

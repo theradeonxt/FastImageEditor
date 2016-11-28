@@ -76,6 +76,6 @@ namespace Config
         return OperationFailed;
     }
 
-    const char* g_CodepathSuffix[] = { "_ref", "_SSE2", "_SSSE3", "_AVX", "_FMA3" };
+    const char* g_CodepathSuffix[] = { "_ref", "_SSE2", "_SSSE3", "_SSE41", "_AVX", "_FMA3" };
     const char* g_MulticoreSuffix = { "_MT" };
 }
