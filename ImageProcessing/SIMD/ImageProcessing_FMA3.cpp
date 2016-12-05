@@ -253,19 +253,21 @@ IMPROC_MODULE(ConvFilter_32bgra_FMA3,
     // TODO: The first 4 should not be here, but otherwise results in an access violation
     int32_t endIndex = nSizeBytes - 4 * ((height / 2) * strideBytes + (width / 2) * 4);
 
-    __m128i xmmMaskR = _mm_set_epi32(0, 0x00FF0000, 0, 0);
-    __m128i xmmMaskG = _mm_set_epi32(0, 0, 0x0000FF00, 0);
-    __m128i xmmMaskB = _mm_set_epi32(0, 0, 0, 0x000000FF);
-    __m128i xmmFullAlpha = _mm_set_epi32(0, 0, 0, 0xFF << 24);
+    __m128i xmmFullAlpha = _mm_set_epi32(0, 0, 0, 0xFF000000);
+    __m128i xmmMaskARGB = _mm_set_epi32(0x0, 0x00FF0000, 0x0000FF00, 0x000000FF);
+    __m128i xmmConst0 = _mm_set1_epi32(0);
+    __m128i xmmConstMax = _mm_set_epi32(255, 255 << 16, 255 << 8, 255);
+    __m128i xmmMaskClean = _mm_set_epi32(0, 0x00FF0000, 0x0000FF00, 0x000000FF);
 
     REGISTER_TIMED_BLOCK(ConvFilter_32bgra_FMA3);
 
-//#pragma omp parallel for num_threads(4)
+    //#pragma omp parallel for num_threads(4)
     for (int32_t index = startIndex; index < endIndex; index += 4)
     {
         BEGIN_TIMED_BLOCK();
 
         __m128 xmmSumf32 = _mm_setzero_ps();
+        //__m128 xmmSumf322 = _mm_setzero_ps();
 
         for (int32_t k = 0; k < dimension; k++)
         {
@@ -273,13 +275,10 @@ IMPROC_MODULE(ConvFilter_32bgra_FMA3,
             __m128i xmmArgb = _mm_castps_si128(
                 _mm_broadcast_ss(reinterpret_cast<const float*>(source + index + offsetLookup[k])));
 
-            // create 0|r|g|b (32bit ints)
-            __m128i xmm0R00 = _mm_srli_epi32(_mm_and_si128(xmmArgb, xmmMaskR), 16);
-            __m128i xmm00G0 = _mm_srli_epi32(_mm_and_si128(xmmArgb, xmmMaskG), 8);
-            __m128i xmm000B = _mm_and_si128(xmmArgb, xmmMaskB);
-            __m128i xmm0RGBi = _mm_or_si128(_mm_or_si128(xmm0R00, xmm00G0), xmm000B);
+            // 0| R<<16 | G<<8 | B
+            __m128i xmm0RGBi = _mm_and_si128(xmmArgb, xmmMaskARGB);
 
-            // create 0|r|g|b (float)
+            // convert to 4 float values
             __m128 xmm0RGBf32 = _mm_cvtepi32_ps(xmm0RGBi);
 
             // load kernel value into the 4 floats of XMM register
@@ -287,18 +286,38 @@ IMPROC_MODULE(ConvFilter_32bgra_FMA3,
 
             // multiply accumulate pixel values with kernel
             xmmSumf32 = _mm_fmadd_ps(xmm0RGBf32, xmmFilter, xmmSumf32);
+
+            /*__m128i xmmArgb2 = _mm_castps_si128(
+                _mm_broadcast_ss(reinterpret_cast<const float*>(source + index + offsetLookup[k+1])));
+
+            // 0| R<<16 | G<<8 | B
+            __m128i xmm0RGBi2 = _mm_and_si128(xmmArgb2, xmmMaskARGB);
+
+            // convert to 4 float values
+            __m128 xmm0RGBf322 = _mm_cvtepi32_ps(xmm0RGBi2);
+
+            // load kernel value into the 4 floats of XMM register
+            __m128 xmmFilter2 = _mm_load_ps(reinterpret_cast<float*>(xmmKernel + k+1));
+
+            // multiply accumulate pixel values with kernel
+            xmmSumf322 = _mm_fmadd_ps(xmm0RGBf322, xmmFilter2, xmmSumf322);*/
+
         }
 
-        // limit result to [0.0-255.0]
-        xmmSumf32 = _mm_clamp_ps(xmmSumf32, xmm0const, xmm255const);
+        //xmmSumf32 = _mm_add_ps(xmmSumf32, xmmSumf322);
 
         // convert to integer values
         __m128i xmmSumi = _mm_cvtps_epi32(xmmSumf32);
 
+        // limit result to [0-255]
+        xmmSumi = _mm_clamp_epi32(xmmSumi, xmmConst0, xmmConstMax);
+
+        xmmSumi = _mm_and_si128(xmmSumi, xmmMaskClean);
+
         // obtain x|x|x|ARGB output pixel
-        __m128i xmm00RR = _mm_slli_epi32(_mm_unpackhi_epi32(xmmSumi, xmmSumi), 16);
-        __m128i xmm00RG = _mm_slli_epi32(_mm_srli_epi64(xmmSumi, 32), 8);
-        __m128i xmmResult = _mm_or_si128(_mm_or_si128(xmmSumi, xmm00RG), xmm00RR);
+        __m128i xmm00RR = _mm_unpackhi_epi32(xmmSumi, xmmSumi);
+        __m128i xmm00AG = _mm_srli_epi64(xmmSumi, 32);
+        __m128i xmmResult = _mm_or_si128(_mm_or_si128(xmmSumi, xmm00AG), xmm00RR);
         xmmResult = _mm_or_si128(xmmResult, xmmFullAlpha);
 
         // store output pixel

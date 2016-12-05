@@ -114,6 +114,12 @@ _mm_clamp_ps(__m128 value, __m128 min, __m128 max)
     return _mm_min_ps(_mm_max_ps(value, min), max);
 }
 
+inline __m128i
+_mm_clamp_epi32(__m128i value, __m128i min, __m128i max)
+{
+    return _mm_min_epi32(_mm_max_epi32(value, min), max);
+}
+
 //! \brief
 //! Check that the address given is a multiple of given value;
 //! Treat address as 64-bit to keep x64 compatibility.
