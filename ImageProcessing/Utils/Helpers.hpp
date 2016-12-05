@@ -10,7 +10,6 @@
 
 #include <new>
 #include <cstdint>
-#include <cassert>
 
 //! \brief
 //! Calculate offsets from center of kernel to outside. 
@@ -44,10 +43,10 @@ PixelOffsetsLookup(uint32_t width, uint32_t height, uint32_t pixelSize, uint32_t
 //! try to optimize it into conditional moves or intrinsics.
 //! http://stackoverflow.com/a/16659263
 //!
-inline float 
-Clamp(float value, float min, float max)
+template<typename T> inline T 
+Clamp(T value, T min, T max)
 {
-    const float t = (value < min) ? min : value;
+    const T t = (value < min) ? min : value;
     return (t > max) ? max : t;
 }
 

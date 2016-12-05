@@ -360,6 +360,8 @@ IMPROC_MODULE(ConvFilter_32bgra_ref,
     return OperationSuccess;
 }*/
 
+// CORRECT + OMP
+
 IMPROC_MODULE(ConvFilter_32bgra_ref,
     READONLY (uint8_t*) source,
     READWRITE(uint8_t*) destination,
@@ -382,7 +384,8 @@ IMPROC_MODULE(ConvFilter_32bgra_ref,
     int32_t endIndex = nSizeBytes - 4 * ((height / 2) * strideBytes + (width / 2) * 4);
 
     REGISTER_TIMED_BLOCK(ConvFilter_32bgra_ref_MT);
-//#pragma omp parallel for
+
+//#pragma omp parallel for num_threads(4)
     for (int32_t index = startIndex; index < endIndex; index += 4)
     {
         BEGIN_TIMED_BLOCK();
@@ -396,14 +399,82 @@ IMPROC_MODULE(ConvFilter_32bgra_ref,
             sumG += *(source + index + 1 + offsetLookup[k]) * kernel[k];
             sumR += *(source + index + 2 + offsetLookup[k]) * kernel[k];
         }
-        *(destination + index + 0) = uint8_t(Clamp(sumB, 0, 255));
-        *(destination + index + 1) = uint8_t(Clamp(sumG, 0, 255));
-        *(destination + index + 2) = uint8_t(Clamp(sumR, 0, 255));
+        *(destination + index + 0) = uint8_t(Clamp(sumB, 0.0f, 255.0f));
+        *(destination + index + 1) = uint8_t(Clamp(sumG, 0.0f, 255.0f));
+        *(destination + index + 2) = uint8_t(Clamp(sumR, 0.0f, 255.0f));
         *(destination + index + 3) = *(source + index + 3);
 
         END_TIMED_BLOCK();
     }
+
     PROFILE_TRACE_BLOCK(L" - Cycles/Pixel: ");
 
     return OperationSuccess;
 }
+
+// INT TRICKS
+
+/*IMPROC_MODULE(ConvFilter_32bgra_ref,
+    READONLY(uint8_t*) source,
+    READWRITE(uint8_t*) destination,
+    uint32_t            sizeBytes,
+    uint32_t            strideBytes,
+    READONLY(float*)   kernel,
+    uint32_t            width,
+    uint32_t            height)
+{
+    READONLY(int32_t*) offsetLookup = PixelOffsetsLookup(width, height, 4, strideBytes);
+    if (offsetLookup == nullptr)
+    {
+        return OutOfMemory;
+    }
+
+    READWRITE(int32_t*) kernelScaled = new int32_t[width * height];
+    for (uint32_t i = 0; i < width*height; i++)
+    {
+        kernelScaled[i] = int(256.0f * kernel[i]);
+    }
+
+    int32_t dimension = width * height;
+    int32_t nSizeBytes = int32_t(sizeBytes);
+    int32_t startIndex = (height / 2) * strideBytes + (width / 2) * 4;
+    // TODO: The first 4 should not be here, but otherwise results in an access violation
+    int32_t endIndex = nSizeBytes - 4 * ((height / 2) * strideBytes + (width / 2) * 4);
+
+    REGISTER_TIMED_BLOCK(ConvFilter_32bgra_ref);
+
+//#pragma omp parallel for num_threads(4)
+    for (int32_t index = startIndex; index < endIndex; index += 4)
+    {
+        BEGIN_TIMED_BLOCK();
+
+        int32_t sumB(0);
+        int32_t sumG(0);
+        int32_t sumR(0);
+        for (int32_t k = 0; k < dimension; k++)
+        {
+            uint32_t pixel = *reinterpret_cast<const uint32_t*>(source + index + offsetLookup[k]);
+            uint32_t pixelB =  pixel & 0x000000FF;
+            uint32_t pixelG = (pixel & 0x0000FF00) >> 8;
+            uint32_t pixelR = (pixel & 0x00FF0000) >> 16;
+            sumB += pixelB * kernelScaled[k];
+            sumG += pixelG * kernelScaled[k];
+            sumR += pixelR * kernelScaled[k];
+        }
+
+        uint32_t resultB = uint32_t(Clamp(sumB, 0, 255 * 256)) / 256;
+        uint32_t resultG = uint32_t(Clamp(sumG, 0, 255 * 256)) / 256;
+        uint32_t resultR = uint32_t(Clamp(sumR, 0, 255 * 256)) / 256;
+        uint32_t resultA = *reinterpret_cast<const uint32_t*>(source + index) & 0xFF000000;
+
+        uint32_t pixelOutput = resultA | (resultR << 16) | (resultG << 8) | resultB;
+
+        *reinterpret_cast<uint32_t*>(destination + index) = pixelOutput;
+
+        END_TIMED_BLOCK();
+    }
+    
+    PROFILE_TRACE_BLOCK(L" - Cycles/Pixel: ");
+
+    return OperationSuccess;
+}*/

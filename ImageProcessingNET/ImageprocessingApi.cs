@@ -127,7 +127,7 @@ namespace ImageProcessingNET
                 unsafe
                 {
                     // TODO: Testing only - reference c code
-                    SetImplementationLevel("ConvFilter_32bgra", 0);
+                    //SetImplementationLevel("ConvFilter_32bgra", 0);
 
                     ImageProcessingWrapper.ConvFilter_32bgra(
                         ibSrc.Start, ibDest.Start, size, stride, kernel, kw, kh);
